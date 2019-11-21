@@ -1,0 +1,30 @@
+﻿  Controller.cpp
+c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.15.26726\include\glfw\glfw3.h(98): note: see previous definition of 'APIENTRY'
+  Source.cpp
+c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.15.26726\include\glfw\glfw3.h(98): note: see previous definition of 'APIENTRY'
+c:\users\kikoa\source\repos\tbp3d\tbp3d\source.cpp(292): warning C4305: 'argument': truncation from 'double' to 'float'
+  UserInputs.cpp
+c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.15.26726\include\glfw\glfw3.h(98): note: see previous definition of 'APIENTRY'
+MSVCRT.lib(initializers.obj) : warning LNK4098: defaultlib 'libcmt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  0 of 1051 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+Camera.obj : warning LNK4049: locally defined symbol __glewProgramUniformMatrix4fv imported
+Camera.obj : warning LNK4049: locally defined symbol __glewProgramUniformMatrix3fv imported
+Camera.obj : warning LNK4049: locally defined symbol __glewGetProgramResourceLocation imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewGenBuffers imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewGenVertexArrays imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewBufferData imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewBindBuffer imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewVertexAttribPointer imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewBindVertexArray imported
+Mesh.obj : warning LNK4049: locally defined symbol __glewEnableVertexAttribArray imported
+MeshRenderer.obj : warning LNK4049: locally defined symbol __glewUseProgram imported
+Time.obj : warning LNK4049: locally defined symbol __glewProgramUniform1f imported
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\kikoa\source\repos\TBP3D\x64\Release\vc120.pdb'; linking object as if no debug info
+  TBP3D.vcxproj -> C:\Users\kikoa\source\repos\TBP3D\x64\Release\TBP3D.exe

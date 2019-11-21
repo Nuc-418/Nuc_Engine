@@ -1,0 +1,27 @@
+﻿  Camera.cpp
+  GameObject.cpp
+  LoadShaders.cpp
+c:\users\kikoa\source\repos\tbp3d\tbp3d\loadshaders.h(39): warning C4005: '_DEBUG': macro redefinition
+  c:\users\kikoa\source\repos\tbp3d\tbp3d\loadshaders.cpp: note: see previous definition of '_DEBUG'
+  Source.cpp
+c:\users\kikoa\source\repos\tbp3d\tbp3d\loadshaders.h(39): warning C4005: '_DEBUG': macro redefinition
+  c:\users\kikoa\source\repos\tbp3d\tbp3d\source.cpp: note: see previous definition of '_DEBUG'
+  Time.cpp
+  Generating Code...
+MSVCRTD.lib(initializers.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+MSVCRTD.lib(initializers.obj) : warning LNK4098: defaultlib 'libcmt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
+Camera.obj : warning LNK4049: locally defined symbol __glewGetProgramResourceLocation imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewGetProgramResourceLocation imported
+Time.obj : warning LNK4049: locally defined symbol __glewGetProgramResourceLocation imported
+Camera.obj : warning LNK4049: locally defined symbol __glewProgramUniformMatrix4fv imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewBindBuffer imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewGenBuffers imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewEnableVertexAttribArray imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewUseProgram imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewVertexAttribPointer imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewBufferStorage imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewBindVertexArray imported
+GameObject.obj : warning LNK4049: locally defined symbol __glewGenVertexArrays imported
+Time.obj : warning LNK4049: locally defined symbol __glewProgramUniform1f imported
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\kikoa\source\repos\TBP3D\x64\Debug\vc120.pdb'; linking object as if no debug info
+  TBP3D.vcxproj -> C:\Users\kikoa\source\repos\TBP3D\x64\Debug\TBP3D.exe
