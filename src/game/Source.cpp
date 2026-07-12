@@ -8,9 +8,6 @@ Ficheiro capaz de unir a informação dos restantes ficheiros .cpp e .h, criando u
  */
 
 
-#pragma comment(lib, "glew32s.lib")
-#pragma comment(lib, "glfw3.lib")
-#pragma comment(lib, "opengl32.lib")
 
  /*Largura e altura da janela de visualização*/
 #define WIDTH 800
@@ -18,16 +15,16 @@ Ficheiro capaz de unir a informação dos restantes ficheiros .cpp e .h, criando u
 
 #include <iostream>
 #include <vector>
-#include "Texture.h"
-#include "Time.h"
-#include "GameObject.h"
-#include "Camera.h"
-#include "UserInputs.h"
-#include "Controller.h"
-#include "LoadShaders.h"
-#include "Lights.h"
-#include "Window.h"
-#include "math.h"
+#include "engine/render/Texture.h"
+#include "engine/core/Time.h"
+#include "engine/scene/GameObject.h"
+#include "engine/render/Camera.h"
+#include "engine/input/UserInputs.h"
+#include "engine/input/Controller.h"
+#include "LoadShaders/LoadShaders.h"
+#include "engine/render/Lights.h"
+#include "engine/core/Window.h"
+#include "engine/core/EngineMath.h"
 #include <time.h> 
 
 /* Funções que, conjuntamente, carregam o programa shader e os objetos, atualizam o mundo e permitem desenhar primitivas */
@@ -81,7 +78,7 @@ int main(void) {
 
 
 	//Create window
-	if (!(window.NewWindow(WIDTH, HEIGHT, (char*)"TBP3D", NULL, NULL)))
+	if (!(window.NewWindow(WIDTH, HEIGHT, (char*)"NucEngine", NULL, NULL)))
 		return -1;
 
 	//Set Window Pos
@@ -123,8 +120,8 @@ void loadProgramShader()
 {
 	//Load cube shader
 	ShaderInfo  cubeShaders[] = {
-		{ GL_VERTEX_SHADER,   "shaders/cubeShader/cube.vert" },
-		{ GL_FRAGMENT_SHADER, "shaders/cubeShader/cube.frag" },
+		{ GL_VERTEX_SHADER,   "assets/shaders/cubeShader/cube.vert" },
+		{ GL_FRAGMENT_SHADER, "assets/shaders/cubeShader/cube.frag" },
 		{ GL_NONE, NULL }
 	};
 	cubeProgramShader = LoadShaders(cubeShaders);
@@ -134,8 +131,8 @@ void loadProgramShader()
 
 	//Load Iron Man shader
 	ShaderInfo  ironManshaders[] = {
-		{ GL_VERTEX_SHADER,   "shaders/ironMan/ironMan.vert" },
-		{ GL_FRAGMENT_SHADER, "shaders/ironMan/ironMan.frag" },
+		{ GL_VERTEX_SHADER,   "assets/shaders/ironMan/ironMan.vert" },
+		{ GL_FRAGMENT_SHADER, "assets/shaders/ironMan/ironMan.frag" },
 		{ GL_NONE, NULL }
 	};
 	ironManProgramShader = LoadShaders(ironManshaders);
@@ -279,10 +276,10 @@ void LoadObjects() {
 
 	/*Informação sobre o objeto Iron Man*/
 	{
-		ironMan.LoadObjFile(ironManProgramShader, "gameObjects/Iron_Man/", "Iron_Man.obj");
-		ironMan2.LoadObjFile(ironManProgramShader, "gameObjects/Iron_Man/", "Iron_Man.obj");
+		ironMan.LoadObjFile(ironManProgramShader, "assets/models/Iron_Man/", "Iron_Man.obj");
+		ironMan2.LoadObjFile(ironManProgramShader, "assets/models/Iron_Man/", "Iron_Man.obj");
 
-		ironManTexture.TesxureToProgram(ironManProgramShader, "gameObjects/Iron_Man/Iron_Man_D.tga");
+		ironManTexture.TesxureToProgram(ironManProgramShader, "assets/models/Iron_Man/Iron_Man_D.tga");
 		ironMan2.transform.SetPos(vec3(6, 0, 0));
 	}
 

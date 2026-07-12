@@ -1,5 +1,5 @@
 #include <iostream>
-#include "GameObject.h"
+#include "engine/scene/GameObject.h"
 bool GameObject::LoadObjFile(GLuint programShader, string folderPath, string fileName)
 {
 

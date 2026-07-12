@@ -5,7 +5,7 @@ Data: 05/06/2019
 Descrição: Lights.h
 Ficheiro que cria e gere Lights.cpp
  */
-#include "Time.h"
+#include "engine/core/Time.h"
 
 
 float Time::time = 0;

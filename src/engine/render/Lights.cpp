@@ -7,7 +7,7 @@ Ficheiro que cria, envia para o prgrama shader e controla as diferentes fontes d
  */
 
 
-#include"Lights.h"
+#include "engine/render/Lights.h"
 #include <iostream>
 #include <sstream>
 #include <string> 

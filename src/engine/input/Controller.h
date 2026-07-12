@@ -7,8 +7,8 @@ Ficheiro com controladores predefinidos
  */
 
 #pragma once
-#include "UserInputs.h"
-#include "Transform.h"
+#include "engine/input/UserInputs.h"
+#include "engine/scene/Transform.h"
 
 class Controller
 {

@@ -6,7 +6,7 @@ Descrição: Camera.cpp
 Ficheiro que trata informações da câmara
  */
 
-#include "Camera.h"
+#include "engine/render/Camera.h"
 #include <iostream>
 #include <glm\gtc\matrix_inverse.hpp> // glm::inverseTranspose()
 using namespace std;

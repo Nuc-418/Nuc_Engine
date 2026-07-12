@@ -7,8 +7,8 @@ Ficheiro que cria e gere MeshRenderer.cpp
  */
 
 #pragma once
-#include "Mesh.h"
-#include "Camera.h"
+#include "engine/render/Mesh.h"
+#include "engine/render/Camera.h"
 
 class MeshRenderer
 {

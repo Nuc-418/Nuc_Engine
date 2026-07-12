@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{7f2f4a9a-1b3c-4c5d-9e6f-0a1b2c3d4e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine">
+      <UniqueIdentifier>{8a3b5c1d-2e4f-4a6b-8c0d-1e2f3a4b5c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\core">
+      <UniqueIdentifier>{9b4c6d2e-3f5a-4b7c-9d1e-2f3a4b5c6d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\input">
+      <UniqueIdentifier>{0c5d7e3f-4a6b-4c8d-0e2f-3a4b5c6d7e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\io">
+      <UniqueIdentifier>{1d6e8f4a-5b7c-4d9e-1f3a-4b5c6d7e8f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\render">
+      <UniqueIdentifier>{2e7f9a5b-6c8d-4e0f-2a4b-5c6d7e8f9a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\scene">
+      <UniqueIdentifier>{3f8a0b6c-7d9e-4f1a-3b5c-6d7e8f9a0b1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game">
+      <UniqueIdentifier>{4a9b1c7d-8e0f-4a2b-4c6d-7e8f9a0b1c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{5b0c2d8e-9f1a-4b3c-5d7e-8f9a0b1c2d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\LoadShaders">
+      <UniqueIdentifier>{6c1d3e9f-0a2b-4c4d-6e8f-9a0b1c2d3e4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\stb">
+      <UniqueIdentifier>{7d2e4f0a-1b3c-4d5e-7f9a-0b1c2d3e4f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{8e3f5a1b-2c4d-4e6f-8a0b-1c2d3e4f5a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders">
+      <UniqueIdentifier>{9f4a6b2c-3d5e-4f7a-9b1c-2d3e4f5a6b7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\cubeShader">
+      <UniqueIdentifier>{0a5b7c3d-4e6f-4a8b-0c2d-3e4f5a6b7c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\ironMan">
+      <UniqueIdentifier>{1b6c8d4e-5f7a-4b9c-1d3e-4f5a6b7c8d9e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\engine\core\Time.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\core\Window.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\input\Controller.cpp">
+      <Filter>src\engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\input\UserInputs.cpp">
+      <Filter>src\engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\io\ObjLoader.cpp">
+      <Filter>src\engine\io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\Camera.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\Lights.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\Material.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\Mesh.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\MeshRenderer.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\Texture.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\scene\GameObject.cpp">
+      <Filter>src\engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\scene\Transform.cpp">
+      <Filter>src\engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Source.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\LoadShaders\LoadShaders.cpp">
+      <Filter>third_party\LoadShaders</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\engine\core\EngineMath.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Time.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Window.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\input\Controller.h">
+      <Filter>src\engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\input\UserInputs.h">
+      <Filter>src\engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\io\ObjLoader.h">
+      <Filter>src\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Camera.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Lights.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Material.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Mesh.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\MeshRenderer.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Texture.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\GameObject.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\Transform.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\LoadShaders\LoadShaders.h">
+      <Filter>third_party\LoadShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\stb\stb_image.h">
+      <Filter>third_party\stb</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\cubeShader\cube.frag">
+      <Filter>assets\shaders\cubeShader</Filter>
+    </None>
+    <None Include="assets\shaders\cubeShader\cube.vert">
+      <Filter>assets\shaders\cubeShader</Filter>
+    </None>
+    <None Include="assets\shaders\ironMan\ironMan.frag">
+      <Filter>assets\shaders\ironMan</Filter>
+    </None>
+    <None Include="assets\shaders\ironMan\ironMan.vert">
+      <Filter>assets\shaders\ironMan</Filter>
+    </None>
+  </ItemGroup>
+</Project>

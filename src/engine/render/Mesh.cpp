@@ -6,7 +6,7 @@ Descrição: Mesh.cpp
 Ficheiro que trata dados da mesh de um dado objeto
  */
 
-#include "Mesh.h"
+#include "engine/render/Mesh.h"
 
  /*Função que associa um array de posições e um array de cores à mesh*/
 void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray)

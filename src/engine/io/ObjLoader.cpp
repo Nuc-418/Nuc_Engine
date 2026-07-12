@@ -7,7 +7,7 @@ Descrição: ObjLoader.cpp
 Ficheiro capaz de carregar um ficheiro .obj, quer tenha faces triangulares ou quadrangulares
  */
 
-#include "ObjLoader.h"
+#include "engine/io/ObjLoader.h"
 
 using namespace std;
 bool ObjLoader::LoadObj()

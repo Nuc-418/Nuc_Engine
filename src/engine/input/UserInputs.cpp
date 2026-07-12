@@ -6,7 +6,7 @@ Descrição: UserInputs.cpp
 Ficheiro que gere inputs do utilizador
  */
 
-#include "UserInputs.h"
+#include "engine/input/UserInputs.h"
 
 static UserInputs *selectedUserInput = NULL;
 

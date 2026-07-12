@@ -6,7 +6,7 @@ Descrição: MeshRenderer.cpp
 Ficheiro capaz de proceder ao comando do desenho de primitivas
  */
 
-#include "MeshRenderer.h"
+#include "engine/render/MeshRenderer.h"
 
 using namespace std;
 

@@ -13,7 +13,7 @@ Ficheiro que procede ao carregamento dos ficheiros shader
 
 #define GLEW_STATIC
 #include <GL\glew.h>
-#include "LoadShaders.h"
+#include "LoadShaders/LoadShaders.h"
 
 
 

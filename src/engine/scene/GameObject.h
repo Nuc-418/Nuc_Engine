@@ -8,11 +8,11 @@ Ficheiro que cria e gere GameObject.cpp
 
 #pragma once
 
-#include "Camera.h"
-#include "Transform.h"
-#include "MeshRenderer.h"
-#include "ObjLoader.h"
-#include "Material.h"
+#include "engine/render/Camera.h"
+#include "engine/scene/Transform.h"
+#include "engine/render/MeshRenderer.h"
+#include "engine/io/ObjLoader.h"
+#include "engine/render/Material.h"
 
 #include <iostream>
 using namespace std;

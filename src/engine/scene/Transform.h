@@ -14,7 +14,7 @@ Ficheiro que cria e gere Transform.cpp
 #include<glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 #include <glm/gtc/type_ptr.hpp> // value_ptr
-#include "math.h"
+#include "engine/core/EngineMath.h"
 
 class  Transform
 {
