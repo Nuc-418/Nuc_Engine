@@ -189,6 +189,9 @@
     <ClCompile Include="src\engine\editor\GamePackager.cpp">
       <Filter>src\engine\editor</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\MapsPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h">
@@ -331,6 +334,9 @@
     </ClInclude>
     <ClInclude Include="src\engine\editor\GamePackager.h">
       <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\MapsPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

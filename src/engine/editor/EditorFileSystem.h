@@ -18,3 +18,6 @@ std::vector<DirectoryEntry> ListDirectory(const std::string& path);
 
 // Creates a directory if missing (single level). Returns true if it exists after the call.
 bool EnsureDirectory(const std::string& path);
+
+// Deletes a file. Returns true when the file is gone.
+bool RemoveFile(const std::string& path);

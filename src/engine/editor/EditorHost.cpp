@@ -47,6 +47,17 @@ void EditorHost::Update(Application& app)
 		EnsureDirectory("assets/scenes");
 		SceneSerializer::Save(world, editor.savePath);
 	}
+	if (!editor.pendingNewMap.empty()) {
+		std::string path = editor.pendingNewMap;
+		editor.pendingNewMap.clear();
+		editor.selected = nullptr;
+		editor.undoStack.Clear();
+		world.ResetToDefaultMap();
+		EnsureDirectory("assets");
+		EnsureDirectory("assets/scenes");
+		if (SceneSerializer::Save(world, path))
+			editor.savePath = path;
+	}
 	if (!editor.pendingSceneLoad.empty()) {
 		std::string path = editor.pendingSceneLoad;
 		editor.pendingSceneLoad.clear();

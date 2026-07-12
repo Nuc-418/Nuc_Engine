@@ -53,6 +53,10 @@ public:
 	// Destroys every object (scene load / shutdown).
 	void Clear();
 
+	// Empties the world into a fresh default map: no objects, a soft ambient
+	// and one directional light, camera and render mode back to defaults.
+	void ResetToDefaultMap();
+
 	std::vector<WorldEntry> entries;
 
 	// Scenes hook this to null their raw handles when an object goes away.

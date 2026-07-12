@@ -3,6 +3,7 @@
 #include "engine/editor/EditorFileSystem.h"
 
 #include <algorithm>
+#include <cstdio>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -65,4 +66,9 @@ bool EnsureDirectory(const std::string& path)
 	struct stat info;
 	return stat(path.c_str(), &info) == 0 && (info.st_mode & S_IFDIR);
 #endif
+}
+
+bool RemoveFile(const std::string& path)
+{
+	return std::remove(path.c_str()) == 0;
 }

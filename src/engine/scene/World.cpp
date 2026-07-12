@@ -97,6 +97,36 @@ void World::Clear()
 	nameCounters.clear();
 }
 
+void World::ResetToDefaultMap()
+{
+	Clear();
+
+	VectorLight& info = lights.lightInfo;
+	info.ambientLight.clear();
+	info.directionalLight.clear();
+	info.pointLight.clear();
+	info.spotLight.clear();
+
+	AmbientLight ambient;
+	ambient.switchL = true;
+	ambient.ambient = glm::vec3(0.35f);
+	info.ambientLight.push_back(ambient);
+
+	DirectionalLight sun;
+	sun.switchL = true;
+	sun.direction = glm::vec3(1.0f, -1.0f, 0.5f);
+	sun.ambient = glm::vec3(0.2f);
+	sun.diffuse = glm::vec3(1.0f);
+	sun.specular = glm::vec3(1.0f);
+	info.directionalLight.push_back(sun);
+
+	UploadLights();
+
+	camera.transform.position = glm::vec3(1.0f, 1.0f, -10.0f);
+	camera.transform.rotation = glm::vec3(0.0f);
+	renderMode = GL_TRIANGLES;
+}
+
 void World::UploadLights()
 {
 	if (lightsProgram == 0)

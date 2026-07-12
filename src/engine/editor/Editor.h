@@ -32,7 +32,8 @@ public:
 	bool exitClicked = false;
 	bool saveClicked = false;
 	std::string savePath = "assets/scenes/demo_scene.json";
-	std::string pendingSceneLoad;  // set by Content Browser / File > Open
+	std::string pendingSceneLoad;  // set by Content Browser / File > Open / Maps panel
+	std::string pendingNewMap;     // path of a map to create-and-switch-to
 
 	// -- shared editor state --
 	World* world = nullptr;
@@ -62,4 +63,10 @@ private:
 	bool openPackage = false;
 	char packageNameBuffer[128] = "GameBuild";
 	std::string packageStatus;
+public:
+	bool openNewMap = false;       // set by the Maps panel / File menu
+	std::string mapDeleteRequest;  // map path awaiting delete confirmation
+private:
+	void DrawMapModals();
+	char newMapBuffer[128] = "NewMap";
 };

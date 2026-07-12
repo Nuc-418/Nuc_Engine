@@ -10,6 +10,7 @@
 #include "engine/editor/panels/LightsPanel.h"
 #include "engine/editor/panels/StatsPanel.h"
 #include "engine/editor/panels/ContentBrowserPanel.h"
+#include "engine/editor/panels/MapsPanel.h"
 
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
@@ -80,8 +81,10 @@ void Editor::DrawFrame(Application& app)
 	DrawMenuBar();
 	DrawSaveAsModal();
 	DrawPackageModal();
+	DrawMapModals();
 
 	DrawViewportPanel(*this, app);
+	DrawMapsPanel(*this);
 	DrawOutlinerPanel(*this);
 	DrawDetailsPanel(*this);
 	DrawLightsPanel(*this);
@@ -112,6 +115,8 @@ void Editor::DrawMenuBar()
 		return;
 
 	if (ImGui::BeginMenu("File")) {
+		if (ImGui::MenuItem("New Map..."))
+			openNewMap = true;
 		if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 			saveClicked = true;
 		if (ImGui::MenuItem("Save Scene As..."))
@@ -223,6 +228,59 @@ void Editor::DrawPackageModal()
 			ImGui::PushTextWrapPos(420.0f);
 			ImGui::TextWrapped("%s", packageStatus.c_str());
 			ImGui::PopTextWrapPos();
+		}
+		ImGui::EndPopup();
+	}
+}
+
+void Editor::DrawMapModals()
+{
+	/* New map */
+	if (openNewMap) {
+		ImGui::OpenPopup("New Map");
+		openNewMap = false;
+	}
+	if (ImGui::BeginPopupModal("New Map", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::TextUnformatted("Creates an empty map (default lights) and switches to it.");
+		ImGui::TextUnformatted("Unsaved changes in the current map are discarded.");
+		ImGui::Separator();
+		ImGui::TextUnformatted("assets/scenes/");
+		ImGui::SameLine();
+		ImGui::InputText("##newMapName", newMapBuffer, sizeof(newMapBuffer));
+		if (ImGui::Button("Create")) {
+			std::string name;
+			for (char c : std::string(newMapBuffer))
+				if (c != '/' && c != '\\' && c != ':')
+					name += c;
+			if (name.size() < 5 || name.substr(name.size() - 5) != ".json")
+				name += ".json";
+			if (name != ".json")
+				pendingNewMap = "assets/scenes/" + name;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+
+	/* Delete map confirmation */
+	if (!mapDeleteRequest.empty() && !ImGui::IsPopupOpen("Delete Map"))
+		ImGui::OpenPopup("Delete Map");
+	if (ImGui::BeginPopupModal("Delete Map", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Delete %s?", mapDeleteRequest.c_str());
+		ImGui::TextUnformatted("The file is removed permanently. The world you are");
+		ImGui::TextUnformatted("editing stays open (save it to recreate the file).");
+		ImGui::Separator();
+		if (ImGui::Button("Delete")) {
+			RemoveFile(mapDeleteRequest);
+			mapDeleteRequest.clear();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel")) {
+			mapDeleteRequest.clear();
+			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
 	}

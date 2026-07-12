@@ -151,6 +151,7 @@
     <ClCompile Include="src\engine\io\SceneSerializer.cpp" />
     <ClCompile Include="src\engine\editor\UndoStack.cpp" />
     <ClCompile Include="src\engine\editor\GamePackager.cpp" />
+    <ClCompile Include="src\engine\editor\panels\MapsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="src\engine\io\SceneSerializer.h" />
     <ClInclude Include="src\engine\editor\UndoStack.h" />
     <ClInclude Include="src\engine\editor\GamePackager.h" />
+    <ClInclude Include="src\engine\editor\panels\MapsPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

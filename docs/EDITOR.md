@@ -10,6 +10,7 @@ The app starts in **Edit mode** (1600x900, free cursor):
 | Panel | What it does |
 |---|---|
 | **Viewport** (center) | The scene, rendered to a framebuffer at the panel's aspect ratio. **Click** an object to select it (empty space deselects). Hold **RMB** to fly with WASD/Space/Ctrl (Shift = boost), UE5-style. **W/E/R** switch the translate/rotate/scale gizmo, the corner button toggles Local/World, **F** focuses the selected object. |
+| **Maps** (right, tabbed with Outliner) | All maps in `assets/scenes`. **+ New Map** creates an empty map (default ambient + directional light) and switches to it; **double-click** switches maps; right-click offers Load and **Delete** (with confirmation). Switching discards unsaved changes — Ctrl+S first. Deleting the open map keeps the world in memory; saving recreates the file. |
 | **Outliner** (right) | All world objects. Click to select, right-click or **Del** to delete, **+ Add** spawns a Cube / IndexedCube / IronMan in front of the camera. |
 | **Details** (right, below) | Name and Position / Rotation (degrees) / Scale of the selection, live. |
 | **Lights** (bottom) | All four light types with live parameter editing; add/remove point and spot lights (the shaders support 50 of each). |
@@ -23,8 +24,9 @@ whole light-set snapshots). Objects are tracked by a stable world id, so a
 delete can be undone even after further edits (the restored object reappears
 at the end of the Outliner).
 
-**File > Save Scene** (Ctrl+S) / **Save Scene As** / **Open Scene** persist the
-world to versioned JSON under `assets/scenes/`. **[ Play ]** in the menu bar
+**File > New Map** / **Save Scene** (Ctrl+S) / **Save Scene As** / **Open
+Scene** manage the same map files as the Maps panel — versioned JSON under
+`assets/scenes/`. **[ Play ]** in the menu bar
 enters **Play mode**, UE5 PIE-style: the demo runs live inside the Viewport
 panel with the cursor captured (keys 1–4 lights, 5 distortion, 6–9 render
 modes, WASD/mouse); the other panels stay visible but the mouse is owned by
@@ -94,10 +96,13 @@ Manual checklist on Windows after building:
 5. [ Play ]: the demo runs inside the Viewport panel with the cursor captured;
    keys 1–9 + distortion + WASD behave as in the pre-editor demo; Esc returns
    to the editor with the camera restored.
-6. Build the Game|x64 configuration, then File > Package Game: the resulting
+6. Maps panel: create a new map, place objects, Ctrl+S, switch back and forth
+   between maps, delete one (confirming), and check that Package Game ships
+   the map that is open.
+7. Build the Game|x64 configuration, then File > Package Game: the resulting
    Builds/<name>/NucEngineGame.exe runs standalone, starts in the scene that
    was open in the editor, and quits on Esc.
-7. If linking fails with missing `glfwCreateStandardCursor` /
+8. If linking fails with missing `glfwCreateStandardCursor` /
    `glfwSetCharModsCallback`: the committed `glfw3.lib` (and the GLFW headers
    on the global include path) are older than 3.2 — refresh
    `third_party/libs/x64/glfw3.lib` and the headers to GLFW 3.2+.

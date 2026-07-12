@@ -68,6 +68,7 @@ void BuildDefaultDockLayout(ImGuiID dockspaceId)
 
 	ImGui::DockBuilderDockWindow("Viewport", center);
 	ImGui::DockBuilderDockWindow("Outliner", right);
+	ImGui::DockBuilderDockWindow("Maps", right);
 	ImGui::DockBuilderDockWindow("Details", rightBottom);
 	ImGui::DockBuilderDockWindow("Content Browser", bottom);
 	ImGui::DockBuilderDockWindow("Lights", bottom);
