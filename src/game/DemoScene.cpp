@@ -50,6 +50,8 @@ bool DemoScene::LoadProgramShaders()
 	ironManProgramShader = LoadShaders(ironManshaders);
 	if (!ironManProgramShader) return false;
 
+	offsetToggleLocation = glGetProgramResourceLocation(ironManProgramShader, GL_UNIFORM, "offsetToggle");
+
 	return true;
 }
 
@@ -236,7 +238,7 @@ void DemoScene::Update(Application& app)
 		offsetToggle = 0;
 
 	//offsetToggle is passed to the shader program as a uniform
-	glProgramUniform1i(ironManProgramShader, glGetProgramResourceLocation(ironManProgramShader, GL_UNIFORM, "offsetToggle"), offsetToggle);
+	glProgramUniform1i(ironManProgramShader, offsetToggleLocation, offsetToggle);
 
 	if (app.inputs.key6) renderMode = GL_TRIANGLES;
 	if (app.inputs.key7) renderMode = GL_LINE_STRIP;

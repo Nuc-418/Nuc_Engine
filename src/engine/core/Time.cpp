@@ -1,6 +1,7 @@
 // Time: static frame/elapsed time, pushed to shaders via the "Time" uniform.
 
 #include "engine/core/Time.h"
+#include <unordered_map>
 
 
 float Time::time = 0;
@@ -19,6 +20,11 @@ void Time::Update(double dTime) {
 
 void Time::TimeToProgram(GLuint program)
 {
-	GLint timeId = glGetProgramResourceLocation(program, GL_UNIFORM, "Time");
-	glProgramUniform1f(program, timeId, time);
+	// Location cached per program; programs are never recreated.
+	static std::unordered_map<GLuint, GLint> locationCache;
+	auto it = locationCache.find(program);
+	if (it == locationCache.end())
+		it = locationCache.emplace(program, glGetProgramResourceLocation(program, GL_UNIFORM, "Time")).first;
+
+	glProgramUniform1f(program, it->second, time);
 }

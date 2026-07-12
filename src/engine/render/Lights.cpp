@@ -193,7 +193,12 @@ void Lights::StoreSpotLights(GLuint program, int vectorSize)
 void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 {
 	lightInfo.ambientLight[0].switchL = switchL;
-	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "ambientLight.switchL"), lightInfo.ambientLight[0].switchL);
+
+	auto it = ambientSwitchCache.find(program);
+	if (it == ambientSwitchCache.end())
+		it = ambientSwitchCache.emplace(program, glGetProgramResourceLocation(program, GL_UNIFORM, "ambientLight.switchL")).first;
+
+	glProgramUniform1i(program, it->second, lightInfo.ambientLight[0].switchL);
 }
 
 
@@ -201,8 +206,12 @@ void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 void Lights::ToggleDirectionalLight(GLuint program, bool switchL)
 {
 	lightInfo.directionalLight[0].switchL = switchL;
-	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "directionalLight.switchL"), lightInfo.directionalLight[0].switchL);
-	
+
+	auto it = directionalSwitchCache.find(program);
+	if (it == directionalSwitchCache.end())
+		it = directionalSwitchCache.emplace(program, glGetProgramResourceLocation(program, GL_UNIFORM, "directionalLight.switchL")).first;
+
+	glProgramUniform1i(program, it->second, lightInfo.directionalLight[0].switchL);
 }
 
 /*Função que armazena os valores dos switches de cada fonte de luz pontual (ligada/desligada)*/
@@ -210,9 +219,13 @@ void Lights::TogglePointLight(GLuint program, int lightIndex, bool switchL)
 {
 	lightInfo.pointLight[lightIndex].switchL = switchL;
 
-	string lightType = "pointLight[";
-	string swi = lightType + std::to_string(lightIndex) + "].switchL";
-	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, swi.data()), lightInfo.pointLight[lightIndex].switchL);
+	auto it = pointSwitchCache.find({ program, lightIndex });
+	if (it == pointSwitchCache.end()) {
+		string swi = "pointLight[" + std::to_string(lightIndex) + "].switchL";
+		it = pointSwitchCache.emplace(std::make_pair(program, lightIndex), glGetProgramResourceLocation(program, GL_UNIFORM, swi.data())).first;
+	}
+
+	glProgramUniform1i(program, it->second, lightInfo.pointLight[lightIndex].switchL);
 }
 
 
@@ -221,8 +234,11 @@ void Lights::ToggleSpotLight(GLuint program, int lightIndex, bool switchL)
 {
 	lightInfo.spotLight[lightIndex].switchL = switchL;
 
-	string lightType = "spotLight[";
-	string swi = lightType + std::to_string(lightIndex) + "].switchL";
-	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, swi.data()), lightInfo.spotLight[lightIndex].switchL);
+	auto it = spotSwitchCache.find({ program, lightIndex });
+	if (it == spotSwitchCache.end()) {
+		string swi = "spotLight[" + std::to_string(lightIndex) + "].switchL";
+		it = spotSwitchCache.emplace(std::make_pair(program, lightIndex), glGetProgramResourceLocation(program, GL_UNIFORM, swi.data())).first;
+	}
 
+	glProgramUniform1i(program, it->second, lightInfo.spotLight[lightIndex].switchL);
 }

@@ -1,6 +1,8 @@
 // Lights: ambient/directional/point/spot light sources and their shader uniforms.
 
 #pragma once
+#include <map>
+#include <utility>
 #include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -127,6 +129,15 @@ public:
 	void StoreDirectionalLights(GLuint program,int vectorSize);
 	void StorePointLights(GLuint program, int vectorSize);
 	void StoreSpotLights(GLuint program, int vectorSize);
+
+private:
+	// switchL uniform locations cached for the per-frame Toggle* calls,
+	// keyed by program (plus light index for point/spot lights).
+	// Programs are created once at load time and never recreated.
+	std::map<GLuint, GLint> ambientSwitchCache;
+	std::map<GLuint, GLint> directionalSwitchCache;
+	std::map<std::pair<GLuint, int>, GLint> pointSwitchCache;
+	std::map<std::pair<GLuint, int>, GLint> spotSwitchCache;
 };
 
 

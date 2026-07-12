@@ -3,6 +3,7 @@
 #include "engine/render/Camera.h"
 #include <iostream>
 #include <glm/gtc/matrix_inverse.hpp> // glm::inverseTranspose()
+#include <glm/gtc/type_ptr.hpp> // value_ptr
 using namespace std;
 
 
@@ -33,25 +34,31 @@ glm::mat4 Camera::GetMVP(glm::mat4 model)
 /*Função que envia as diversas matrizes da câmara para o programa shader*/
 void Camera::CamToProgram(GLuint program, glm::mat4 model)
 {
-	
-	/*Os valores Model, View e Projection da matriz MVP são enviados para o programa shader*/
-	GLint modelId = glGetProgramResourceLocation(program, GL_UNIFORM, "Model");
-	glProgramUniformMatrix4fv(program, modelId, 1, GL_FALSE, glm::value_ptr(model));
+	auto cached = locationCache.find(program);
+	if (cached == locationCache.end()) {
+		UniformLocations locations;
+		locations.model = glGetProgramResourceLocation(program, GL_UNIFORM, "Model");
+		locations.view = glGetProgramResourceLocation(program, GL_UNIFORM, "View");
+		locations.modelView = glGetProgramResourceLocation(program, GL_UNIFORM, "ModelView");
+		locations.normalMatrix = glGetProgramResourceLocation(program, GL_UNIFORM, "NormalMatrix");
+		locations.mvp = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
+		cached = locationCache.emplace(program, locations).first;
+	}
+	const UniformLocations& loc = cached->second;
 
-	GLint viewId = glGetProgramResourceLocation(program, GL_UNIFORM, "View");
-	glProgramUniformMatrix4fv(program, viewId, 1, GL_FALSE, glm::value_ptr(view));
+	/*Os valores Model, View e Projection da matriz MVP são enviados para o programa shader*/
+	glProgramUniformMatrix4fv(program, loc.model, 1, GL_FALSE, glm::value_ptr(model));
+
+	glProgramUniformMatrix4fv(program, loc.view, 1, GL_FALSE, glm::value_ptr(view));
 
 	glm::mat4 modelView = view * model;
 	normalMatrix = glm::inverseTranspose(glm::mat3(view * model));
 
-	GLint modelViewId = glGetProgramResourceLocation(program, GL_UNIFORM, "ModelView");
-	glProgramUniformMatrix4fv(program, modelViewId, 1, GL_FALSE, glm::value_ptr(modelView));
+	glProgramUniformMatrix4fv(program, loc.modelView, 1, GL_FALSE, glm::value_ptr(modelView));
 
-	GLint normalMatrixId = glGetProgramResourceLocation(program, GL_UNIFORM, "NormalMatrix");
-	glProgramUniformMatrix3fv(program, normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+	glProgramUniformMatrix3fv(program, loc.normalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
-	GLint mvpId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
-	glProgramUniformMatrix4fv(program, mvpId, 1, GL_FALSE, glm::value_ptr(GetMVP(model)));
+	glProgramUniformMatrix4fv(program, loc.mvp, 1, GL_FALSE, glm::value_ptr(GetMVP(model)));
 
 }
 

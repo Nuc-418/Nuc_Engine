@@ -27,6 +27,9 @@ private:
 	GLuint ironManProgramShader = 0;
 	GLuint cubeProgramShader = 0;
 
+	// Cached at load time; the programs are never recreated.
+	GLint offsetToggleLocation = -1;
+
 	// Iron Man models and their texture
 	GameObject ironMan;
 	GameObject ironMan2;
