@@ -13,6 +13,11 @@ public:
 
 	glm::mat4 GetMVP(glm::mat4 model);
 
+	// Rebuild the projection matrix. The constructor default matches the
+	// original hardcoded perspective(45deg, 4/3, 0.1, 1000).
+	void SetPerspective(float fovDegrees, float aspect, float nearPlane, float farPlane);
+	void SetAspect(float aspect);
+
 	void CamToProgram(GLuint program, glm::mat4 model);
 
 	
@@ -36,6 +41,11 @@ private:
 		GLint mvp;
 	};
 	std::unordered_map<GLuint, UniformLocations> locationCache;
+
+	float fovDegrees = 45.0f;
+	float aspectRatio = 4.0f / 3.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
 
 	glm::mat4 projection;
 	glm::mat4 view;

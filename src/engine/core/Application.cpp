@@ -10,7 +10,7 @@ bool Application::Init(const Config& appConfig)
 
 	if (!glfwInit()) return false;
 
-	if (!window.NewWindow(config.width, config.height, (char*)config.title, NULL, NULL))
+	if (!window.NewWindow(config.width, config.height, config.title, NULL, NULL))
 		return false;
 
 	window.SetWindowPos(0, 0);

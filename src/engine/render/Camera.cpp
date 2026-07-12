@@ -12,7 +12,7 @@ Camera::Camera(glm::vec3 camPos, glm::vec3 lookAt, glm::vec3 vecUp)
 {
 	transform.position = camPos;
 
-	projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
+	projection = glm::perspective(glm::radians(fovDegrees), aspectRatio, nearPlane, farPlane);
 
 	view = glm::lookAt(
 		camPos,	//Posição
@@ -21,6 +21,22 @@ Camera::Camera(glm::vec3 camPos, glm::vec3 lookAt, glm::vec3 vecUp)
 	);
 
 	viewProjection = projection * view;
+}
+
+void Camera::SetPerspective(float fov, float aspect, float nearP, float farP)
+{
+	fovDegrees = fov;
+	aspectRatio = aspect;
+	nearPlane = nearP;
+	farPlane = farP;
+
+	projection = glm::perspective(glm::radians(fovDegrees), aspectRatio, nearPlane, farPlane);
+	viewProjection = projection * view;
+}
+
+void Camera::SetAspect(float aspect)
+{
+	SetPerspective(fovDegrees, aspect, nearPlane, farPlane);
 }
 
 /*Função que atualiza a câmara e retorna o valor da matriz MVP*/
