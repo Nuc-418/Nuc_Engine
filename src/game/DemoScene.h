@@ -3,25 +3,27 @@
 
 #pragma once
 
+#include <vector>
+
 #include "engine/core/Application.h"
-#include "engine/scene/GameObject.h"
+#include "engine/scene/World.h"
 #include "engine/render/Texture.h"
-#include "engine/render/Lights.h"
-#include "engine/render/Camera.h"
 
 class DemoScene : public Scene
 {
 public:
-	DemoScene();
-
 	bool Load(Application& app) override;
 	void Update(Application& app) override;
 	void Draw(Application& app) override;
 	void Unload(Application& app) override;
 
+	World& GetWorld() { return world; }
+
 private:
 	bool LoadProgramShaders();
 	void LoadObjects(Application& app);
+
+	World world;
 
 	// Shader programs
 	GLuint ironManProgramShader = 0;
@@ -30,18 +32,14 @@ private:
 	// Cached at load time; the programs are never recreated.
 	GLint offsetToggleLocation = -1;
 
-	// Iron Man models and their texture
-	GameObject ironMan;
-	GameObject ironMan2;
 	Texture ironManTexture;
 
-	// Cubes
-	GameObject cubes[100];
-	GameObject cube;
-	GameObject cube2;
+	// Raw handles into the world for the demo animations. Nulled through
+	// World::onDestroyed if the editor deletes the objects.
+	GameObject* ironMan1 = nullptr;
+	GameObject* ironMan2 = nullptr;
+	GameObject* indexedCube = nullptr;
+	std::vector<GameObject*> gridCubes;
 
-	Lights lights;
-	Camera camera;
-	GLenum renderMode = GL_TRIANGLES;
 	int offsetToggle = 0;
 };

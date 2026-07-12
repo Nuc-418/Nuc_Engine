@@ -129,6 +129,9 @@
     <ClCompile Include="src\engine\render\Framebuffer.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\scene\World.cpp">
+      <Filter>src\engine\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="src\engine\render\Framebuffer.h">
       <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\World.h">
+      <Filter>src\engine\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
