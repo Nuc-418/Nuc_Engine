@@ -86,31 +86,15 @@ void Editor::DrawFrame(Application& app)
 	DrawStatsPanel(*this);
 	DrawContentBrowserPanel(*this);
 
-	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S))
-		saveClicked = true;
-	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z))
-		selected = world->FindById(undoStack.Undo(*world));
-	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Y) ||
-	    ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z))
-		selected = world->FindById(undoStack.Redo(*world));
-
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void Editor::DrawPlayOverlay()
-{
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	ImGui::SetNextWindowPos(ImVec2(10, 10));
-	ImGui::SetNextWindowBgAlpha(0.6f);
-	ImGui::Begin("##playOverlay", NULL,
-		ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoFocusOnAppearing);
-	ImGui::Text("PLAYING - press Esc to stop");
-	ImGui::End();
+	if (!playing) {
+		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S))
+			saveClicked = true;
+		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z))
+			selected = world->FindById(undoStack.Undo(*world));
+		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Y) ||
+		    ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z))
+			selected = world->FindById(undoStack.Redo(*world));
+	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -160,7 +144,9 @@ void Editor::DrawMenuBar()
 	}
 
 	ImGui::Separator();
-	if (ImGui::MenuItem("[ Play ]", "toolbar"))
+	if (playing)
+		ImGui::MenuItem("[ Playing - Esc stops ]", NULL, false, false);
+	else if (ImGui::MenuItem("[ Play ]", "toolbar"))
 		playClicked = true;
 
 	ImGui::EndMainMenuBar();

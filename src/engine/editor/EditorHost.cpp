@@ -65,14 +65,8 @@ void EditorHost::Update(Application& app)
 
 void EditorHost::Draw(Application& app)
 {
-	if (mode == Mode::Play) {
-		glViewport(0, 0, playWidth, playHeight);
-		game.Draw(app);
-		editor.DrawPlayOverlay();
-		return;
-	}
-
-	/* Scene pass into the viewport framebuffer. */
+	/* Scene pass into the viewport framebuffer (edit and play alike:
+	   play runs inside the Viewport panel, UE5 PIE-style). */
 	int fbWidth = (int)editor.viewportSize.x;
 	int fbHeight = (int)editor.viewportSize.y;
 	editor.sceneFramebuffer.Resize(fbWidth, fbHeight);
@@ -103,10 +97,8 @@ void EditorHost::EnterPlay(Application& app)
 	savedCameraPos = world.camera.transform.position;
 	savedCameraRot = world.camera.transform.rotation;
 
-	app.window.SetWindowSize(playWidth, playHeight);
-	app.inputs.SetWindowSize(playWidth, playHeight);
-	world.camera.SetAspect((float)playWidth / (float)playHeight);
-
+	/* Mouse-look deltas are measured from the window center, so capturing
+	   the cursor is enough; the game keeps rendering in the Viewport panel. */
 	app.inputs.SetCursorCaptured(true);
 	app.inputs.CenterCursor();
 
@@ -121,13 +113,12 @@ void EditorHost::EnterPlay(Application& app)
 	/* ImGui must not fight the recentered, hidden cursor while playing. */
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange;
 
+	editor.playing = true;
 	mode = Mode::Play;
 }
 
 void EditorHost::ExitPlay(Application& app)
 {
-	app.window.SetWindowSize(app.config.width, app.config.height);
-	app.inputs.SetWindowSize(app.config.width, app.config.height);
 	app.inputs.SetCursorCaptured(false);
 
 	world.camera.transform.position = savedCameraPos;
@@ -135,5 +126,6 @@ void EditorHost::ExitPlay(Application& app)
 
 	ImGui::GetIO().ConfigFlags &= ~(ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange);
 
+	editor.playing = false;
 	mode = Mode::Edit;
 }

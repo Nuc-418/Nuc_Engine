@@ -24,11 +24,11 @@ Renames and light edits are not yet in the history.
 
 **File > Save Scene** (Ctrl+S) / **Save Scene As** / **Open Scene** persist the
 world to versioned JSON under `assets/scenes/`. **[ Play ]** in the menu bar
-enters **Play mode**: the window switches to the classic 800x600, the cursor is
-captured, and the demo runs exactly as it does standalone (keys 1–4 lights,
-5 distortion, 6–9 render modes, WASD/mouse). **Esc stops Play** and returns to
-the editor with the camera restored — the app quits via File > Exit or the
-window close button, not Esc.
+enters **Play mode**, UE5 PIE-style: the demo runs live inside the Viewport
+panel with the cursor captured (keys 1–4 lights, 5 distortion, 6–9 render
+modes, WASD/mouse); the other panels stay visible but the mouse is owned by
+the game. **Esc stops Play** and returns to the editor with the camera
+restored — the app quits via File > Exit or the window close button, not Esc.
 
 Panel layout is dockable and persisted in `editor_layout.ini` (git-ignored);
 **Window > Reset Layout** restores the default.
@@ -39,7 +39,7 @@ Panel layout is dockable and persisted in `editor_layout.ini` (git-ignored);
 main() -> Application::Run(EditorHost)
              EditorHost (engine/editor) wraps the game Scene + its World
                Edit mode:  scene Update frozen; game.Draw -> Framebuffer -> Viewport panel
-               Play mode:  game.Update + game.Draw to the backbuffer (demo parity)
+               Play mode:  game.Update runs; same Framebuffer path (play-in-viewport)
              Editor: ImGui lifecycle, theme, dockspace, panels, selection, gizmo state
              World (engine/scene): object registry the panels operate on
 ```
@@ -80,8 +80,9 @@ Manual checklist on Windows after building:
 3. Light edits take effect immediately; add/remove point and spot lights.
 4. Ctrl+S then File > Open round-trips the scene; Content Browser double-click loads it.
    Ctrl+Z / Ctrl+Y undo and redo a gizmo drag, a Details edit, a spawn and a delete.
-5. [ Play ]: 800x600, cursor captured, keys 1–9 + distortion + WASD identical
-   to the pre-editor demo; Esc returns to the editor with the camera restored.
+5. [ Play ]: the demo runs inside the Viewport panel with the cursor captured;
+   keys 1–9 + distortion + WASD behave as in the pre-editor demo; Esc returns
+   to the editor with the camera restored.
 6. If linking fails with missing `glfwCreateStandardCursor` /
    `glfwSetCharModsCallback`: the committed `glfw3.lib` (and the GLFW headers
    on the global include path) are older than 3.2 — refresh
@@ -89,7 +90,6 @@ Manual checklist on Windows after building:
 
 ## Future work (not in scope)
 
-- Play-in-viewport instead of resizing the window.
 - Multi-select, content thumbnails, undo for renames and light edits.
 - Serializing material/texture assignments per object (types are respawned
   through factories, so per-type assets are already correct).

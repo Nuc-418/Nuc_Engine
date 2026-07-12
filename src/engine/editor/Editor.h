@@ -21,13 +21,12 @@ public:
 	bool Init(GLFWwindow* window, World* worldPtr);
 	void Shutdown();
 
-	// Full edit-mode UI: dockspace, menu bar, all panels, ImGuizmo.
+	// Full UI: dockspace, menu bar, all panels, ImGuizmo. In play mode the
+	// viewport shows the running game and editing interactions are disabled.
 	void DrawFrame(Application& app);
 
-	// Minimal play-mode frame (keeps the backend event queue drained).
-	void DrawPlayOverlay();
-
 	// -- cross-frame state read/consumed by EditorHost --
+	bool playing = false;          // set by EditorHost while in play mode
 	bool viewportFlying = false;   // RMB held over the viewport
 	bool playClicked = false;
 	bool exitClicked = false;

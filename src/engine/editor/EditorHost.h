@@ -33,8 +33,4 @@ private:
 	// Camera pose snapshot taken when entering Play, restored on Stop.
 	glm::vec3 savedCameraPos = glm::vec3(0.0f);
 	glm::vec3 savedCameraRot = glm::vec3(0.0f);
-
-	// Play runs at the classic demo resolution for pixel parity.
-	int playWidth = 800;
-	int playHeight = 600;
 };

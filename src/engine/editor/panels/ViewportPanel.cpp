@@ -23,6 +23,14 @@ void DrawViewportPanel(Editor& editor, Application& app)
 	             editor.viewportSize, ImVec2(0, 1), ImVec2(1, 0));
 	bool hovered = ImGui::IsItemHovered();
 
+	/* Play-in-viewport: the game is running; no editing interactions. */
+	if (editor.playing) {
+		ImGui::SetCursorScreenPos(ImVec2(imagePos.x + 8, imagePos.y + 8));
+		ImGui::TextColored(ImVec4(0.95f, 0.58f, 0.11f, 1.0f), "PLAYING - press Esc to stop");
+		ImGui::End();
+		return;
+	}
+
 	/* UE5-style RMB fly: capture the cursor while the right button is held
 	   over the viewport; EditorHost runs BasicMovement while flying. */
 	bool rmbDown = ImGui::IsMouseDown(ImGuiMouseButton_Right);
