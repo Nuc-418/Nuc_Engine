@@ -293,8 +293,6 @@ void DemoScene::Update(Application& app)
 	(app.inputs.onceKey2) ? world.lights.ToggleDirectionalLight(ironManProgramShader, true) : world.lights.ToggleDirectionalLight(ironManProgramShader, false);
 	(app.inputs.onceKey3) ? world.lights.TogglePointLight(ironManProgramShader, 0, true) : world.lights.TogglePointLight(ironManProgramShader, 0, false);
 	(app.inputs.onceKey4) ? world.lights.ToggleSpotLight(ironManProgramShader, 0, true) : world.lights.ToggleSpotLight(ironManProgramShader, 0, false);
-
-	app.controller.RequestExit(app.window.windowPtr);
 }
 
 void DemoScene::Draw(Application& app)

@@ -28,6 +28,9 @@ public:
 	// Keeps the mouse recenter math in sync after a window resize.
 	void SetWindowSize(int wWidth, int wHeight);
 
+	// Warps the cursor to the window center so the next look delta is zero.
+	void CenterCursor();
+
 
 	GLFWwindow *windowPtr = nullptr;
 	int windowWidth = 0;

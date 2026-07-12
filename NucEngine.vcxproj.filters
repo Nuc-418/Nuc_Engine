@@ -58,6 +58,12 @@
     <Filter Include="third_party\nlohmann">
       <UniqueIdentifier>{bf6cbb28-b641-4bc3-a436-47dea68df20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\engine\editor">
+      <UniqueIdentifier>{43702c13-b8f6-40bf-9188-61c76941155e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\editor\panels">
+      <UniqueIdentifier>{0da99318-257e-435e-9cd0-447778f88ace}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\core\Application.cpp">
@@ -140,6 +146,42 @@
     </ClCompile>
     <ClCompile Include="third_party\ImGuizmo\ImGuizmo.cpp">
       <Filter>third_party\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\Editor.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\EditorHost.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\EditorTheme.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\EditorMath.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\EditorFileSystem.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\ViewportPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\OutlinerPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\DetailsPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\LightsPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\StatsPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\panels\ContentBrowserPanel.cpp">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\io\SceneSerializer.cpp">
+      <Filter>src\engine\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +283,42 @@
     </ClInclude>
     <ClInclude Include="third_party\nlohmann\json.hpp">
       <Filter>third_party\nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\Editor.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\EditorHost.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\EditorTheme.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\EditorMath.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\EditorFileSystem.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\ViewportPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\OutlinerPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\DetailsPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\LightsPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\StatsPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\panels\ContentBrowserPanel.h">
+      <Filter>src\engine\editor\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\io\SceneSerializer.h">
+      <Filter>src\engine\io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

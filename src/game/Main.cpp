@@ -1,18 +1,19 @@
-// Entry point: boots the Application and runs the demo scene.
+// Entry point: boots the Application and runs the demo scene inside the editor.
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
 #include "engine/core/Application.h"
+#include "engine/editor/EditorHost.h"
 #include "game/DemoScene.h"
 
 int main(void)
 {
 	Application::Config config;
-	config.width = 800;
-	config.height = 600;
-	config.title = "NucEngine";
+	config.width = 1600;
+	config.height = 900;
+	config.title = "NucEngine Editor";
 
 #ifdef _WIN32
 	//Move the console window aside
@@ -22,11 +23,9 @@ int main(void)
 	Application app;
 	if (!app.Init(config)) return -1;
 
-	//Hide and capture the cursor for mouse-look (play behavior)
-	app.inputs.SetCursorCaptured(true);
-
 	DemoScene scene;
-	app.Run(scene);
+	EditorHost host(scene, scene.GetWorld());
+	app.Run(host);
 
 	app.Shutdown();
 

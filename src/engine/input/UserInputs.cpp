@@ -27,6 +27,15 @@ void UserInputs::SetWindowSize(int wWidth, int wHeight)
 	windowHeight = wHeight;
 }
 
+void UserInputs::CenterCursor()
+{
+	int x = 0, y = 0;
+	glfwGetWindowPos(windowPtr, &x, &y);
+	x += (int)fabs(windowWidth / 2);
+	y += (int)fabs(windowHeight / 2);
+	SetCursorPos(x, y);
+}
+
 
 /*Função que recebe valores do input do utilizador*/
 void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
