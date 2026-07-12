@@ -48,6 +48,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\core\Application.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\core\Time.cpp">
       <Filter>src\engine\core</Filter>
     </ClCompile>
@@ -87,7 +90,10 @@
     <ClCompile Include="src\engine\scene\Transform.cpp">
       <Filter>src\engine\scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\Source.cpp">
+    <ClCompile Include="src\game\DemoScene.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Main.cpp">
       <Filter>src\game</Filter>
     </ClCompile>
     <ClCompile Include="third_party\LoadShaders\LoadShaders.cpp">
@@ -95,6 +101,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\core\Application.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\Scene.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\engine\core\EngineMath.h">
       <Filter>src\engine\core</Filter>
     </ClInclude>
@@ -136,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="src\engine\scene\Transform.h">
       <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\AssetPaths.h">
+      <Filter>src\game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\DemoScene.h">
+      <Filter>src\game</Filter>
     </ClInclude>
     <ClInclude Include="third_party\LoadShaders\LoadShaders.h">
       <Filter>third_party\LoadShaders</Filter>

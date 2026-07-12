@@ -1,6 +1,6 @@
 #include "engine/input/Controller.h"
 
-void Controller::BasicMoviment(Transform* transform, float rotationOffset, float movmentOffset)
+void Controller::BasicMovement(Transform* transform, float rotationOffset, float movementOffset)
 {
 	userInputsPtr->UpdateKeyboard(userInputsPtr);
 	userInputsPtr->UpdateMouse(true);
@@ -9,7 +9,7 @@ void Controller::BasicMoviment(Transform* transform, float rotationOffset, float
 	transform->Rotate(deltaMouseV3 * rotationOffset);
 
 
-	float offset = ((userInputsPtr->keyShift) ? (movmentOffset * 2) : movmentOffset);
+	float offset = ((userInputsPtr->keyShift) ? (movementOffset * 2) : movementOffset);
 
 	if (userInputsPtr->keyW)
 		transform->Translate(transform->forward * offset);
@@ -25,18 +25,12 @@ void Controller::BasicMoviment(Transform* transform, float rotationOffset, float
 		transform->Translate(-transform->up * offset);
 
 }
-void Controller::AssocieateUserInput(UserInputs* userInputs)
+void Controller::AssociateUserInput(UserInputs* userInputs)
 {
 	userInputsPtr = userInputs;
 }
-void Controller::Exit(GLFWwindow* window)
+void Controller::RequestExit(GLFWwindow* window)
 {
-	if (userInputsPtr->keyEsc) {
-		//Quando for fechada, a janela será destruída
-		glfwDestroyWindow(window);
-		//Será terminado o contexto
-		glfwTerminate();
-		//E fechado o programa
-		exit(0);
-	}
+	if (userInputsPtr->keyEsc)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

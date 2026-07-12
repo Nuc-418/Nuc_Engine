@@ -14,9 +14,9 @@ public:
 
 	Mesh mesh;
 
-	Transform* transformPtr;
+	Transform* transformPtr = nullptr;
 
-	GLuint program;
+	GLuint program = 0;
 	
 	void SetProgramShader(GLuint program);
 

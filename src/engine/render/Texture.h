@@ -11,7 +11,7 @@ class Texture
 {
 public:
 
-	void TesxureToProgram(GLuint program,string textureFile);
+	void TextureToProgram(GLuint program, string textureFile);
 
 private:
 	void load_texture(string textureFile);

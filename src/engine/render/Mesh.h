@@ -22,9 +22,9 @@ public:
 
 	//Vertex info
 	//OpenGL Var //1-Pos,2-Norm,3-Color,4-UVs
-	int nVertex;
+	int nVertex = 0;
 	vector<glm::vec3>* vertexArrayPtr[3] = { NULL };//Ver
-	vector<glm::vec2>* vertexUvArrayPtr;
+	vector<glm::vec2>* vertexUvArrayPtr = NULL;
 
 
 	//Element info
@@ -33,8 +33,8 @@ public:
 
 
 
-	GLuint program;
-	GLuint VAO;
+	GLuint program = 0;
+	GLuint VAO = 0;
 	GLuint VBO[4] = { 0 };
 	GLuint EBO = { 0 };
 	const GLchar *resourceLocations[4] = { "vPosition","vNormal","vColor","vUV" };

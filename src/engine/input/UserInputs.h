@@ -20,15 +20,15 @@ public:
 	void AssociateWindow(GLFWwindow *window, int wWidth, int wHeight);
 
 
-	GLFWwindow *windowPtr;
-	int windowWidth;
-	int windowHeight;
+	GLFWwindow *windowPtr = nullptr;
+	int windowWidth = 0;
+	int windowHeight = 0;
 
 
 
 	POINT mousePos = { NULL };
-	glm::vec2 deltaMouse;
-	glm::vec2 deltaMouseSum;
+	glm::vec2 deltaMouse = glm::vec2(0.0f);
+	glm::vec2 deltaMouseSum = glm::vec2(0.0f);
 
 	bool keyW = false;
 	bool keyA = false;

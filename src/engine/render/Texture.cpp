@@ -57,7 +57,7 @@ void Texture::load_texture(string textureFile) {
 
 }
 
-void Texture::TesxureToProgram(GLuint program, string textureFile)
+void Texture::TextureToProgram(GLuint program, string textureFile)
 {
 	load_texture(textureFile);
 	GLint location_textureArray = glGetProgramResourceLocation(program, GL_UNIFORM, "textureMap");

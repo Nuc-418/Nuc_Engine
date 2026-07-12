@@ -10,13 +10,14 @@ public:
 	Controller() {};
 	Controller(UserInputs* userInputs) { userInputsPtr = userInputs; }
 
-	void AssocieateUserInput(UserInputs* userInputs);
+	void AssociateUserInput(UserInputs* userInputs);
 
-	UserInputs* userInputsPtr;
+	UserInputs* userInputsPtr = nullptr;
 
 	glm::vec3 deltaMouseV3;
 
-	void BasicMoviment(Transform* transform, float rotationOffset, float movmentOffset);
+	void BasicMovement(Transform* transform, float rotationOffset, float movementOffset);
 
-	void Exit(GLFWwindow* window);
+	// Requests a clean shutdown (window close) when ESC is pressed.
+	void RequestExit(GLFWwindow* window);
 };
