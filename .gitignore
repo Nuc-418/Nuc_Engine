@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+x64/
+[Dd]ebug/
+[Rr]elease/
+*.vcxproj.user
+
+# Build intermediates / outputs
+*.ilk
+*.pdb
+*.idb
+*.iobj
+*.ipdb
+*.tlog
+*.log
+*.aps
