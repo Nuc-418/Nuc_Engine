@@ -3,6 +3,7 @@
 #include "engine/editor/Editor.h"
 #include "engine/editor/EditorTheme.h"
 #include "engine/editor/EditorFileSystem.h"
+#include "engine/editor/GamePackager.h"
 #include "engine/editor/panels/ViewportPanel.h"
 #include "engine/editor/panels/OutlinerPanel.h"
 #include "engine/editor/panels/DetailsPanel.h"
@@ -78,6 +79,7 @@ void Editor::DrawFrame(Application& app)
 
 	DrawMenuBar();
 	DrawSaveAsModal();
+	DrawPackageModal();
 
 	DrawViewportPanel(*this, app);
 	DrawOutlinerPanel(*this);
@@ -126,6 +128,11 @@ void Editor::DrawMenuBar()
 			if (!any)
 				ImGui::MenuItem("(no saved scenes)", NULL, false, false);
 			ImGui::EndMenu();
+		}
+		ImGui::Separator();
+		if (ImGui::MenuItem("Package Game...")) {
+			openPackage = true;
+			packageStatus.clear();
 		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
@@ -182,6 +189,41 @@ void Editor::DrawSaveAsModal()
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+
+void Editor::DrawPackageModal()
+{
+	if (openPackage) {
+		ImGui::OpenPopup("Package Game");
+		openPackage = false;
+	}
+
+	if (ImGui::BeginPopupModal("Package Game", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::TextUnformatted("Creates Builds/<name>/ with the game executable,");
+		ImGui::TextUnformatted("the assets folder and the current scene as startup scene.");
+		ImGui::TextUnformatted("Requires the Game|x64 configuration to be built first.");
+		ImGui::Separator();
+
+		ImGui::TextUnformatted("Builds/");
+		ImGui::SameLine();
+		ImGui::InputText("##packageName", packageNameBuffer, sizeof(packageNameBuffer));
+
+		if (ImGui::Button("Package")) {
+			PackageResult result = PackageGame(*world, packageNameBuffer);
+			packageStatus = result.message;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+
+		if (!packageStatus.empty()) {
+			ImGui::Separator();
+			ImGui::PushTextWrapPos(420.0f);
+			ImGui::TextWrapped("%s", packageStatus.c_str());
+			ImGui::PopTextWrapPos();
+		}
 		ImGui::EndPopup();
 	}
 }

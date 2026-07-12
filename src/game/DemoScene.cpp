@@ -9,9 +9,14 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <memory>
 #include <vector>
+
+#ifdef NUC_GAME_BUILD
+#include "engine/io/SceneSerializer.h"
+#endif
 
 using namespace std;
 
@@ -154,6 +159,15 @@ bool DemoScene::Load(Application& app)
 
 	LoadObjects(app);
 
+#ifdef NUC_GAME_BUILD
+	/* Packaged game builds start from the scene the editor shipped. */
+	FILE* startupScene = fopen(SceneSerializer::StartupScenePath, "r");
+	if (startupScene) {
+		fclose(startupScene);
+		SceneSerializer::Load(world, SceneSerializer::StartupScenePath);
+	}
+#endif
+
 	return true;
 }
 
@@ -293,6 +307,11 @@ void DemoScene::Update(Application& app)
 	(app.inputs.onceKey2) ? world.lights.ToggleDirectionalLight(ironManProgramShader, true) : world.lights.ToggleDirectionalLight(ironManProgramShader, false);
 	(app.inputs.onceKey3) ? world.lights.TogglePointLight(ironManProgramShader, 0, true) : world.lights.TogglePointLight(ironManProgramShader, 0, false);
 	(app.inputs.onceKey4) ? world.lights.ToggleSpotLight(ironManProgramShader, 0, true) : world.lights.ToggleSpotLight(ironManProgramShader, 0, false);
+
+#ifdef NUC_GAME_BUILD
+	/* Standalone game: ESC closes the window (in the editor, Esc stops Play). */
+	app.controller.RequestExit(app.window.windowPtr);
+#endif
 }
 
 void DemoScene::Draw(Application& app)

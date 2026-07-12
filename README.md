@@ -28,7 +28,9 @@ directory — asset paths are resolved relative to it.
 ## Controls
 
 The app starts in the **editor** (see `docs/EDITOR.md`): RMB to fly, W/E/R
-gizmos, F to focus, Ctrl+S to save the scene, **[ Play ]** to run the demo.
+gizmos, F to focus, Ctrl+S to save the scene, **[ Play ]** to run the demo,
+and **File > Package Game** to export a standalone build (requires building
+the Game|x64 configuration once).
 In **Play mode** (Esc returns to the editor):
 
 - **1** — Toggle ambient light

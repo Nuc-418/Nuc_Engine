@@ -186,6 +186,9 @@
     <ClCompile Include="src\engine\editor\UndoStack.cpp">
       <Filter>src\engine\editor</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\editor\GamePackager.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h">
@@ -324,6 +327,9 @@
       <Filter>src\engine\io</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\editor\UndoStack.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\GamePackager.h">
       <Filter>src\engine\editor</Filter>
     </ClInclude>
   </ItemGroup>

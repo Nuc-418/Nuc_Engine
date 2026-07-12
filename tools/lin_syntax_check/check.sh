@@ -57,6 +57,16 @@ gate "no std::filesystem (v141/C++14)" 0 -r --include='*.cpp' --include='*.h' '<
 gate "engine must not include game headers" 0 -r --include='*.cpp' --include='*.h' '#include "game/' src/engine
 gate "no TBP3D remnants" 0 -rI 'TBP3D' src third_party assets docs README.md NucEngine.sln NucEngine.vcxproj NucEngine.vcxproj.filters
 
+echo "== game-build (NUC_GAME_BUILD) branch =="
+for f in src/game/Main.cpp src/game/DemoScene.cpp; do
+  if ! g++ -fsyntax-only -std=c++14 -finput-charset=latin1 \
+       -DNUC_GAME_BUILD -DGLEW_STATIC -D_CRT_SECURE_NO_WARNINGS \
+       -I"$STUBS" -Isrc -Ithird_party -Ithird_party/imgui \
+       "$f" 2>/tmp/lin_check_err.txt; then
+    echo "FAIL (game build) $f"; head -15 /tmp/lin_check_err.txt; FAIL=1
+  fi
+done
+
 echo "== euler decompose self-test =="
 if g++ -std=c++14 -Isrc -o /tmp/nuc_euler_test tools/lin_syntax_check/euler_test.cpp src/engine/editor/EditorMath.cpp && /tmp/nuc_euler_test; then :; else FAIL=1; fi
 

@@ -31,6 +31,16 @@ modes, WASD/mouse); the other panels stay visible but the mouse is owned by
 the game. **Esc stops Play** and returns to the editor with the camera
 restored — the app quits via File > Exit or the window close button, not Esc.
 
+**File > Package Game...** creates a standalone, shippable build under
+`Builds/<name>/`: the current world is saved as the startup scene
+(`assets/scenes/startup.json`), the whole `assets/` tree is copied next to the
+game executable, and the executable itself comes from the **Game|x64**
+configuration (an editor-less build of the same project — `NUC_GAME_BUILD`
+boots straight into the scene at 800x600 with the cursor captured, loads the
+startup scene if present, and quits on Esc). Build Game|x64 in Visual Studio
+once, then package as often as you like; run `NucEngineGame.exe` from its
+build folder. `Builds/` is git-ignored.
+
 Panel layout is dockable and persisted in `editor_layout.ini` (git-ignored);
 **Window > Reset Layout** restores the default.
 
@@ -84,7 +94,10 @@ Manual checklist on Windows after building:
 5. [ Play ]: the demo runs inside the Viewport panel with the cursor captured;
    keys 1–9 + distortion + WASD behave as in the pre-editor demo; Esc returns
    to the editor with the camera restored.
-6. If linking fails with missing `glfwCreateStandardCursor` /
+6. Build the Game|x64 configuration, then File > Package Game: the resulting
+   Builds/<name>/NucEngineGame.exe runs standalone, starts in the scene that
+   was open in the editor, and quits on Esc.
+7. If linking fails with missing `glfwCreateStandardCursor` /
    `glfwSetCharModsCallback`: the committed `glfw3.lib` (and the GLFW headers
    on the global include path) are older than 3.2 — refresh
    `third_party/libs/x64/glfw3.lib` and the headers to GLFW 3.2+.

@@ -54,8 +54,12 @@ public:
 private:
 	void DrawMenuBar();
 	void DrawSaveAsModal();
+	void DrawPackageModal();
 
 	bool layoutNeedsBuild = false;
 	bool openSaveAs = false;
 	char saveAsBuffer[128] = "demo_scene.json";
+	bool openPackage = false;
+	char packageNameBuffer[128] = "GameBuild";
+	std::string packageStatus;
 };

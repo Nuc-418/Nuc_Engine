@@ -10,15 +10,15 @@
 #include <vector>
 using namespace std;
 
-#define Positions 0
-#define Normals 1
-#define Colors 2
-#define UVs 3
-
 class Mesh
 {
 
 public:
+
+	// Vertex attribute slots (indices into vertexArrayPtr / VBO).
+	// An enum, not macros: identifiers like "Colors" also appear as members
+	// of third-party types (ImGuiStyle), which macros would break.
+	enum VertexAttribute { Positions = 0, Normals = 1, Colors = 2, UVs = 3 };
 
 	//Vertex info
 	//OpenGL Var //1-Pos,2-Norm,3-Color,4-UVs
