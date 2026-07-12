@@ -9,7 +9,7 @@ The app starts in **Edit mode** (1600x900, free cursor):
 
 | Panel | What it does |
 |---|---|
-| **Viewport** (center) | The scene, rendered to a framebuffer at the panel's aspect ratio. Hold **RMB** to fly with WASD/Space/Ctrl (Shift = boost), UE5-style. **W/E/R** switch the translate/rotate/scale gizmo, the corner button toggles Local/World, **F** focuses the selected object. |
+| **Viewport** (center) | The scene, rendered to a framebuffer at the panel's aspect ratio. **Click** an object to select it (empty space deselects). Hold **RMB** to fly with WASD/Space/Ctrl (Shift = boost), UE5-style. **W/E/R** switch the translate/rotate/scale gizmo, the corner button toggles Local/World, **F** focuses the selected object. |
 | **Outliner** (right) | All world objects. Click to select, right-click or **Del** to delete, **+ Add** spawns a Cube / IndexedCube / IronMan in front of the camera. |
 | **Details** (right, below) | Name and Position / Rotation (degrees) / Scale of the selection, live. |
 | **Lights** (bottom) | All four light types with live parameter editing; add/remove point and spot lights (the shaders support 50 of each). |
@@ -69,7 +69,8 @@ self-test.
 
 Manual checklist on Windows after building:
 1. Editor opens with the default layout; demo scene visible in the Viewport.
-2. RMB fly, W/E/R gizmos, F focus; select/rename/spawn/delete in the Outliner.
+2. RMB fly, W/E/R gizmos, F focus; click objects in the viewport to select
+   (clicking the sky deselects); select/rename/spawn/delete in the Outliner.
 3. Light edits take effect immediately; add/remove point and spot lights.
 4. Ctrl+S then File > Open round-trips the scene; Content Browser double-click loads it.
 5. [ Play ]: 800x600, cursor captured, keys 1–9 + distortion + WASD identical
@@ -81,7 +82,6 @@ Manual checklist on Windows after building:
 
 ## Future work (not in scope)
 
-- Click-picking in the viewport (needs mesh AABBs captured at upload time).
 - Play-in-viewport instead of resizing the window.
 - Undo/redo, multi-select, content thumbnails.
 - Serializing material/texture assignments per object (types are respawned

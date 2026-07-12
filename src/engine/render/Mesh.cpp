@@ -9,6 +9,7 @@ void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  
 	nVertex = positionArray->size();
 	//Array de posições
 	vertexArrayPtr[Positions] = positionArray;
+	CaptureBounds(positionArray);
 	//Array de cores
 	vertexArrayPtr[Colors] = colorArray;
 
@@ -23,6 +24,7 @@ void Mesh::AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* 
 	nVertex = positionArray->size();
 	//Array de posições
 	vertexArrayPtr[Positions] = positionArray;
+	CaptureBounds(positionArray);
 	//Array de normais
 	vertexArrayPtr[Normals] = normalArray;
 	//Array de coordenadas de textura
@@ -47,6 +49,7 @@ void Mesh::RewriteVertexPos(vector<glm::vec3>* positionArray)
 {
 	//Array de posições
 	vertexArrayPtr[Positions] = positionArray;
+	CaptureBounds(positionArray);
 	//Vetor que armazena o primeiro índice do array de posições da mesh
 	glm::vec3* auxVecStartPtr = &vertexArrayPtr[Positions]->at(0);
 	//É criado e vinculado um novo VBO 
@@ -56,6 +59,18 @@ void Mesh::RewriteVertexPos(vector<glm::vec3>* positionArray)
 
 	//Cria-se a mesh
 	Load();
+}
+
+void Mesh::CaptureBounds(vector<glm::vec3>* positionArray)
+{
+	if (!positionArray || positionArray->empty())
+		return;
+	aabbMin = aabbMax = positionArray->at(0);
+	for (const glm::vec3& position : *positionArray) {
+		aabbMin = glm::min(aabbMin, position);
+		aabbMax = glm::max(aabbMax, position);
+	}
+	hasAabb = true;
 }
 
 /*Cria-se um VAO*/

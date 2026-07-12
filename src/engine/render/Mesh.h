@@ -49,7 +49,15 @@ public:
 	// Deletes the VAO/VBOs/EBO. Must run while the GL context is alive.
 	void Unload();
 
+	// Local-space bounds captured when vertex positions are uploaded
+	// (the CPU arrays are released right after upload); used for picking.
+	glm::vec3 aabbMin = glm::vec3(0.0f);
+	glm::vec3 aabbMax = glm::vec3(0.0f);
+	bool hasAabb = false;
+
 private:
+	void CaptureBounds(vector<glm::vec3>* positionArray);
+
 	void LoadVAO();
 	void LoadVBOs();
 	void LoadEBO();

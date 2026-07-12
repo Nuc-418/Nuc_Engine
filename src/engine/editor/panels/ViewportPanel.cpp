@@ -48,6 +48,43 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		}
 	}
 
+	/* Click-picking: LMB over the viewport selects the nearest object whose
+	   oriented bounds the camera ray hits (empty space deselects). Skipped
+	   while flying or when the click lands on the gizmo. */
+	if (hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)
+	    && !editor.viewportFlying && !ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
+		ImVec2 mouse = ImGui::GetMousePos();
+		// The image is drawn V-flipped, so panel-top maps to NDC +1 directly.
+		float ndcX = 2.0f * (mouse.x - imagePos.x) / editor.viewportSize.x - 1.0f;
+		float ndcY = 1.0f - 2.0f * (mouse.y - imagePos.y) / editor.viewportSize.y;
+
+		Camera& camera = editor.world->camera;
+		glm::mat4 inverseViewProjection = glm::inverse(camera.GetProjection() * camera.GetView());
+		glm::vec4 farPoint = inverseViewProjection * glm::vec4(ndcX, ndcY, 1.0f, 1.0f);
+		farPoint /= farPoint.w;
+
+		glm::vec3 rayOrigin = camera.transform.position;
+		glm::vec3 rayDirection = glm::normalize(glm::vec3(farPoint) - rayOrigin);
+
+		GameObject* closest = nullptr;
+		float closestDistance = 0.0f;
+		for (WorldEntry& entry : editor.world->entries) {
+			Mesh& mesh = entry.object->meshRenderer.mesh;
+			if (!mesh.hasAabb)
+				continue;
+			entry.object->transform.UpdateModel();
+			float distance = 0.0f;
+			if (RayIntersectsOBB(rayOrigin, rayDirection, mesh.aabbMin, mesh.aabbMax,
+			                     entry.object->transform.model, distance)) {
+				if (!closest || distance < closestDistance) {
+					closest = entry.object.get();
+					closestDistance = distance;
+				}
+			}
+		}
+		editor.selected = closest;
+	}
+
 	/* Transform gizmo on the selected object */
 	if (editor.selected && !editor.viewportFlying) {
 		ImGuizmo::SetOrthographic(false);
