@@ -102,6 +102,7 @@
     <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\engine\render\Framebuffer.cpp" />
     <ClCompile Include="src\engine\scene\World.cpp" />
+    <ClCompile Include="third_party\ImGuizmo\ImGuizmo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
@@ -135,6 +136,8 @@
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="src\engine\render\Framebuffer.h" />
     <ClInclude Include="src\engine\scene\World.h" />
+    <ClInclude Include="third_party\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="third_party\nlohmann\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

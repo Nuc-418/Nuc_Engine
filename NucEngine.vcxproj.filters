@@ -52,6 +52,12 @@
     <Filter Include="assets\shaders\ironMan">
       <UniqueIdentifier>{1b6c8d4e-5f7a-4b9c-1d3e-4f5a6b7c8d9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="third_party\ImGuizmo">
+      <UniqueIdentifier>{69d33875-cf0a-4a05-821d-9c19f919faa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\nlohmann">
+      <UniqueIdentifier>{bf6cbb28-b641-4bc3-a436-47dea68df20a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\core\Application.cpp">
@@ -131,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="src\engine\scene\World.cpp">
       <Filter>src\engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="third_party\ImGuizmo\ImGuizmo.cpp">
+      <Filter>third_party\ImGuizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +235,12 @@
     </ClInclude>
     <ClInclude Include="src\engine\scene\World.h">
       <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\ImGuizmo\ImGuizmo.h">
+      <Filter>third_party\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\nlohmann\json.hpp">
+      <Filter>third_party\nlohmann</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
