@@ -89,11 +89,15 @@ void Editor::DrawFrame(Application& app)
 	if (!playing) {
 		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S))
 			saveClicked = true;
-		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z))
-			selected = world->FindById(undoStack.Undo(*world));
+		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z)) {
+			unsigned long long affected = undoStack.Undo(*world);
+			if (affected) selected = world->FindById(affected);
+		}
 		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Y) ||
-		    ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z))
-			selected = world->FindById(undoStack.Redo(*world));
+		    ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z)) {
+			unsigned long long affected = undoStack.Redo(*world);
+			if (affected) selected = world->FindById(affected);
+		}
 	}
 
 	ImGui::Render();
@@ -130,10 +134,14 @@ void Editor::DrawMenuBar()
 	}
 
 	if (ImGui::BeginMenu("Edit")) {
-		if (ImGui::MenuItem("Undo", "Ctrl+Z", false, undoStack.CanUndo()))
-			selected = world->FindById(undoStack.Undo(*world));
-		if (ImGui::MenuItem("Redo", "Ctrl+Y", false, undoStack.CanRedo()))
-			selected = world->FindById(undoStack.Redo(*world));
+		if (ImGui::MenuItem("Undo", "Ctrl+Z", false, undoStack.CanUndo())) {
+			unsigned long long affected = undoStack.Undo(*world);
+			if (affected) selected = world->FindById(affected);
+		}
+		if (ImGui::MenuItem("Redo", "Ctrl+Y", false, undoStack.CanRedo())) {
+			unsigned long long affected = undoStack.Redo(*world);
+			if (affected) selected = world->FindById(affected);
+		}
 		ImGui::EndMenu();
 	}
 
