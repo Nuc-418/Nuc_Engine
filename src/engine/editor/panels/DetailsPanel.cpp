@@ -26,11 +26,16 @@ void DrawDetailsPanel(Editor& editor)
 	}
 
 	/* Name */
+	unsigned long long renameId = editor.world->IdOf(object);
 	char nameBuffer[128];
 	strncpy(nameBuffer, object->name.c_str(), sizeof(nameBuffer) - 1);
 	nameBuffer[sizeof(nameBuffer) - 1] = '\0';
 	if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
 		object->name = nameBuffer;
+	if (ImGui::IsItemActivated())
+		editor.nameBefore = nameBuffer;
+	if (ImGui::IsItemDeactivatedAfterEdit())
+		editor.undoStack.RecordRename(renameId, editor.nameBefore, object->name);
 
 	ImGui::SeparatorText("Transform");
 

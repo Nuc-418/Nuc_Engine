@@ -43,6 +43,8 @@ public:
 	bool gizmoDragging = false;
 	unsigned long long dragTargetId = 0;
 	TransformState dragBefore = {};
+	std::string nameBefore;      // Details name field capture
+	VectorLight lightsBefore;    // Lights panel drag capture
 	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::TRANSLATE;
 	ImGuizmo::MODE gizmoMode = ImGuizmo::WORLD;
 	Framebuffer sceneFramebuffer;

@@ -67,6 +67,27 @@ void UndoStack::RecordDelete(ObjectType type, const std::string& name, unsigned 
 	Push(action);
 }
 
+void UndoStack::RecordRename(unsigned long long id, const std::string& before, const std::string& after)
+{
+	if (id == 0 || before == after)
+		return;
+	Action action;
+	action.kind = Action::Kind::Rename;
+	action.id = id;
+	action.name = before;
+	action.nameAfter = after;
+	Push(action);
+}
+
+void UndoStack::RecordLights(const VectorLight& before, const VectorLight& after)
+{
+	Action action;
+	action.kind = Action::Kind::Lights;
+	action.lightsBefore = before;
+	action.lightsAfter = after;
+	Push(action);
+}
+
 unsigned long long UndoStack::Undo(World& world)
 {
 	if (undoActions.empty())
@@ -109,6 +130,17 @@ unsigned long long UndoStack::Apply(World& world, const Action& action, bool und
 				ApplyTransform(*object, action.before);
 		}
 		return action.id;
+	}
+	case Action::Kind::Rename: {
+		GameObject* object = world.FindById(action.id);
+		if (object)
+			object->name = undo ? action.name : action.nameAfter;
+		return action.id;
+	}
+	case Action::Kind::Lights: {
+		world.lights.lightInfo = undo ? action.lightsBefore : action.lightsAfter;
+		world.UploadLights();
+		return 0;
 	}
 	case Action::Kind::Delete: {
 		if (undo) {

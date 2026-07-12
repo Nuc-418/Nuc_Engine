@@ -173,14 +173,7 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 	}
 
 	/* Re-upload everything (counts included) to the lit program. */
-	if (world.lightsProgram != 0) {
-		if (!info.ambientLight.empty())
-			world.lights.StoreAmbientLights(world.lightsProgram);
-		if (!info.directionalLight.empty())
-			world.lights.StoreDirectionalLights(world.lightsProgram, (int)info.directionalLight.size());
-		world.lights.StorePointLights(world.lightsProgram, (int)info.pointLight.size());
-		world.lights.StoreSpotLights(world.lightsProgram, (int)info.spotLight.size());
-	}
+	world.UploadLights();
 
 	std::cout << "Scene loaded: " << path << std::endl;
 	return true;

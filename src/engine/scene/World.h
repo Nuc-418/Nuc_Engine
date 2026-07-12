@@ -60,6 +60,11 @@ public:
 
 	Lights lights;
 	GLuint lightsProgram = 0; // the program the lights are uploaded to
+
+	// Re-uploads every light (values and counts) to lightsProgram; safe to
+	// call with any vector empty. Used after wholesale light-state changes
+	// (scene load, undo/redo).
+	void UploadLights();
 	Camera camera{ glm::vec3(1.0f, 1.0f, -10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f) };
 	GLenum renderMode = GL_TRIANGLES;
 

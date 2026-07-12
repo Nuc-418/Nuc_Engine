@@ -17,10 +17,11 @@ The app starts in **Edit mode** (1600x900, free cursor):
 | **Stats** (bottom) | Wall-clock FPS, object count, camera position, render mode. |
 
 **Edit > Undo / Redo** (Ctrl+Z / Ctrl+Y, also Ctrl+Shift+Z) covers transform
-edits (gizmo drags and Details edits, one entry per drag), spawns and deletes —
-objects are tracked by a stable world id, so a delete can be undone even after
-further edits (the restored object reappears at the end of the Outliner).
-Renames and light edits are not yet in the history.
+edits (gizmo drags and Details edits, one entry per drag), spawns, deletes,
+renames and light edits (toggles, parameter drags, add/remove — recorded as
+whole light-set snapshots). Objects are tracked by a stable world id, so a
+delete can be undone even after further edits (the restored object reappears
+at the end of the Outliner).
 
 **File > Save Scene** (Ctrl+S) / **Save Scene As** / **Open Scene** persist the
 world to versioned JSON under `assets/scenes/`. **[ Play ]** in the menu bar
@@ -90,6 +91,6 @@ Manual checklist on Windows after building:
 
 ## Future work (not in scope)
 
-- Multi-select, content thumbnails, undo for renames and light edits.
+- Multi-select, content thumbnails.
 - Serializing material/texture assignments per object (types are respawned
   through factories, so per-type assets are already correct).

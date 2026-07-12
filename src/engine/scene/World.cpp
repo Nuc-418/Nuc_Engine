@@ -97,6 +97,18 @@ void World::Clear()
 	nameCounters.clear();
 }
 
+void World::UploadLights()
+{
+	if (lightsProgram == 0)
+		return;
+	if (!lights.lightInfo.ambientLight.empty())
+		lights.StoreAmbientLights(lightsProgram);
+	if (!lights.lightInfo.directionalLight.empty())
+		lights.StoreDirectionalLights(lightsProgram, (int)lights.lightInfo.directionalLight.size());
+	lights.StorePointLights(lightsProgram, (int)lights.lightInfo.pointLight.size());
+	lights.StoreSpotLights(lightsProgram, (int)lights.lightInfo.spotLight.size());
+}
+
 std::string World::UniqueName(const char* base)
 {
 	int& counter = nameCounters[base];
