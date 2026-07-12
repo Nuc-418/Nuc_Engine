@@ -57,9 +57,8 @@ gate "no std::filesystem (v141/C++14)" 0 -r --include='*.cpp' --include='*.h' '<
 gate "engine must not include game headers" 0 -r --include='*.cpp' --include='*.h' '#include "game/' src/engine
 gate "no TBP3D remnants" 0 -rI 'TBP3D' src third_party assets docs README.md NucEngine.sln NucEngine.vcxproj NucEngine.vcxproj.filters
 
-if [ $FAIL -eq 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED"; fi
-exit $FAIL
-
 echo "== euler decompose self-test =="
 if g++ -std=c++14 -Isrc -o /tmp/nuc_euler_test tools/lin_syntax_check/euler_test.cpp src/engine/editor/EditorMath.cpp && /tmp/nuc_euler_test; then :; else FAIL=1; fi
-[ $FAIL -eq 0 ] || exit 1
+
+if [ $FAIL -eq 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED"; fi
+exit $FAIL
