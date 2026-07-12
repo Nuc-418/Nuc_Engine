@@ -7,6 +7,11 @@ static void DestroyObject(Editor& editor, GameObject* object)
 {
 	if (editor.selected == object)
 		editor.selected = nullptr;
+
+	const WorldEntry* entry = editor.world->EntryOf(object);
+	if (entry)
+		editor.undoStack.RecordDelete(entry->type, object->name, entry->id, CaptureTransform(*object));
+
 	editor.world->Destroy(object);
 }
 
@@ -27,6 +32,7 @@ void DrawOutlinerPanel(Editor& editor)
 					Transform& cam = world.camera.transform;
 					spawned->transform.SetPos(cam.position + cam.forward * 6.0f);
 					editor.selected = spawned;
+					editor.undoStack.RecordSpawn(type, spawned->name, world.IdOf(spawned), CaptureTransform(*spawned));
 				}
 			}
 		}

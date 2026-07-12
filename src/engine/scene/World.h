@@ -22,6 +22,7 @@ bool ObjectTypeFromString(const std::string& text, ObjectType& out);
 struct WorldEntry
 {
 	ObjectType type;
+	unsigned long long id = 0; // stable identity for undo history
 	// GameObject wires meshRenderer.transformPtr to its own transform, so the
 	// object itself must never be copied or moved; unique_ptr storage keeps
 	// the address stable while the entries vector grows.
@@ -39,7 +40,12 @@ public:
 	bool CanSpawn(ObjectType type) const;
 
 	// Spawns an object; an empty name is replaced by a unique "<Type>_<n>".
-	GameObject* Spawn(ObjectType type, std::string name = "");
+	// forcedId re-attaches a previous identity (undo of a delete); 0 = new id.
+	GameObject* Spawn(ObjectType type, std::string name = "", unsigned long long forcedId = 0);
+
+	GameObject* FindById(unsigned long long id);
+	unsigned long long IdOf(const GameObject* object) const; // 0 if absent
+	const WorldEntry* EntryOf(const GameObject* object) const;
 
 	// Fires onDestroyed, frees the mesh, and removes the entry.
 	bool Destroy(GameObject* object);
@@ -62,4 +68,5 @@ private:
 
 	std::map<ObjectType, SpawnFn> factories;
 	std::map<std::string, int> nameCounters;
+	unsigned long long nextId = 1;
 };

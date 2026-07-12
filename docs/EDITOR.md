@@ -16,6 +16,12 @@ The app starts in **Edit mode** (1600x900, free cursor):
 | **Content Browser** (bottom) | Browse `assets/`; double-click a scene `.json` to load it. |
 | **Stats** (bottom) | Wall-clock FPS, object count, camera position, render mode. |
 
+**Edit > Undo / Redo** (Ctrl+Z / Ctrl+Y, also Ctrl+Shift+Z) covers transform
+edits (gizmo drags and Details edits, one entry per drag), spawns and deletes —
+objects are tracked by a stable world id, so a delete can be undone even after
+further edits (the restored object reappears at the end of the Outliner).
+Renames and light edits are not yet in the history.
+
 **File > Save Scene** (Ctrl+S) / **Save Scene As** / **Open Scene** persist the
 world to versioned JSON under `assets/scenes/`. **[ Play ]** in the menu bar
 enters **Play mode**: the window switches to the classic 800x600, the cursor is
@@ -73,6 +79,7 @@ Manual checklist on Windows after building:
    (clicking the sky deselects); select/rename/spawn/delete in the Outliner.
 3. Light edits take effect immediately; add/remove point and spot lights.
 4. Ctrl+S then File > Open round-trips the scene; Content Browser double-click loads it.
+   Ctrl+Z / Ctrl+Y undo and redo a gizmo drag, a Details edit, a spawn and a delete.
 5. [ Play ]: 800x600, cursor captured, keys 1–9 + distortion + WASD identical
    to the pre-editor demo; Esc returns to the editor with the camera restored.
 6. If linking fails with missing `glfwCreateStandardCursor` /
@@ -83,6 +90,6 @@ Manual checklist on Windows after building:
 ## Future work (not in scope)
 
 - Play-in-viewport instead of resizing the window.
-- Undo/redo, multi-select, content thumbnails.
+- Multi-select, content thumbnails, undo for renames and light edits.
 - Serializing material/texture assignments per object (types are respawned
   through factories, so per-type assets are already correct).

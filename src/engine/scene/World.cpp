@@ -30,7 +30,7 @@ bool World::CanSpawn(ObjectType type) const
 	return factories.count(type) != 0;
 }
 
-GameObject* World::Spawn(ObjectType type, std::string name)
+GameObject* World::Spawn(ObjectType type, std::string name, unsigned long long forcedId)
 {
 	auto factory = factories.find(type);
 	if (factory == factories.end())
@@ -44,10 +44,35 @@ GameObject* World::Spawn(ObjectType type, std::string name)
 
 	WorldEntry entry;
 	entry.type = type;
+	entry.id = forcedId != 0 ? forcedId : nextId++;
+	if (entry.id >= nextId)
+		nextId = entry.id + 1;
 	entry.object = std::move(object);
 	entries.push_back(std::move(entry));
 
 	return entries.back().object.get();
+}
+
+GameObject* World::FindById(unsigned long long id)
+{
+	for (WorldEntry& entry : entries)
+		if (entry.id == id)
+			return entry.object.get();
+	return nullptr;
+}
+
+unsigned long long World::IdOf(const GameObject* object) const
+{
+	const WorldEntry* entry = EntryOf(object);
+	return entry ? entry->id : 0;
+}
+
+const WorldEntry* World::EntryOf(const GameObject* object) const
+{
+	for (const WorldEntry& entry : entries)
+		if (entry.object.get() == object)
+			return &entry;
+	return nullptr;
 }
 
 bool World::Destroy(GameObject* object)

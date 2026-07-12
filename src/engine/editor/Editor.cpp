@@ -65,6 +65,11 @@ void Editor::DrawFrame(Application& app)
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
 
+	// The selection may have been destroyed outside the panels (undo, scene
+	// changes); never keep a dangling pointer into the world.
+	if (selected && !world->EntryOf(selected))
+		selected = nullptr;
+
 	ImGuiID dockspaceId = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 	if (layoutNeedsBuild) {
 		BuildDefaultDockLayout(dockspaceId);
@@ -83,6 +88,11 @@ void Editor::DrawFrame(Application& app)
 
 	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S))
 		saveClicked = true;
+	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z))
+		selected = world->FindById(undoStack.Undo(*world));
+	if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Y) ||
+	    ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z))
+		selected = world->FindById(undoStack.Redo(*world));
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -132,6 +142,14 @@ void Editor::DrawMenuBar()
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
 			exitClicked = true;
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Edit")) {
+		if (ImGui::MenuItem("Undo", "Ctrl+Z", false, undoStack.CanUndo()))
+			selected = world->FindById(undoStack.Undo(*world));
+		if (ImGui::MenuItem("Redo", "Ctrl+Y", false, undoStack.CanRedo()))
+			selected = world->FindById(undoStack.Redo(*world));
 		ImGui::EndMenu();
 	}
 

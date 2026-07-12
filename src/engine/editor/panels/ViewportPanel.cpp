@@ -92,6 +92,7 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		ImGuizmo::SetRect(imagePos.x, imagePos.y, editor.viewportSize.x, editor.viewportSize.y);
 
 		Transform& transform = editor.selected->transform;
+		TransformState preManipulate = CaptureTransform(*editor.selected);
 		transform.UpdateModel();
 		glm::mat4 model = transform.model;
 		glm::mat4 view = editor.world->camera.GetView();
@@ -109,6 +110,23 @@ void DrawViewportPanel(Editor& editor, Application& app)
 			if (editor.gizmoOperation == ImGuizmo::ROTATE)
 				transform.rotation = EulerYXZFromMatrix(model);
 		}
+
+		/* One undo entry per drag: capture on grab, record on release. */
+		bool usingNow = ImGuizmo::IsUsing();
+		if (usingNow && !editor.gizmoDragging) {
+			editor.gizmoDragging = true;
+			editor.dragBefore = preManipulate;
+			editor.dragTargetId = editor.world->IdOf(editor.selected);
+		}
+		if (!usingNow && editor.gizmoDragging) {
+			editor.gizmoDragging = false;
+			GameObject* target = editor.world->FindById(editor.dragTargetId);
+			if (target)
+				editor.undoStack.RecordTransform(editor.dragTargetId, editor.dragBefore, CaptureTransform(*target));
+		}
+	} else if (editor.gizmoDragging) {
+		/* Selection vanished mid-drag; close out the capture. */
+		editor.gizmoDragging = false;
 	}
 
 	/* Local/world toggle, top-left corner of the viewport */

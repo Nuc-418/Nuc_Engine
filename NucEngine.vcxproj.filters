@@ -183,6 +183,9 @@
     <ClCompile Include="src\engine\io\SceneSerializer.cpp">
       <Filter>src\engine\io</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\editor\UndoStack.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h">
@@ -319,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="src\engine\io\SceneSerializer.h">
       <Filter>src\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\UndoStack.h">
+      <Filter>src\engine\editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

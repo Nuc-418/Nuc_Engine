@@ -51,6 +51,7 @@ void EditorHost::Update(Application& app)
 		std::string path = editor.pendingSceneLoad;
 		editor.pendingSceneLoad.clear();
 		editor.selected = nullptr; // objects are about to be destroyed
+		editor.undoStack.Clear();  // history ids die with the old world
 		if (SceneSerializer::Load(world, path))
 			editor.savePath = path;
 	}

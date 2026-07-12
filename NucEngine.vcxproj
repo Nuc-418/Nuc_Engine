@@ -115,6 +115,7 @@
     <ClCompile Include="src\engine\editor\panels\StatsPanel.cpp" />
     <ClCompile Include="src\engine\editor\panels\ContentBrowserPanel.cpp" />
     <ClCompile Include="src\engine\io\SceneSerializer.cpp" />
+    <ClCompile Include="src\engine\editor\UndoStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="src\engine\editor\panels\StatsPanel.h" />
     <ClInclude Include="src\engine\editor\panels\ContentBrowserPanel.h" />
     <ClInclude Include="src\engine\io\SceneSerializer.h" />
+    <ClInclude Include="src\engine\editor\UndoStack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

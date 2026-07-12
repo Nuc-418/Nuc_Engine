@@ -8,6 +8,7 @@
 #include "ImGuizmo/ImGuizmo.h"
 #include "engine/render/Framebuffer.h"
 #include "engine/scene/World.h"
+#include "engine/editor/UndoStack.h"
 
 class Application;
 struct GLFWwindow;
@@ -37,6 +38,12 @@ public:
 	// -- shared editor state --
 	World* world = nullptr;
 	GameObject* selected = nullptr;
+	UndoStack undoStack;
+
+	// In-flight edit capture (gizmo drag / Details widget drag).
+	bool gizmoDragging = false;
+	unsigned long long dragTargetId = 0;
+	TransformState dragBefore = {};
 	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::TRANSLATE;
 	ImGuizmo::MODE gizmoMode = ImGuizmo::WORLD;
 	Framebuffer sceneFramebuffer;

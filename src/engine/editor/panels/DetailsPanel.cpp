@@ -34,16 +34,29 @@ void DrawDetailsPanel(Editor& editor)
 
 	ImGui::SeparatorText("Transform");
 
+	/* Each widget edit becomes one undo entry: snapshot on activation,
+	   record when the widget is released. */
+	unsigned long long objectId = editor.world->IdOf(object);
+	auto trackEdit = [&]() {
+		if (ImGui::IsItemActivated())
+			editor.dragBefore = CaptureTransform(*object);
+		if (ImGui::IsItemDeactivatedAfterEdit())
+			editor.undoStack.RecordTransform(objectId, editor.dragBefore, CaptureTransform(*object));
+	};
+
 	Transform& transform = object->transform;
 	ImGui::DragFloat3("Position", &transform.position.x, 0.1f);
+	trackEdit();
 
 	/* Rotation is stored in radians (engine order: yaw-Y, pitch-X, roll-Z);
 	   shown in degrees like UE. */
 	glm::vec3 degreesRot = glm::degrees(transform.rotation);
 	if (ImGui::DragFloat3("Rotation", &degreesRot.x, 1.0f))
 		transform.rotation = glm::radians(degreesRot);
+	trackEdit();
 
 	ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
+	trackEdit();
 
 	ImGui::End();
 }
