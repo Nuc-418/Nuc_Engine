@@ -1,14 +1,14 @@
 # NucEngine Restructure
 
-This document describes the restructure of the engine (formerly "TBP3D") into
-its current layout, the design decisions behind it, and the known issues that
-were deliberately left untouched.
+This document describes the restructure of the engine into its current
+layout, the design decisions behind it, and the known issues that were
+deliberately left untouched.
 
 ## Goals
 
 - Separate engine code from game/demo code and from third-party code.
 - Remove committed build artifacts and make the repo layout self-explanatory.
-- Drop the legacy `TBP3D` name in favor of `NucEngine`.
+- Rename the project and everything in it to `NucEngine`.
 - Fix latent bugs and obvious inefficiencies **without changing the demo's
   behavior** — same controls, same visuals.
 - Keep the Visual Studio build (v141 toolset); no CMake migration.
