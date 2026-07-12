@@ -15,13 +15,15 @@ int main(void)
 	config.title = "NucEngine";
 
 #ifdef _WIN32
-	//Move the console window aside and hide the cursor
+	//Move the console window aside
 	SetWindowPos(GetConsoleWindow(), 0, config.width - 7, -11, 0, 0, SWP_NOSIZE);
-	ShowCursor(false);
 #endif
 
 	Application app;
 	if (!app.Init(config)) return -1;
+
+	//Hide and capture the cursor for mouse-look (play behavior)
+	app.inputs.SetCursorCaptured(true);
 
 	DemoScene scene;
 	app.Run(scene);

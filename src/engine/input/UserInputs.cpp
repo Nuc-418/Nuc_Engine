@@ -4,9 +4,25 @@
 
 static UserInputs *selectedUserInput = NULL;
 
+void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 void UserInputs::AssociateWindow(GLFWwindow *window, int wWidth, int wHeight)
 {
 	windowPtr = window;
+	windowWidth = wWidth;
+	windowHeight = wHeight;
+
+	selectedUserInput = this;
+	glfwSetKeyCallback(windowPtr, GetKeyInfo);
+}
+
+void UserInputs::SetCursorCaptured(bool captured)
+{
+	glfwSetInputMode(windowPtr, GLFW_CURSOR, captured ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
+}
+
+void UserInputs::SetWindowSize(int wWidth, int wHeight)
+{
 	windowWidth = wWidth;
 	windowHeight = wHeight;
 }
@@ -140,13 +156,6 @@ void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 
 
-}
-
-/*Atualização dos inputs do teclado*/
-void UserInputs::UpdateKeyboard(UserInputs*userInputsPtr)
-{
-	selectedUserInput = userInputsPtr;
-	glfwSetKeyCallback(windowPtr, GetKeyInfo);
 }
 
 /*Atualização da posição do cursor*/

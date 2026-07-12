@@ -2,7 +2,6 @@
 
 void Controller::BasicMovement(Transform* transform, float rotationOffset, float movementOffset)
 {
-	userInputsPtr->UpdateKeyboard(userInputsPtr);
 	userInputsPtr->UpdateMouse(true);
 
 	deltaMouseV3 = { userInputsPtr->deltaMouse.x,userInputsPtr->deltaMouse.y,0 };

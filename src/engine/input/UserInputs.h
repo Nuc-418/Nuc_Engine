@@ -17,7 +17,16 @@ public:
 		windowWidth = wWidth;
 		windowHeight = wHeight;
 	}
+	// Stores the window, updates the recenter math, and installs the key
+	// callback once. Install any other callback consumers (e.g. ImGui's
+	// GLFW backend with install_callbacks=true) AFTER this so they chain.
 	void AssociateWindow(GLFWwindow *window, int wWidth, int wHeight);
+
+	// Show or hide+capture the OS cursor (GLFW input mode, not Win32).
+	void SetCursorCaptured(bool captured);
+
+	// Keeps the mouse recenter math in sync after a window resize.
+	void SetWindowSize(int wWidth, int wHeight);
 
 
 	GLFWwindow *windowPtr = nullptr;
@@ -61,8 +70,6 @@ public:
 	bool onceKey8 = false;
 	bool onceKey9 = false;
 
-
-	void UpdateKeyboard(UserInputs* userInputsPtr);
 
 	void UpdateMouse(bool getDelta);
 
