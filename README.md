@@ -1,8 +1,9 @@
 # NucEngine
 
-A small OpenGL 3D engine written in C++ (GLFW + GLEW + GLM), with a demo
-scene featuring a cube grid, an indexed cube, two textured Iron Man models
-and four toggleable light sources.
+A small OpenGL 3D engine written in C++ (GLFW + GLEW + GLM) with a UE5-style
+in-app editor (Dear ImGui + ImGuizmo), and a demo scene featuring a cube grid,
+an indexed cube, two textured Iron Man models and four toggleable light
+sources. See `docs/EDITOR.md` for the editor guide.
 
 ## Layout
 
@@ -25,6 +26,10 @@ is the repo root) or run the built exe with the repo root as the working
 directory — asset paths are resolved relative to it.
 
 ## Controls
+
+The app starts in the **editor** (see `docs/EDITOR.md`): RMB to fly, W/E/R
+gizmos, F to focus, Ctrl+S to save the scene, **[ Play ]** to run the demo.
+In **Play mode** (Esc returns to the editor):
 
 - **1** — Toggle ambient light
 - **2** — Toggle directional light
