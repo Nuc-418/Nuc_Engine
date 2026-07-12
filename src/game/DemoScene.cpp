@@ -275,4 +275,17 @@ void DemoScene::Draw(Application& app)
 
 void DemoScene::Unload(Application& app)
 {
+	ironMan.meshRenderer.mesh.Unload();
+	ironMan2.meshRenderer.mesh.Unload();
+	cube.meshRenderer.mesh.Unload();
+	cube2.meshRenderer.mesh.Unload();
+	for (int i = 0; i < 100; i++)
+		cubes[i].meshRenderer.mesh.Unload();
+
+	ironManTexture.Unload();
+
+	glDeleteProgram(cubeProgramShader);
+	glDeleteProgram(ironManProgramShader);
+	cubeProgramShader = 0;
+	ironManProgramShader = 0;
 }

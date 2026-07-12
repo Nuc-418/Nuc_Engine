@@ -133,6 +133,21 @@ void Mesh::LoadEBO()
 }
 
 
+void Mesh::Unload()
+{
+	// Deleting name 0 is legal and ignored, so no guards are needed.
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(4, VBO);
+	glDeleteBuffers(1, &EBO);
+
+	VAO = 0;
+	for (int index = 0; index < 4; index++)
+		VBO[index] = 0;
+	EBO = 0;
+	nVertex = 0;
+	nElements = 0;
+}
+
 void Mesh::Load()
 {
 	LoadVAO();

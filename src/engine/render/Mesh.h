@@ -46,6 +46,9 @@ public:
 
 	void RewriteVertexPos(vector<glm::vec3>* positionArray);
 
+	// Deletes the VAO/VBOs/EBO. Must run while the GL context is alive.
+	void Unload();
+
 private:
 	void LoadVAO();
 	void LoadVBOs();

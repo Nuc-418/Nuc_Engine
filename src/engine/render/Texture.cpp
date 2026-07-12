@@ -5,8 +5,6 @@
 #include "stb/stb_image.h"
 
 void Texture::load_texture(string textureFile) {
-	GLuint textureName = 0;
-
 	// Gera um nome de textura
 	glGenTextures(1, &textureName);
 
@@ -55,6 +53,12 @@ void Texture::load_texture(string textureFile) {
 		cout << "Error loading texture!" << endl;
 	}
 
+}
+
+void Texture::Unload()
+{
+	glDeleteTextures(1, &textureName);
+	textureName = 0;
 }
 
 void Texture::TextureToProgram(GLuint program, string textureFile)
