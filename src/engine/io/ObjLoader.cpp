@@ -53,7 +53,9 @@ bool ObjLoader::LoadObj()
 
 			if (strcmp(lineHeader, "mtllib") == 0)
 			{
-				fscanf(file, "%s\n",&mtlFile);
+				char mtlName[256] = { 0 };
+				fscanf(file, "%255s\n", mtlName);
+				mtlFile = mtlName;
 			}
 			else
 			if (strcmp(lineHeader, "v") == 0)
@@ -65,8 +67,8 @@ bool ObjLoader::LoadObj()
 			else
 				if (strcmp(lineHeader, "vt") == 0)
 				{
-					glm::vec3 vertex;
-					fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+					glm::vec2 vertex;
+					fscanf(file, "%f %f\n", &vertex.x, &vertex.y);
 					vertexUvs.push_back(vertex);
 				}
 				else
@@ -85,6 +87,7 @@ bool ObjLoader::LoadObj()
 							int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 							if (matches != 9) {
 								cout << "File can't be read : "<< matches << endl;
+								fclose(file);
 								return false;
 							}
 							else
@@ -105,4 +108,7 @@ bool ObjLoader::LoadObj()
 
 
 	}
+
+	fclose(file);
+	return false;
 }

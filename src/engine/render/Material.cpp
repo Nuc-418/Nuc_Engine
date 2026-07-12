@@ -14,11 +14,6 @@ void Material::loadMaterial(char* path)
 	}
 	else
 	{
-		std::vector<unsigned int>vertexPosElements, vertexUvElements, vertexNormalElements;
-		std::vector<glm::vec3>vertexPos;
-		std::vector<glm::vec2>vertexUvs;
-		std::vector<glm::vec3>vertexNormals;
-
 		while (!loaded)
 		{
 			char lineHeader[128];
@@ -28,6 +23,7 @@ void Material::loadMaterial(char* path)
 			{
 				fclose(file);
 				loaded = true;
+				continue;
 			}
 
 			if (strcmp(lineHeader, "Ns") == 0)
@@ -68,7 +64,7 @@ void Material::loadMaterial(char* path)
 			}else if (strcmp(lineHeader, "illum") == 0)
 			{
 				GLuint illum;
-				fscanf(file, "%f\n", &illum);
+				fscanf(file, "%u\n", &illum);
 				materialInfo.illum = illum;
 			}
 
