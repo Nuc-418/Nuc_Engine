@@ -1,7 +1,7 @@
 #include "engine/render/Texture.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 #include "stb/stb_image.h"
 
 void Texture::load_texture(string textureFile) {

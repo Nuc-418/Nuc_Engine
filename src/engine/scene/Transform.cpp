@@ -42,9 +42,9 @@ void Transform::CalcRotationMatrix()
 
 	//Rotation Matrix
 	rotationMatrix = (
-		glm::rotate(glm::mat4(1.0f), (GLfloat)(rotation.x), glm::vec3(0.0f, 1.0f, 0.0f))//yaw
-		*glm::rotate(glm::mat4(1.0f), (GLfloat)(rotation.y), glm::vec3(1.0f, 0.0f, 0.0f))//pich;
-		*glm::rotate(glm::mat4(1.0f), (GLfloat)(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f))//roll;
+		glm::rotate(glm::mat4(1.0f), (float)(rotation.x), glm::vec3(0.0f, 1.0f, 0.0f))//yaw
+		*glm::rotate(glm::mat4(1.0f), (float)(rotation.y), glm::vec3(1.0f, 0.0f, 0.0f))//pich;
+		*glm::rotate(glm::mat4(1.0f), (float)(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f))//roll;
 		);
 }
 

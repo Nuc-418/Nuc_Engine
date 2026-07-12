@@ -1,14 +1,8 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Mesh.h
-Ficheiro que cria e gere Mesh.cpp
- */
+// Mesh: owns the VAO/VBOs/EBO for a set of vertex arrays.
 
 #pragma once
-#include <GL\glew.h>
-#include <GL\gl.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 #include <GLFW/glfw3.h>

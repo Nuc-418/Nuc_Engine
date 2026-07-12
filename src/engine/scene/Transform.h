@@ -1,19 +1,9 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Transform.h
-Ficheiro que cria e gere Transform.cpp
- */
+// Transform: position/rotation/scale and model-matrix computation.
 
 #pragma once
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
-#include <glm/gtc/matrix_transform.hpp>
-#include<glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
-#include <glm/gtc/type_ptr.hpp> // value_ptr
+#include <glm/gtx/transform.hpp>
 #include "engine/core/EngineMath.h"
 
 class  Transform
@@ -22,7 +12,7 @@ public:
 	
 	Transform() {};
 
-	/*Transformações*/
+	/*Transformaï¿½ï¿½es*/
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -33,7 +23,7 @@ public:
 
 	glm::mat4 model;
 
-	/*Transformações*/
+	/*Transformaï¿½ï¿½es*/
 	//Rotation
 	void Rotate(glm::vec3 deltaRotationVec);
 	void SetRotation(glm::vec3 rotationVec);
@@ -44,12 +34,12 @@ public:
 	//Update do modelo
 	void UpdateModel();
 
-	/*Criação de matrizes Translação, Rotação e Escala*/
+	/*Criaï¿½ï¿½o de matrizes Translaï¿½ï¿½o, Rotaï¿½ï¿½o e Escala*/
 	glm::mat4 translationMatrix;
 	glm::mat4 rotationMatrix;
 	glm::mat4 scaleMatrix;
 
-	/*Cálculo das matrizes Translação, Rotação, Escala e Model e cálculo dos eixos do objeto e da câmara*/
+	/*Cï¿½lculo das matrizes Translaï¿½ï¿½o, Rotaï¿½ï¿½o, Escala e Model e cï¿½lculo dos eixos do objeto e da cï¿½mara*/
 	void CalcTranslationMatrix();
 	void CalcRotationMatrix();
 	void CalcScaleMatrix();

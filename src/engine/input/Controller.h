@@ -1,10 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Controller.h
-Ficheiro com controladores predefinidos
- */
+// Controller: predefined WASD/mouse-look movement built on UserInputs.
 
 #pragma once
 #include "engine/input/UserInputs.h"

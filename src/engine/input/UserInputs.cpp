@@ -1,10 +1,4 @@
-/*
-Autores: Beatriz Abreu (14874), Francisco Aires (14884) e Ronaldo Veloso (14850)
-Data: 05/06/2019
-
-Descrição: UserInputs.cpp
-Ficheiro que gere inputs do utilizador
- */
+// UserInputs: keyboard and mouse state captured from GLFW callbacks.
 
 #include "engine/input/UserInputs.h"
 

@@ -1,10 +1,4 @@
-/*
-Autores:Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: MeshRenderer.cpp
-Ficheiro capaz de proceder ao comando do desenho de primitivas
- */
+// MeshRenderer: draws a Mesh with a shader program and a Transform.
 
 #include "engine/render/MeshRenderer.h"
 

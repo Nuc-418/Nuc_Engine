@@ -1,11 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Lights.cpp
-Ficheiro que cria, envia para o prgrama shader e controla as diferentes fontes de luz
- */
-
+// Lights: ambient/directional/point/spot light sources and their shader uniforms.
 
 #include "engine/render/Lights.h"
 #include <iostream>

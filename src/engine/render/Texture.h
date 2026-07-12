@@ -1,15 +1,8 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Texture.h
-Ficheiro que cria e gere Texture.cpp
- */
+// Texture: image loading (stb_image) and binding to a shader program.
 
 #pragma once
 #include <iostream>
-#define GLEW_STATIC
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 
 

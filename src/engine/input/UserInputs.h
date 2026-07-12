@@ -1,20 +1,9 @@
-/*
-Autores: Francisco Aires (14884) 
-Data: 05/06/2019
-
-Descrição: UserInputs.h
-Ficheiro que cria e gere UserInputs.cpp
- */
+// UserInputs: keyboard and mouse state captured from GLFW callbacks.
 
 #pragma once
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
-#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
-#include <glm/gtc/type_ptr.hpp> // value_ptr
-#include <iostream>
-#include <vector>
-#include <windows.h>
+#include <glm/glm.hpp> // vec2
+#include <windows.h> // POINT, GetCursorPos/SetCursorPos
 
 
 

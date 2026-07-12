@@ -1,12 +1,7 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Camera.h
-Ficheiro que cria e gere Camera.cpp
- */
+// Camera: perspective camera; uploads Model/View/MVP matrices to shader programs.
 
 #pragma once
+#include <GL/glew.h>
 #include "engine/scene/Transform.h"
 
 class Camera 

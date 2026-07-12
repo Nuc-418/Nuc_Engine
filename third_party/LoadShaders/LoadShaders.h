@@ -1,18 +1,9 @@
-/*
-Autor: Professor Duarte Duque
-Data: 14/03/2019
-
-Descrição: LoadShaders.h
-Ficheiro que cria e gere LoadShaders.cpp
- */
+// LoadShaders: shader compilation/linking helper.
+// Derived from the OpenGL Programming Guide ("Red Book") LoadShaders utility.
 
 #pragma once
 
-#include <GL\gl.h>
-
-// Descomentar para debug
-
-#define _DEBUG
+#include <GL/gl.h>
 
 typedef struct {
 	GLenum       type;

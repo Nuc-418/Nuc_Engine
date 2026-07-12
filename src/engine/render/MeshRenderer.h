@@ -1,10 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: MeshRenderer.h
-Ficheiro que cria e gere MeshRenderer.cpp
- */
+// MeshRenderer: draws a Mesh with a shader program and a Transform.
 
 #pragma once
 #include "engine/render/Mesh.h"

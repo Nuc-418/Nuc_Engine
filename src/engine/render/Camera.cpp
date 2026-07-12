@@ -1,14 +1,8 @@
-/*
-Autores: Beatriz Abreu (14874), Francisco Aires (14884) e Ronaldo Veloso (14850)
-Data: 05/06/2019
-
-Descrição: Camera.cpp
-Ficheiro que trata informações da câmara
- */
+// Camera: perspective camera; uploads Model/View/MVP matrices to shader programs.
 
 #include "engine/render/Camera.h"
 #include <iostream>
-#include <glm\gtc\matrix_inverse.hpp> // glm::inverseTranspose()
+#include <glm/gtc/matrix_inverse.hpp> // glm::inverseTranspose()
 using namespace std;
 
 

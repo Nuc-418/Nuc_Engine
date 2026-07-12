@@ -1,13 +1,4 @@
-/*
-Autores: Francisco Aires
-Data: 05/06/2019
-Email : rruunneeftw@gmail.com
-
-Descrição: Source.cpp
-Ficheiro capaz de unir a informação dos restantes ficheiros .cpp e .h, criando um ambiente navegável
- */
-
-
+// Demo application: window/input bootstrap and hardcoded demo scene.
 
  /*Largura e altura da janela de visualização*/
 #define WIDTH 800

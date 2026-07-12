@@ -1,10 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Mesh.cpp
-Ficheiro que trata dados da mesh de um dado objeto
- */
+// Mesh: owns the VAO/VBOs/EBO for a set of vertex arrays.
 
 #include "engine/render/Mesh.h"
 

@@ -1,10 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Time.h
-Ficheiro que cria e gere Time.cpp
- */
+// Time: static frame/elapsed time, pushed to shaders via the "Time" uniform.
 
 #pragma once
 

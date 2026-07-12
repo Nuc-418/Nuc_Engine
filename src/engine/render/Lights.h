@@ -1,16 +1,9 @@
-/*
-Autores: Francisco Aires (14884) 
-Data: 05/06/2019
-
-Descrição: Lights.h
-Ficheiro que cria e gere Lights.cpp
- */
+// Lights: ambient/directional/point/spot light sources and their shader uniforms.
 
 #pragma once
 #include <vector>
-#define GLEW_STATIC
-#include <GL\glew.h>
-#include <glm\glm.hpp>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 
 using namespace glm;
 using namespace std;

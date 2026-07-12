@@ -1,18 +1,11 @@
-/*
-Autores: Professor Duarte Duque
-Data: 14/03/2019
+// LoadShaders: shader compilation/linking helper.
+// Derived from the OpenGL Programming Guide ("Red Book") LoadShaders utility.
 
-Descrição: LoadShaders.cpp
-Ficheiro que procede ao carregamento dos ficheiros shader
- */
-
-#pragma once
 
 #include <iostream>
 #include <fstream>
 
-#define GLEW_STATIC
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include "LoadShaders/LoadShaders.h"
 
 

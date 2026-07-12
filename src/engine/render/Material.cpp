@@ -1,6 +1,6 @@
 #include "engine/render/Material.h"
 #include <glm/gtc/type_ptr.hpp> // value_ptr
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 
 void Material::loadMaterial(char* path)

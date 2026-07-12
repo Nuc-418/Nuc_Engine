@@ -1,10 +1,4 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: GameObject.h
-Ficheiro que cria e gere GameObject.cpp
-*/
+// GameObject: composition root tying Transform, MeshRenderer and Material together.
 
 #pragma once
 

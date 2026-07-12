@@ -1,10 +1,5 @@
-/*
-Autores: RonaldoVeloso
-Data: 05/06/2019
+// Time: static frame/elapsed time, pushed to shaders via the "Time" uniform.
 
-Descrição: Lights.h
-Ficheiro que cria e gere Lights.cpp
- */
 #include "engine/core/Time.h"
 
 

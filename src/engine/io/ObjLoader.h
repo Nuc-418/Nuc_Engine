@@ -1,14 +1,8 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: ObjLoader.h
-Ficheiro que cria e gere ObjLoader.cpp
- */
+// ObjLoader: Wavefront .obj loader (triangulated faces).
 
 #pragma once
-#include <GL\glew.h>
-#include <GL\gl.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...

@@ -1,11 +1,5 @@
-/*
-Autores: Francisco Aires (14884)
-	- - BASEADO EM : https://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/ - -
-Data: 05/06/2019
-
-Descrição: ObjLoader.cpp
-Ficheiro capaz de carregar um ficheiro .obj, quer tenha faces triangulares ou quadrangulares
- */
+// ObjLoader: Wavefront .obj loader (triangulated faces).
+// Based on https://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 
 #include "engine/io/ObjLoader.h"
 

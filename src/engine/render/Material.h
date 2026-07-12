@@ -1,19 +1,11 @@
-/*
-Autores: Francisco Aires (14884)
-Data: 05/06/2019
-
-Descrição: Material.h
-Ficheiro que cria e gere Material.cpp
- */
-
+// Material: .mtl parsing and upload of the material.* shader uniforms.
 
 #pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
-#define GLEW_STATIC
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 
