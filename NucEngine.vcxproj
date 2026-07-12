@@ -100,6 +100,7 @@
     <ClCompile Include="third_party\imgui\imgui_widgets.cpp" />
     <ClCompile Include="third_party\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\engine\render\Framebuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="third_party\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\engine\render\Framebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

@@ -126,6 +126,9 @@
     <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>third_party\imgui\backends</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\render\Framebuffer.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3_loader.h">
       <Filter>third_party\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Framebuffer.h">
+      <Filter>src\engine\render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
