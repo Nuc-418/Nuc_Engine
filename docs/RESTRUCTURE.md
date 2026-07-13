@@ -30,9 +30,9 @@ src/
   game/       Main.cpp, DemoScene, AssetPaths — the sample application
 third_party/
   stb/          stb_image.h (vendored)
-  LoadShaders/  shader compile/link helper (derived from the OpenGL
-                Programming Guide's LoadShaders utility)
   libs/x64/     prebuilt glew32s.lib and glfw3.lib
+(The LoadShaders helper this restructure originally vendored was later
+absorbed into engine/render/Shader.)
 assets/
   shaders/    GLSL sources, loaded at runtime
   models/     Iron_Man .obj/.mtl/.tga

@@ -135,8 +135,10 @@ public:
 
 private:
 	// switchL uniform locations cached for the per-frame Toggle* calls,
-	// keyed by program (plus light index for point/spot lights).
-	// Programs are created once at load time and never recreated.
+	// keyed by program (plus light index for point/spot lights). Cleared
+	// when Shader::GlobalGeneration() changes (hot reload relinks in place).
+	void CheckCacheGeneration();
+	unsigned cacheGeneration = 0;
 	std::map<GLuint, GLint> ambientSwitchCache;
 	std::map<GLuint, GLint> directionalSwitchCache;
 	std::map<std::pair<GLuint, int>, GLint> pointSwitchCache;

@@ -137,6 +137,9 @@ boundaries.
   exposes uniform setting; owns the location caching that today lives in
   `Camera`, `Time` and `Lights`, and invalidates it on reload. Add
   file-watch hot-reload in the editor (cheap once locations are owned here).
+  *(Done as `engine/render/Shader`: LoadShaders removed, reload keeps
+  program ids stable, Camera/Time/Lights caches are generation-invalidated,
+  and Tools > Reload Shaders hot-reloads in the editor.)*
 - **Primitive mesh library moves into the engine** (`engine/render/
   Primitives`): the cube/plane/cone/... generators currently in
   `DemoScene.cpp` become engine mesh assets; `DemoScene::LoadObjects`

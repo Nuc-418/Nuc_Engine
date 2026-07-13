@@ -126,9 +126,6 @@
     <ClCompile Include="src\game\Main.cpp">
       <Filter>src\game</Filter>
     </ClCompile>
-    <ClCompile Include="third_party\LoadShaders\LoadShaders.cpp">
-      <Filter>third_party\LoadShaders</Filter>
-    </ClCompile>
     <ClCompile Include="third_party\imgui\imgui.cpp">
       <Filter>third_party\imgui</Filter>
     </ClCompile>
@@ -222,6 +219,9 @@
     <ClCompile Include="src\engine\render\Primitives.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\render\Shader.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\io\ModelDiscovery.cpp">
       <Filter>src\engine\io</Filter>
     </ClCompile>
@@ -298,9 +298,6 @@
     </ClInclude>
     <ClInclude Include="src\game\DemoScene.h">
       <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="third_party\LoadShaders\LoadShaders.h">
-      <Filter>third_party\LoadShaders</Filter>
     </ClInclude>
     <ClInclude Include="third_party\stb\stb_image.h">
       <Filter>third_party\stb</Filter>
@@ -408,6 +405,9 @@
       <Filter>src\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\render\Primitives.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Shader.h">
       <Filter>src\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\io\ModelDiscovery.h">

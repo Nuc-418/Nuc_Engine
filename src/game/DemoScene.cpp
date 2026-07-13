@@ -9,7 +9,6 @@
 #include "engine/render/Primitives.h"
 #include "engine/render/LightComponent.h"
 #include "engine/render/CameraComponent.h"
-#include "LoadShaders/LoadShaders.h"
 
 #include <algorithm>
 #include <cctype>
@@ -180,35 +179,16 @@ bool DemoScene::Load(Application& app)
 
 bool DemoScene::LoadProgramShaders()
 {
-	//Load cube shader
-	ShaderInfo cubeShaders[] = {
-		{ GL_VERTEX_SHADER,   AssetPaths::CubeVertexShader },
-		{ GL_FRAGMENT_SHADER, AssetPaths::CubeFragmentShader },
-		{ GL_NONE, NULL }
-	};
-	cubeProgramShader = LoadShaders(cubeShaders);
-	if (!cubeProgramShader) return false;
+	if (!cubeShader.Load(AssetPaths::CubeVertexShader, AssetPaths::CubeFragmentShader))
+		return false;
+	if (!ironManShader.Load(AssetPaths::IronManVertexShader, AssetPaths::IronManFragmentShader))
+		return false;
+	if (!primitiveShader.Load(AssetPaths::PrimitiveVertexShader, AssetPaths::PrimitiveFragmentShader))
+		return false;
 
-	//Load Iron Man shader
-	ShaderInfo ironManshaders[] = {
-		{ GL_VERTEX_SHADER,   AssetPaths::IronManVertexShader },
-		{ GL_FRAGMENT_SHADER, AssetPaths::IronManFragmentShader },
-		{ GL_NONE, NULL }
-	};
-	ironManProgramShader = LoadShaders(ironManshaders);
-	if (!ironManProgramShader) return false;
-
-	offsetToggleLocation = glGetProgramResourceLocation(ironManProgramShader, GL_UNIFORM, "offsetToggle");
-
-	//Load the lit primitive shader (ground, cube, sphere, ...)
-	ShaderInfo primitiveShaders[] = {
-		{ GL_VERTEX_SHADER,   AssetPaths::PrimitiveVertexShader },
-		{ GL_FRAGMENT_SHADER, AssetPaths::PrimitiveFragmentShader },
-		{ GL_NONE, NULL }
-	};
-	primitiveProgramShader = LoadShaders(primitiveShaders);
-	if (!primitiveProgramShader) return false;
-
+	cubeProgramShader = cubeShader.Program();
+	ironManProgramShader = ironManShader.Program();
+	primitiveProgramShader = primitiveShader.Program();
 	return true;
 }
 
@@ -422,7 +402,7 @@ void DemoScene::Update(Application& app)
 		offsetToggle = 0;
 
 	//offsetToggle is passed to the shader program as a uniform
-	glProgramUniform1i(ironManProgramShader, offsetToggleLocation, offsetToggle);
+	glProgramUniform1i(ironManProgramShader, ironManShader.Location("offsetToggle"), offsetToggle);
 
 	if (app.inputs.key6) world.renderMode = GL_TRIANGLES;
 	if (app.inputs.key7) world.renderMode = GL_LINE_STRIP;
@@ -484,9 +464,9 @@ void DemoScene::Unload(Application& app)
 		texture.Unload();
 	modelTextures.clear();
 
-	glDeleteProgram(cubeProgramShader);
-	glDeleteProgram(ironManProgramShader);
-	glDeleteProgram(primitiveProgramShader);
+	cubeShader.Unload();
+	ironManShader.Unload();
+	primitiveShader.Unload();
 	cubeProgramShader = 0;
 	ironManProgramShader = 0;
 	primitiveProgramShader = 0;

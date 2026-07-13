@@ -35,8 +35,8 @@ private:
 
 	// Uniform locations cached per shader program. Locations that do not
 	// exist in a program are stored as -1 and silently ignored by GL.
-	// Programs are created once at load time and never recreated, so the
-	// cache is never invalidated.
+	// Cleared whenever Shader::GlobalGeneration() changes (a hot reload
+	// relinks programs in place, which can move locations).
 	struct UniformLocations
 	{
 		GLint model;
@@ -46,6 +46,7 @@ private:
 		GLint mvp;
 	};
 	std::unordered_map<GLuint, UniformLocations> locationCache;
+	unsigned cacheGeneration = 0; // Shader::GlobalGeneration() the cache was filled at
 
 	float fovDegrees = 45.0f;
 	float aspectRatio = 4.0f / 3.0f;

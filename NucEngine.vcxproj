@@ -135,11 +135,11 @@
     <ClCompile Include="src\engine\render\LightComponent.cpp" />
     <ClCompile Include="src\engine\render\CameraComponent.cpp" />
     <ClCompile Include="src\engine\render\Primitives.cpp" />
+    <ClCompile Include="src\engine\render\Shader.cpp" />
     <ClCompile Include="src\engine\io\ModelDiscovery.cpp" />
     <ClCompile Include="src\engine\scene\Transform.cpp" />
     <ClCompile Include="src\game\DemoScene.cpp" />
     <ClCompile Include="src\game\Main.cpp" />
-    <ClCompile Include="third_party\LoadShaders\LoadShaders.cpp" />
     <ClCompile Include="third_party\imgui\imgui.cpp" />
     <ClCompile Include="third_party\imgui\imgui_demo.cpp" />
     <ClCompile Include="third_party\imgui\imgui_draw.cpp" />
@@ -204,11 +204,11 @@
     <ClInclude Include="src\engine\render\LightComponent.h" />
     <ClInclude Include="src\engine\render\CameraComponent.h" />
     <ClInclude Include="src\engine\render\Primitives.h" />
+    <ClInclude Include="src\engine\render\Shader.h" />
     <ClInclude Include="src\engine\io\ModelDiscovery.h" />
     <ClInclude Include="src\engine\scene\Transform.h" />
     <ClInclude Include="src\game\AssetPaths.h" />
     <ClInclude Include="src\game\DemoScene.h" />
-    <ClInclude Include="third_party\LoadShaders\LoadShaders.h" />
     <ClInclude Include="third_party\stb\stb_image.h" />
     <ClInclude Include="third_party\imgui\imconfig.h" />
     <ClInclude Include="third_party\imgui\imgui.h" />

@@ -6,8 +6,21 @@
 #include <string> 
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
+#include "engine/render/Shader.h"
+
 using namespace std;
 using namespace glm;
+
+void Lights::CheckCacheGeneration()
+{
+	if (cacheGeneration == Shader::GlobalGeneration())
+		return;
+	ambientSwitchCache.clear();
+	directionalSwitchCache.clear();
+	pointSwitchCache.clear();
+	spotSwitchCache.clear();
+	cacheGeneration = Shader::GlobalGeneration();
+}
 
 void Lights::StorePrimitiveLight(GLuint program)
 {
@@ -225,6 +238,7 @@ void Lights::StoreSpotLights(GLuint program, int vectorSize)
 /*Fun��o que armazena os valores dos switches de cada fonte de luz ambiente (ligada/desligada)*/
 void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 {
+	CheckCacheGeneration();
 	lightInfo.ambientLight[0].switchL = switchL;
 
 	auto it = ambientSwitchCache.find(program);
@@ -238,6 +252,7 @@ void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 /*Fun��o que armazena os valores dos switches de cada fonte de luz direcional (ligada/desligada)*/
 void Lights::ToggleDirectionalLight(GLuint program, bool switchL)
 {
+	CheckCacheGeneration();
 	lightInfo.directionalLight[0].switchL = switchL;
 
 	auto it = directionalSwitchCache.find(program);
@@ -250,6 +265,7 @@ void Lights::ToggleDirectionalLight(GLuint program, bool switchL)
 /*Fun��o que armazena os valores dos switches de cada fonte de luz pontual (ligada/desligada)*/
 void Lights::TogglePointLight(GLuint program, int lightIndex, bool switchL)
 {
+	CheckCacheGeneration();
 	lightInfo.pointLight[lightIndex].switchL = switchL;
 
 	auto it = pointSwitchCache.find({ program, lightIndex });
@@ -265,6 +281,7 @@ void Lights::TogglePointLight(GLuint program, int lightIndex, bool switchL)
 /*Fun��o que armazena os valores dos switches de cada fonte de luz c�nica (ligada/desligada)*/
 void Lights::ToggleSpotLight(GLuint program, int lightIndex, bool switchL)
 {
+	CheckCacheGeneration();
 	lightInfo.spotLight[lightIndex].switchL = switchL;
 
 	auto it = spotSwitchCache.find({ program, lightIndex });

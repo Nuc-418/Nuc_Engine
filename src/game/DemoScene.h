@@ -7,6 +7,7 @@
 
 #include "engine/core/Application.h"
 #include "engine/scene/World.h"
+#include "engine/render/Shader.h"
 #include "engine/render/Texture.h"
 #include "JoltPhysics/JoltPhysicsPlugin.h"
 
@@ -26,13 +27,15 @@ private:
 
 	World world;
 
-	// Shader programs
+	// Shader assets. The GLuint mirrors below feed the spawn factories and
+	// per-frame uniform calls; Shader::Reload keeps program ids stable, so
+	// they stay valid across a hot reload.
+	Shader ironManShader;
+	Shader cubeShader;
+	Shader primitiveShader; // lit shader for the built-in primitives
 	GLuint ironManProgramShader = 0;
 	GLuint cubeProgramShader = 0;
-	GLuint primitiveProgramShader = 0; // lit shader for the built-in primitives
-
-	// Cached at load time; the programs are never recreated.
-	GLint offsetToggleLocation = -1;
+	GLuint primitiveProgramShader = 0;
 
 	// One texture per discovered model (bound to the shared model shader).
 	std::vector<Texture> modelTextures;

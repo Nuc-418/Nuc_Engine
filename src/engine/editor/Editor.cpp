@@ -1,6 +1,7 @@
 // Editor: ImGui lifecycle, UE5-style dockspace/menu, panels and selection state.
 
 #include "engine/editor/Editor.h"
+#include "engine/render/Shader.h"
 #include "engine/editor/EditorTheme.h"
 #include "engine/editor/EditorFileSystem.h"
 #include "engine/editor/GamePackager.h"
@@ -152,6 +153,14 @@ void Editor::DrawMenuBar()
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
 			exitClicked = true;
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Tools")) {
+		// Recompiles every live Shader in place (program ids stay stable);
+		// a broken edit keeps the old program running and logs the error.
+		if (ImGui::MenuItem("Reload Shaders"))
+			Shader::ReloadAll();
 		ImGui::EndMenu();
 	}
 

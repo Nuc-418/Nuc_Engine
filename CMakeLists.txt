@@ -48,7 +48,6 @@ file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS ${REPO_ROOT}/src/engine/*.cpp
 
 # Vendored third-party sources compiled into the project (headers are elsewhere).
 set(THIRD_PARTY_SOURCES
-	${REPO_ROOT}/third_party/LoadShaders/LoadShaders.cpp
 	${REPO_ROOT}/third_party/imgui/imgui.cpp
 	${REPO_ROOT}/third_party/imgui/imgui_demo.cpp
 	${REPO_ROOT}/third_party/imgui/imgui_draw.cpp

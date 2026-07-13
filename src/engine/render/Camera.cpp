@@ -1,6 +1,7 @@
 // Camera: perspective camera; uploads Model/View/MVP matrices to shader programs.
 
 #include "engine/render/Camera.h"
+#include "engine/render/Shader.h"
 #include <iostream>
 #include <glm/gtc/matrix_inverse.hpp> // glm::inverseTranspose()
 #include <glm/gtc/type_ptr.hpp> // value_ptr
@@ -50,6 +51,11 @@ glm::mat4 Camera::GetMVP(glm::mat4 model)
 /*Fun��o que envia as diversas matrizes da c�mara para o programa shader*/
 void Camera::CamToProgram(GLuint program, glm::mat4 model)
 {
+	if (cacheGeneration != Shader::GlobalGeneration()) {
+		locationCache.clear();
+		cacheGeneration = Shader::GlobalGeneration();
+	}
+
 	auto cached = locationCache.find(program);
 	if (cached == locationCache.end()) {
 		UniformLocations locations;
