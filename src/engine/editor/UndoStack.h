@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/scene/World.h"
+#include "engine/scene/FieldStore.h"
 
 struct TransformState
 {
@@ -33,6 +34,10 @@ public:
 	// transform changes when the world pose is kept, so both states ride along.
 	void RecordReparent(unsigned long long id, unsigned long long parentBefore, unsigned long long parentAfter,
 	                    const TransformState& before, const TransformState& after);
+	// Component property edit (Details panel): before/after snapshots of the
+	// component's serialized state, applied back via Deserialize.
+	void RecordComponentEdit(unsigned long long id, const std::string& componentTypeId,
+	                         const FieldStore& before, const FieldStore& after);
 
 	// Returns the id of the affected object (0 if nothing to undo/redo).
 	unsigned long long Undo(World& world);
@@ -48,7 +53,7 @@ public:
 private:
 	struct Action
 	{
-		enum class Kind { Transform, Spawn, Delete, Rename, Lights, Reparent };
+		enum class Kind { Transform, Spawn, Delete, Rename, Lights, Reparent, ComponentEdit };
 		Kind kind;
 		unsigned long long id = 0;
 		std::string typeId;         // Spawn/Delete: the type to respawn
@@ -60,6 +65,9 @@ private:
 		VectorLight lightsAfter;    // Lights only
 		unsigned long long parentBefore = 0; // Reparent only (0 = root)
 		unsigned long long parentAfter = 0;  // Reparent only
+		std::string componentTypeId;         // ComponentEdit only
+		FieldStore fieldsBefore;             // ComponentEdit only
+		FieldStore fieldsAfter;              // ComponentEdit only
 	};
 
 	// Applies one action in the given direction and returns the affected id.

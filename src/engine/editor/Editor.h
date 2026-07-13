@@ -10,6 +10,7 @@
 #include "engine/render/Framebuffer.h"
 #include "engine/scene/World.h"
 #include "engine/editor/UndoStack.h"
+#include "engine/scene/FieldStore.h"
 
 class Application;
 struct GLFWwindow;
@@ -48,6 +49,7 @@ public:
 	TransformState dragBefore = {};
 	std::string nameBefore;      // Details name field capture
 	VectorLight lightsBefore;    // Lights panel drag capture
+	FieldStore componentBefore;  // Details component-editor capture (one edit at a time)
 	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::TRANSLATE;
 	ImGuizmo::MODE gizmoMode = ImGuizmo::WORLD;
 	Framebuffer sceneFramebuffer;

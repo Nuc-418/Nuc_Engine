@@ -11,6 +11,12 @@
 #include <glm/glm.hpp>
 
 // Writes named fields into the current component's record.
+//
+// The hinted overloads (WriteColor, WriteEnum) exist for consumers that care
+// about presentation — the editor's auto-generated Details UI draws a color
+// picker or a labeled combo instead of raw drags. They default to the plain
+// Write, so serializers (JSON) and existing implementations are unaffected;
+// deserialization reads the same plain vec3/int back.
 class ISerializer
 {
 public:
@@ -20,6 +26,16 @@ public:
 	virtual void Write(const char* key, bool value) = 0;
 	virtual void Write(const char* key, const glm::vec3& value) = 0;
 	virtual void Write(const char* key, const std::string& value) = 0;
+
+	// A vec3 that is a color (UI: color picker).
+	virtual void WriteColor(const char* key, const glm::vec3& value) { Write(key, value); }
+	// An int that indexes a fixed label set (UI: combo). `labels` must have
+	// static storage duration (string literals).
+	virtual void WriteEnum(const char* key, int value, const char* const* labels, int labelCount)
+	{
+		(void)labels; (void)labelCount;
+		Write(key, value);
+	}
 };
 
 // Reads named fields, returning the supplied default when a key is absent.

@@ -8,11 +8,12 @@
 
 void LightComponent::Serialize(ISerializer& out) const
 {
-	out.Write("kind", (int)kind);
+	static const char* const kKindLabels[] = { "Directional", "Point", "Spot" };
+	out.WriteEnum("kind", (int)kind, kKindLabels, 3);
 	out.Write("on", on);
-	out.Write("ambient", ambient);
-	out.Write("diffuse", diffuse);
-	out.Write("specular", specular);
+	out.WriteColor("ambient", ambient);
+	out.WriteColor("diffuse", diffuse);
+	out.WriteColor("specular", specular);
 	out.Write("constant", constant);
 	out.Write("linear", linear);
 	out.Write("quadratic", quadratic);

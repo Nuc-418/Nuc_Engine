@@ -103,6 +103,20 @@ void UndoStack::RecordReparent(unsigned long long id, unsigned long long parentB
 	Push(action);
 }
 
+void UndoStack::RecordComponentEdit(unsigned long long id, const std::string& componentTypeId,
+                                    const FieldStore& before, const FieldStore& after)
+{
+	if (id == 0 || componentTypeId.empty() || before == after)
+		return;
+	Action action;
+	action.kind = Action::Kind::ComponentEdit;
+	action.id = id;
+	action.componentTypeId = componentTypeId;
+	action.fieldsBefore = before;
+	action.fieldsAfter = after;
+	Push(action);
+}
+
 unsigned long long UndoStack::Undo(World& world)
 {
 	if (undoActions.empty())
@@ -166,6 +180,14 @@ unsigned long long UndoStack::Apply(World& world, const Action& action, bool und
 			GameObject* object = world.FindById(action.id);
 			if (object)
 				world.Destroy(object);
+		}
+		return action.id;
+	}
+	case Action::Kind::ComponentEdit: {
+		GameObject* object = world.FindById(action.id);
+		if (object) {
+			if (Component* component = object->GetComponentById(action.componentTypeId))
+				component->Deserialize(undo ? action.fieldsBefore : action.fieldsAfter);
 		}
 		return action.id;
 	}

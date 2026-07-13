@@ -202,6 +202,7 @@
     <ClInclude Include="src\engine\scene\Component.h" />
     <ClInclude Include="src\engine\scene\ComponentRegistry.h" />
     <ClInclude Include="src\engine\scene\Serialization.h" />
+    <ClInclude Include="src\engine\scene\FieldStore.h" />
     <ClInclude Include="src\engine\render\MeshComponent.h" />
     <ClInclude Include="src\engine\render\LightComponent.h" />
     <ClInclude Include="src\engine\render\CameraComponent.h" />

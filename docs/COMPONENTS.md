@@ -69,6 +69,18 @@ goes through `World::ActiveCamera()`. With no active camera set, everything
 renders through `World::camera` exactly as before, and the editor viewport
 always uses the editor camera in Edit mode.
 
+## Property reflection (editor UI + undo)
+
+A component's `Serialize` doubles as its property enumeration. The Details
+panel captures the fields through an `ISerializer` visitor and auto-generates
+one widget per field — float/int/bool/vec3/string, plus `WriteColor` (color
+picker) and `WriteEnum` (labeled combo) hints — then applies edits back
+through `Deserialize`. This works for any registered component, including
+plugin ones the editor cannot name (PhysicsBody, for example). Each widget
+edit is one undoable ComponentEdit action: before/after snapshots in a
+`FieldStore` (an in-memory ISerializer/IDeserializer, also used by tests),
+re-applied via `Deserialize` on undo/redo.
+
 ## Serialization
 
 Components (de)serialize through engine-owned interfaces —

@@ -434,6 +434,9 @@
     <ClInclude Include="src\engine\scene\Serialization.h">
       <Filter>src\engine\scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\scene\FieldStore.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
     <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h">
       <Filter>Plugins\JoltPhysics</Filter>
     </ClInclude>

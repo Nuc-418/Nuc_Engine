@@ -236,11 +236,14 @@ scene-code involvement.
   so a component's `Serialize` doubles as a property enumeration
   (name/type/get/set). DetailsPanel then auto-generates UI for *any*
   registered component — including plugin ones — and per-component editor
-  code stops accumulating.
+  code stops accumulating. *(Done: WriteColor/WriteEnum hints on
+  ISerializer, PropertyCapture/PropertyApply in the Details panel; the
+  hand-written Light/Camera editors are gone and PhysicsBody is editable.)*
 - **Generalized undo**: `UndoStack` currently special-cases transforms,
   names and lights. With reflection, an edit becomes "component state
   before/after" (two serialized blobs) and one undo entry type covers every
-  component forever.
+  component forever. *(Done for component properties: ComponentEdit actions
+  snapshot before/after FieldStores and re-apply via Deserialize.)*
 - **Prefabs**: save a `GameObject` (its component array) as an asset;
   spawning a prefab instance goes through the same reconciliation path the
   scene loader already has. `World::RegisterType`'s hand-written factories
