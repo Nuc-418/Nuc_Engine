@@ -44,6 +44,20 @@ Note: rebasing decomposes the local matrix into position/Euler/scale, so a
 non-uniform-scaled, rotated parent can introduce shear the TRS form cannot
 represent — standard TRS-engine behavior.
 
+## Lights as components
+
+`LightComponent` (`src/engine/render/LightComponent.h`) turns an actor into a
+light source: kind (directional/point/spot), colors, attenuation and cone
+angle live on the component; **placement comes from the owner's transform**
+(world position for point/spot, world +Z forward for aim). Each frame
+`World::SyncComponentLights` merges every LightComponent after the world-level
+authored lights into `World::combinedLights` and re-uploads through the
+existing `Lights` uniform path only when something changed — shaders are
+untouched. The demo registers a meshless `"Light"` spawn type, and the Details
+panel edits the component's parameters (component edits are not yet undoable).
+World-level authored lights (Lights panel, scene `lights` block) continue to
+work unchanged; migrating them fully onto components is a later step.
+
 ## Serialization
 
 Components (de)serialize through engine-owned interfaces —

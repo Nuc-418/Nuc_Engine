@@ -4,6 +4,7 @@
 #include "engine/editor/Editor.h"
 #include "engine/scene/Component.h"
 #include "engine/scene/ComponentRegistry.h"
+#include "engine/render/LightComponent.h"
 
 #include <glm/glm.hpp>
 #include <cstring>
@@ -65,8 +66,34 @@ void DrawDetailsPanel(Editor& editor)
 	ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
 	trackEdit();
 
-	/* Components: list what's attached, and offer the registered types to add.
-	   Per-component editors arrive with the light/physics component phases. */
+	/* Light component editor. Placement is driven by the transform above
+	   (world position for point/spot, world forward for aim), so only the
+	   light's own parameters live here. Component edits are not yet undoable
+	   (generalized component undo is a later roadmap phase). */
+	if (LightComponent* light = object->GetComponent<LightComponent>()) {
+		ImGui::SeparatorText("Light");
+		const char* kinds[] = { "Directional", "Point", "Spot" };
+		int kind = (int)light->kind;
+		if (ImGui::Combo("Kind", &kind, kinds, 3))
+			light->kind = (LightComponent::Kind)kind;
+		ImGui::Checkbox("On", &light->on);
+		ImGui::ColorEdit3("Ambient", &light->ambient.x);
+		ImGui::ColorEdit3("Diffuse", &light->diffuse.x);
+		ImGui::ColorEdit3("Specular", &light->specular.x);
+		if (light->kind != LightComponent::Kind::Directional) {
+			ImGui::DragFloat("Constant", &light->constant, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Linear", &light->linear, 0.005f, 0.0f, 2.0f);
+			ImGui::DragFloat("Quadratic", &light->quadratic, 0.005f, 0.0f, 2.0f);
+		}
+		if (light->kind == LightComponent::Kind::Spot) {
+			float cutOffDegrees = glm::degrees(light->cutOff);
+			if (ImGui::DragFloat("Cone (deg)", &cutOffDegrees, 0.5f, 1.0f, 89.0f))
+				light->cutOff = glm::radians(cutOffDegrees);
+		}
+		ImGui::TextDisabled("Position and aim follow the object's transform.");
+	}
+
+	/* Components: list what's attached, and offer the registered types to add. */
 	ImGui::SeparatorText("Components");
 	for (const std::unique_ptr<Component>& component : object->Components())
 		ImGui::BulletText("%s", component->DisplayName());

@@ -73,18 +73,31 @@ public:
 	// Scenes hook this to null their raw handles when an object goes away.
 	std::function<void(GameObject*)> onDestroyed;
 
+	// World-level authored lights (scene file / Lights panel / demo setup).
 	Lights lights;
 	GLuint lightsProgram = 0; // the program the lights are uploaded to
 
-	// Re-uploads every light (values and counts) to lightsProgram; safe to
-	// call with any vector empty. Used after wholesale light-state changes
+	// Authored lights merged with every LightComponent in the world (their
+	// position/direction follow the owning object's world transform). This is
+	// what is actually uploaded — read it (not `lights`) for "what's lit now",
+	// e.g. StorePrimitiveLight.
+	Lights combinedLights;
+
+	// Rebuilds combinedLights and re-uploads to lightsProgram; safe to call
+	// with any vector empty. Used after wholesale light-state changes
 	// (scene load, undo/redo).
 	void UploadLights();
+
+	// Rebuilds combinedLights and uploads only if something changed (a light
+	// component was added/removed/edited or its object moved). Call once per
+	// frame before drawing.
+	void SyncComponentLights();
 	Camera camera{ glm::vec3(1.0f, 1.0f, -10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f) };
 	GLenum renderMode = GL_TRIANGLES;
 
 private:
 	std::string UniqueName(const std::string& base);
+	VectorLight BuildCombinedLights();
 
 	struct TypeInfo { std::string label; SpawnFn factory; };
 	std::map<std::string, TypeInfo> types;

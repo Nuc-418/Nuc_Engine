@@ -213,6 +213,9 @@
     <ClCompile Include="src\engine\render\MeshComponent.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\render\LightComponent.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\scene\ComponentRegistry.cpp">
       <Filter>src\engine\scene</Filter>
     </ClCompile>
@@ -387,6 +390,9 @@
       <Filter>src\engine\plugin</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\render\MeshComponent.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\LightComponent.h">
       <Filter>src\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\scene\Component.h">

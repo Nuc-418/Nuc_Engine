@@ -89,7 +89,8 @@ if g++ -std=c++17 -Isrc -Ithird_party -o /tmp/nuc_euler_test tools/lin_syntax_ch
 
 echo "== unit tests (doctest) =="
 if g++ -std=c++17 -DGLM_FORCE_CTOR_INIT -Isrc -Ithird_party \
-     -o /tmp/nuc_unit_tests tools/tests/main.cpp tools/tests/test_transform.cpp src/engine/scene/Transform.cpp src/engine/core/EngineMath.cpp \
+     -o /tmp/nuc_unit_tests tools/tests/main.cpp tools/tests/test_transform.cpp tools/tests/test_light_component.cpp \
+     src/engine/scene/Transform.cpp src/engine/core/EngineMath.cpp src/engine/render/LightComponent.cpp src/engine/scene/ComponentRegistry.cpp \
    && /tmp/nuc_unit_tests; then :; else FAIL=1; fi
 
 if [ $FAIL -eq 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED"; fi

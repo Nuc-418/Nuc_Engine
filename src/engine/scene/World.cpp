@@ -1,6 +1,7 @@
 // World: registry of scene objects plus lights, camera and render settings.
 
 #include "engine/scene/World.h"
+#include "engine/render/LightComponent.h"
 
 void World::RegisterType(const std::string& id, const std::string& label, SpawnFn factory)
 {
@@ -139,16 +140,126 @@ void World::ResetToDefaultMap()
 	renderMode = GL_TRIANGLES;
 }
 
+// Appends each LightComponent to the authored lights. Point/spot position is
+// the owner's world position; directional/spot direction is the owner's world
+// forward axis (+Z rotated by the object).
+VectorLight World::BuildCombinedLights()
+{
+	VectorLight merged = lights.lightInfo;
+	for (WorldEntry& entry : entries) {
+		LightComponent* light = entry.object->GetComponent<LightComponent>();
+		if (!light)
+			continue;
+
+		glm::mat4 world = entry.object->WorldMatrix();
+		glm::vec3 position = glm::vec3(world[3]);
+		glm::vec3 direction = glm::vec3(world * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
+		float length = glm::length(direction);
+		direction = length > 1e-6f ? direction / length : glm::vec3(0.0f, 0.0f, 1.0f);
+
+		switch (light->kind) {
+		case LightComponent::Kind::Directional: {
+			DirectionalLight l;
+			l.switchL = light->on;
+			l.direction = direction;
+			l.ambient = light->ambient;
+			l.diffuse = light->diffuse;
+			l.specular = light->specular;
+			merged.directionalLight.push_back(l);
+			break;
+		}
+		case LightComponent::Kind::Point: {
+			PointLight l;
+			l.switchL = light->on;
+			l.position = position;
+			l.ambient = light->ambient;
+			l.diffuse = light->diffuse;
+			l.specular = light->specular;
+			l.constant = light->constant;
+			l.linear = light->linear;
+			l.quadratic = light->quadratic;
+			merged.pointLight.push_back(l);
+			break;
+		}
+		case LightComponent::Kind::Spot: {
+			SpotLight l;
+			l.switchL = light->on;
+			l.position = position;
+			l.direction = direction;
+			l.cutOff = light->cutOff;
+			l.ambient = light->ambient;
+			l.diffuse = light->diffuse;
+			l.specular = light->specular;
+			l.constant = light->constant;
+			l.linear = light->linear;
+			l.quadratic = light->quadratic;
+			merged.spotLight.push_back(l);
+			break;
+		}
+		}
+	}
+	return merged;
+}
+
+namespace {
+
+bool LightVectorsEqual(const VectorLight& a, const VectorLight& b)
+{
+	if (a.ambientLight.size() != b.ambientLight.size()
+	    || a.directionalLight.size() != b.directionalLight.size()
+	    || a.pointLight.size() != b.pointLight.size()
+	    || a.spotLight.size() != b.spotLight.size())
+		return false;
+	for (size_t i = 0; i < a.ambientLight.size(); i++) {
+		const AmbientLight& x = a.ambientLight[i]; const AmbientLight& y = b.ambientLight[i];
+		if (x.switchL != y.switchL || x.ambient != y.ambient)
+			return false;
+	}
+	for (size_t i = 0; i < a.directionalLight.size(); i++) {
+		const DirectionalLight& x = a.directionalLight[i]; const DirectionalLight& y = b.directionalLight[i];
+		if (x.switchL != y.switchL || x.direction != y.direction || x.ambient != y.ambient
+		    || x.diffuse != y.diffuse || x.specular != y.specular)
+			return false;
+	}
+	for (size_t i = 0; i < a.pointLight.size(); i++) {
+		const PointLight& x = a.pointLight[i]; const PointLight& y = b.pointLight[i];
+		if (x.switchL != y.switchL || x.position != y.position || x.ambient != y.ambient
+		    || x.diffuse != y.diffuse || x.specular != y.specular
+		    || x.constant != y.constant || x.linear != y.linear || x.quadratic != y.quadratic)
+			return false;
+	}
+	for (size_t i = 0; i < a.spotLight.size(); i++) {
+		const SpotLight& x = a.spotLight[i]; const SpotLight& y = b.spotLight[i];
+		if (x.switchL != y.switchL || x.position != y.position || x.direction != y.direction
+		    || x.cutOff != y.cutOff || x.ambient != y.ambient || x.diffuse != y.diffuse
+		    || x.specular != y.specular || x.constant != y.constant || x.linear != y.linear
+		    || x.quadratic != y.quadratic)
+			return false;
+	}
+	return true;
+}
+
+} // namespace
+
 void World::UploadLights()
 {
+	combinedLights.lightInfo = BuildCombinedLights();
 	if (lightsProgram == 0)
 		return;
-	if (!lights.lightInfo.ambientLight.empty())
-		lights.StoreAmbientLights(lightsProgram);
-	if (!lights.lightInfo.directionalLight.empty())
-		lights.StoreDirectionalLights(lightsProgram, (int)lights.lightInfo.directionalLight.size());
-	lights.StorePointLights(lightsProgram, (int)lights.lightInfo.pointLight.size());
-	lights.StoreSpotLights(lightsProgram, (int)lights.lightInfo.spotLight.size());
+	if (!combinedLights.lightInfo.ambientLight.empty())
+		combinedLights.StoreAmbientLights(lightsProgram);
+	if (!combinedLights.lightInfo.directionalLight.empty())
+		combinedLights.StoreDirectionalLights(lightsProgram, (int)combinedLights.lightInfo.directionalLight.size());
+	combinedLights.StorePointLights(lightsProgram, (int)combinedLights.lightInfo.pointLight.size());
+	combinedLights.StoreSpotLights(lightsProgram, (int)combinedLights.lightInfo.spotLight.size());
+}
+
+void World::SyncComponentLights()
+{
+	VectorLight merged = BuildCombinedLights();
+	if (LightVectorsEqual(merged, combinedLights.lightInfo))
+		return;
+	UploadLights();
 }
 
 std::string World::UniqueName(const std::string& base)

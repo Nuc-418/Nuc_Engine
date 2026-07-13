@@ -6,6 +6,7 @@
 #include "engine/core/Time.h"
 #include "engine/core/EngineMath.h"
 #include "engine/editor/EditorFileSystem.h"
+#include "engine/render/LightComponent.h"
 #include "LoadShaders/LoadShaders.h"
 
 #include <algorithm>
@@ -434,6 +435,14 @@ void DemoScene::LoadObjects(Application& app)
 		return object;
 	});
 
+	// A meshless light actor: point light by default. Move it to place the
+	// light; rotate it to aim directional/spot kinds (see LightComponent).
+	world.RegisterType("Light", "Light", [] {
+		std::unique_ptr<GameObject> object(new GameObject());
+		object->AddComponent<LightComponent>();
+		return object;
+	});
+
 	// --- Dynamic model discovery -------------------------------------------
 	// Every .obj under assets/models becomes a spawnable, draggable type. Drop
 	// a model in and it shows up in the Content Browser automatically.
@@ -624,8 +633,11 @@ void DemoScene::Draw(Application& app)
 	Time::TimeToProgram(ironManProgramShader);
 	Time::TimeToProgram(cubeProgramShader);
 
+	/* Merge LightComponent lights into the upload (no-op unless changed). */
+	world.SyncComponentLights();
+
 	/* Feed the primitive shader the scene's directional + ambient light. */
-	world.lights.StorePrimitiveLight(primitiveProgramShader);
+	world.combinedLights.StorePrimitiveLight(primitiveProgramShader);
 
 	/* Render every world object (dispatches to each object's components) */
 	for (WorldEntry& entry : world.entries)
