@@ -88,6 +88,21 @@ void UndoStack::RecordLights(const VectorLight& before, const VectorLight& after
 	Push(action);
 }
 
+void UndoStack::RecordReparent(unsigned long long id, unsigned long long parentBefore, unsigned long long parentAfter,
+                               const TransformState& before, const TransformState& after)
+{
+	if (id == 0 || parentBefore == parentAfter)
+		return;
+	Action action;
+	action.kind = Action::Kind::Reparent;
+	action.id = id;
+	action.parentBefore = parentBefore;
+	action.parentAfter = parentAfter;
+	action.before = before;
+	action.after = after;
+	Push(action);
+}
+
 unsigned long long UndoStack::Undo(World& world)
 {
 	if (undoActions.empty())
@@ -151,6 +166,18 @@ unsigned long long UndoStack::Apply(World& world, const Action& action, bool und
 			GameObject* object = world.FindById(action.id);
 			if (object)
 				world.Destroy(object);
+		}
+		return action.id;
+	}
+	case Action::Kind::Reparent: {
+		GameObject* object = world.FindById(action.id);
+		if (object) {
+			unsigned long long parentId = undo ? action.parentBefore : action.parentAfter;
+			GameObject* parent = parentId != 0 ? world.FindById(parentId) : nullptr;
+			// The recorded local transform already matches this parent, so the
+			// world pose is restored by applying both (no keep-world math here).
+			object->SetParent(parent, /*keepWorldTransform=*/false);
+			ApplyTransform(*object, undo ? action.before : action.after);
 		}
 		return action.id;
 	}

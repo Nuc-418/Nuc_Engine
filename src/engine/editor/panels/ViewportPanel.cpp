@@ -105,10 +105,11 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		if (ImGui::IsKeyPressed(ImGuiKey_E)) editor.gizmoOperation = ImGuizmo::ROTATE;
 		if (ImGui::IsKeyPressed(ImGuiKey_R)) editor.gizmoOperation = ImGuizmo::SCALE;
 
-		/* F = focus the selected object */
+		/* F = focus the selected object (world position: it may be parented) */
 		if (ImGui::IsKeyPressed(ImGuiKey_F) && editor.selected) {
 			Transform& cameraTransform = editor.world->camera.transform;
-			cameraTransform.position = editor.selected->transform.position - cameraTransform.forward * 8.0f;
+			glm::vec3 worldPos = glm::vec3(editor.selected->WorldMatrix()[3]);
+			cameraTransform.position = worldPos - cameraTransform.forward * 8.0f;
 		}
 	}
 
@@ -139,10 +140,9 @@ void DrawViewportPanel(Editor& editor, Application& app)
 			Mesh& mesh = meshComponent->renderer.mesh;
 			if (!mesh.hasAabb)
 				continue;
-			entry.object->transform.UpdateModel();
 			float distance = 0.0f;
 			if (RayIntersectsOBB(rayOrigin, rayDirection, mesh.aabbMin, mesh.aabbMax,
-			                     entry.object->transform.model, distance)) {
+			                     entry.object->WorldMatrix(), distance)) {
 				if (!closest || distance < closestDistance) {
 					closest = entry.object.get();
 					closestDistance = distance;
@@ -160,22 +160,26 @@ void DrawViewportPanel(Editor& editor, Application& app)
 
 		Transform& transform = editor.selected->transform;
 		TransformState preManipulate = CaptureTransform(*editor.selected);
-		transform.UpdateModel();
-		glm::mat4 model = transform.model;
+		// The gizmo manipulates the WORLD matrix; edits convert back to the
+		// local transform through the parent's inverse.
+		glm::mat4 model = editor.selected->WorldMatrix();
 		glm::mat4 view = editor.world->camera.GetView();
 		glm::mat4 projection = editor.world->camera.GetProjection();
 
 		if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
 		                         editor.gizmoOperation, editor.gizmoMode, glm::value_ptr(model))
 		    && ImGuizmo::IsUsing()) {
-			transform.position = glm::vec3(model[3]);
+			glm::mat4 local = model;
+			if (GameObject* parent = editor.selected->Parent())
+				local = glm::inverse(parent->WorldMatrix()) * model;
+			transform.position = glm::vec3(local[3]);
 			if (editor.gizmoOperation == ImGuizmo::SCALE) {
-				transform.scale = glm::vec3(glm::length(glm::vec3(model[0])),
-				                            glm::length(glm::vec3(model[1])),
-				                            glm::length(glm::vec3(model[2])));
+				transform.scale = glm::vec3(glm::length(glm::vec3(local[0])),
+				                            glm::length(glm::vec3(local[1])),
+				                            glm::length(glm::vec3(local[2])));
 			}
 			if (editor.gizmoOperation == ImGuizmo::ROTATE)
-				transform.rotation = EulerYXZFromMatrix(model);
+				transform.rotation = EulerYXZFromMatrix(local);
 		}
 
 		/* One undo entry per drag: capture on grab, record on release. */

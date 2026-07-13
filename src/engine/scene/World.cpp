@@ -77,6 +77,13 @@ bool World::Destroy(GameObject* object)
 {
 	for (size_t i = 0; i < entries.size(); i++) {
 		if (entries[i].object.get() == object) {
+			// Children survive: hand them to the destroyed object's parent
+			// (or the root) without moving them in the world.
+			std::vector<GameObject*> orphans = object->Children();
+			for (GameObject* child : orphans)
+				child->SetParent(object->Parent(), /*keepWorldTransform=*/true);
+			object->SetParent(nullptr, /*keepWorldTransform=*/false);
+
 			if (onDestroyed)
 				onDestroyed(object);
 			object->Unload();

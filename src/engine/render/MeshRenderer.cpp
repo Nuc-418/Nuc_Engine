@@ -15,14 +15,12 @@ void MeshRenderer::SetProgramShader(GLuint shaderProgram)
 
 
 /*Faz-se o desenho das primitivas*/
-void MeshRenderer::Draw(GLenum mode,Camera* camera)
+void MeshRenderer::Draw(GLenum mode, Camera* camera, const glm::mat4& model)
 {
-	transformPtr->UpdateModel();
-
 	glUseProgram(program);
 	glBindVertexArray(mesh.VAO);
 
-	camera->CamToProgram(program, transformPtr->model);
+	camera->CamToProgram(program, model);
 
 	if (mesh.EBO == 0)
 		glDrawArrays(mode, 0, mesh.nVertex);

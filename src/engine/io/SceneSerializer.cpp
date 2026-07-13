@@ -9,6 +9,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <utility>
+#include <vector>
 
 using nlohmann::json;
 
@@ -86,9 +89,13 @@ bool SceneSerializer::Save(const World& world, const std::string& path)
 			components.push_back(record);
 		}
 
+		// position/rotation/scale are the LOCAL transform; "parent" (0 = root)
+		// references another object's "id" and is resolved after load.
 		objects.push_back({
 			{ "type", entry.typeId },
 			{ "name", entry.object->name },
+			{ "id", entry.id },
+			{ "parent", entry.object->Parent() ? world.IdOf(entry.object->Parent()) : 0 },
 			{ "position", ToJson(transform.position) },
 			{ "rotation", ToJson(transform.rotation) },
 			{ "scale", ToJson(transform.scale) },
@@ -155,6 +162,11 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 
 	world.Clear();
 
+	// Saved id -> spawned object, plus deferred parent links (a parent may be
+	// saved after its child, so links resolve only after every spawn).
+	std::map<unsigned long long, GameObject*> bySavedId;
+	std::vector<std::pair<GameObject*, unsigned long long>> parentLinks;
+
 	for (const json& item : root.value("objects", json::array())) {
 		std::string typeId = item.value("type", "");
 		if (!world.CanSpawn(typeId)) {
@@ -164,6 +176,12 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 		GameObject* object = world.Spawn(typeId, item.value("name", ""));
 		if (!object)
 			continue;
+		unsigned long long savedId = item.value("id", 0ULL);
+		if (savedId != 0)
+			bySavedId[savedId] = object;
+		unsigned long long parentId = item.value("parent", 0ULL);
+		if (parentId != 0)
+			parentLinks.push_back({ object, parentId });
 		object->transform.position = Vec3FromJson(item.value("position", json()));
 		object->transform.rotation = Vec3FromJson(item.value("rotation", json()));
 		object->transform.scale = Vec3FromJson(item.value("scale", json()), glm::vec3(1.0f));
@@ -183,6 +201,14 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 				component->Deserialize(reader);
 			}
 		}
+	}
+
+	// The saved position/rotation/scale are local values, so links restore
+	// with keepWorldTransform=false.
+	for (const std::pair<GameObject*, unsigned long long>& link : parentLinks) {
+		auto it = bySavedId.find(link.second);
+		if (it != bySavedId.end())
+			link.first->SetParent(it->second, /*keepWorldTransform=*/false);
 	}
 
 	world.camera.transform.position = Vec3FromJson(root["camera"].value("position", json()), world.camera.transform.position);

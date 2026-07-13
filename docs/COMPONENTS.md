@@ -27,6 +27,23 @@ prefab features build on.
   theirs** (the seam that lets a plugin add a component type without core
   knowing it). Drives the editor's *Add Component* menu and scene load.
 
+## Hierarchy
+
+`GameObject`s form a parent/child tree (UE5-style attachment). The object's
+`Transform` is **local to its parent**; the world matrix composes up the chain
+(`GameObject::WorldMatrix()`). Key API: `SetParent(parent, keepWorldTransform)`
+(nullptr = root; cycles are refused; with `keepWorldTransform` the local
+transform is rebased through the parent's inverse so the object doesn't move),
+`Parent()`, `Children()`, `IsAncestorOf()`. Ownership stays flat in
+`World::entries` — links are non-owning. Destroying a parent reparents its
+children to the destroyed object's parent, keeping their world pose. The
+editor's Outliner shows the tree and reparents by drag-and-drop (undoable);
+the scene file stores each object's `id` and `parent` id.
+
+Note: rebasing decomposes the local matrix into position/Euler/scale, so a
+non-uniform-scaled, rotated parent can introduce shear the TRS form cannot
+represent — standard TRS-engine behavior.
+
 ## Serialization
 
 Components (de)serialize through engine-owned interfaces —

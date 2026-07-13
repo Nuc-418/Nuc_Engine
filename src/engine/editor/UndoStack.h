@@ -29,6 +29,10 @@ public:
 	void RecordDelete(const std::string& typeId, const std::string& name, unsigned long long id, const TransformState& state);
 	void RecordRename(unsigned long long id, const std::string& before, const std::string& after);
 	void RecordLights(const VectorLight& before, const VectorLight& after);
+	// Reparent (Outliner drag): parent ids may be 0 (root). The local
+	// transform changes when the world pose is kept, so both states ride along.
+	void RecordReparent(unsigned long long id, unsigned long long parentBefore, unsigned long long parentAfter,
+	                    const TransformState& before, const TransformState& after);
 
 	// Returns the id of the affected object (0 if nothing to undo/redo).
 	unsigned long long Undo(World& world);
@@ -44,16 +48,18 @@ public:
 private:
 	struct Action
 	{
-		enum class Kind { Transform, Spawn, Delete, Rename, Lights };
+		enum class Kind { Transform, Spawn, Delete, Rename, Lights, Reparent };
 		Kind kind;
 		unsigned long long id = 0;
 		std::string typeId;         // Spawn/Delete: the type to respawn
 		std::string name;           // Spawn/Delete: object name; Rename: name before the edit
 		std::string nameAfter;      // Rename only
-		TransformState before = {}; // Transform: pre-edit; Spawn/Delete: state at record time
-		TransformState after = {};  // Transform only: post-edit
+		TransformState before = {}; // Transform/Reparent: pre-edit; Spawn/Delete: state at record time
+		TransformState after = {};  // Transform/Reparent: post-edit
 		VectorLight lightsBefore;   // Lights only
 		VectorLight lightsAfter;    // Lights only
+		unsigned long long parentBefore = 0; // Reparent only (0 = root)
+		unsigned long long parentAfter = 0;  // Reparent only
 	};
 
 	// Applies one action in the given direction and returns the affected id.

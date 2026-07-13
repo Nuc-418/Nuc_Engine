@@ -72,6 +72,16 @@ void Transform::CalcModel()
 	model = translationMatrix * rotationMatrix * scaleMatrix;
 }
 
+void Transform::SetFromMatrix(const glm::mat4& matrix)
+{
+	position = glm::vec3(matrix[3]);
+	scale = glm::vec3(glm::length(glm::vec3(matrix[0])),
+	                  glm::length(glm::vec3(matrix[1])),
+	                  glm::length(glm::vec3(matrix[2])));
+	rotation = EulerYXZFromMatrix(matrix);
+	UpdateModel();
+}
+
 void Transform::UpdateModel()
 {
 

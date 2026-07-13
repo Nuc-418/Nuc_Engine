@@ -74,6 +74,58 @@ TEST_CASE("Translate accumulates, SetPos replaces")
 	CHECK(VecNear(t.position, glm::vec3(5.0f)));
 }
 
+namespace
+{
+	bool MatNear(const glm::mat4& a, const glm::mat4& b, float eps = 1e-4f)
+	{
+		for (int col = 0; col < 4; ++col)
+			for (int row = 0; row < 4; ++row)
+				if (std::abs(a[col][row] - b[col][row]) > eps)
+					return false;
+		return true;
+	}
+}
+
+TEST_CASE("SetFromMatrix round-trips a TRS transform")
+{
+	Transform source;
+	source.position = glm::vec3(3.0f, -1.0f, 7.5f);
+	source.rotation = glm::vec3(0.6f, 0.3f, -0.4f); // yaw/pitch/roll, within decompose range
+	source.scale = glm::vec3(2.0f, 1.0f, 0.5f);
+	source.UpdateModel();
+
+	Transform restored;
+	restored.SetFromMatrix(source.model);
+
+	CHECK(MatNear(restored.model, source.model));
+	CHECK(VecNear(restored.position, source.position, 1e-4f));
+	CHECK(VecNear(restored.scale, source.scale, 1e-4f));
+}
+
+TEST_CASE("reparent math preserves the world pose")
+{
+	// World = parentWorld * local. Rebasing a world pose into a parent's space
+	// (local = inverse(parentWorld) * world) must recompose to the same world
+	// matrix — this is GameObject::SetParent(keepWorldTransform=true).
+	Transform parent;
+	parent.position = glm::vec3(5.0f, 2.0f, -3.0f);
+	parent.rotation = glm::vec3(0.8f, 0.0f, 0.0f);
+	parent.scale = glm::vec3(2.0f);
+	parent.UpdateModel();
+
+	Transform object;
+	object.position = glm::vec3(1.0f, 0.0f, 4.0f);
+	object.rotation = glm::vec3(0.2f, 0.4f, 0.0f);
+	object.UpdateModel();
+	glm::mat4 worldBefore = object.model;
+
+	Transform local;
+	local.SetFromMatrix(glm::inverse(parent.model) * worldBefore);
+	glm::mat4 worldAfter = parent.model * local.model;
+
+	CHECK(MatNear(worldAfter, worldBefore));
+}
+
 TEST_CASE("CalcRotationMatrix wraps angles past a full turn to zero")
 {
 	Transform t;

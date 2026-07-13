@@ -14,7 +14,7 @@ void MeshComponent::OnRender(GLenum mode, Camera* camera)
 	// A component created without geometry (e.g. via the registry) has no
 	// program bound; skip it rather than issuing an empty draw.
 	if (renderer.program != 0)
-		renderer.Draw(mode, camera);
+		renderer.Draw(mode, camera, owner->WorldMatrix());
 }
 
 void MeshComponent::OnUnload()

@@ -3,6 +3,7 @@
 #include "engine/io/ObjLoader.h"
 #include "engine/render/Camera.h"
 
+#include <algorithm>
 #include <iostream>
 using namespace std;
 
@@ -24,6 +25,46 @@ Component* GameObject::GetComponentById(const std::string& typeId) const
 		if (typeId == component->TypeId())
 			return component.get();
 	return nullptr;
+}
+
+bool GameObject::SetParent(GameObject* newParent, bool keepWorldTransform)
+{
+	if (newParent == parent)
+		return true;
+	if (newParent == this || (newParent && IsAncestorOf(newParent)))
+		return false; // would create a cycle
+
+	glm::mat4 world;
+	if (keepWorldTransform)
+		world = WorldMatrix();
+
+	if (parent) {
+		std::vector<GameObject*>& siblings = parent->children;
+		siblings.erase(std::remove(siblings.begin(), siblings.end(), this), siblings.end());
+	}
+	parent = newParent;
+	if (parent)
+		parent->children.push_back(this);
+
+	if (keepWorldTransform) {
+		glm::mat4 local = parent ? glm::inverse(parent->WorldMatrix()) * world : world;
+		transform.SetFromMatrix(local);
+	}
+	return true;
+}
+
+bool GameObject::IsAncestorOf(const GameObject* other) const
+{
+	for (const GameObject* walk = other ? other->parent : nullptr; walk; walk = walk->parent)
+		if (walk == this)
+			return true;
+	return false;
+}
+
+glm::mat4 GameObject::WorldMatrix()
+{
+	transform.UpdateModel();
+	return parent ? parent->WorldMatrix() * transform.model : transform.model;
 }
 
 void GameObject::Update(float deltaTime)

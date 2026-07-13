@@ -85,11 +85,11 @@ for f in src/game/Main.cpp src/game/DemoScene.cpp; do
 done
 
 echo "== euler decompose self-test =="
-if g++ -std=c++17 -Isrc -Ithird_party -o /tmp/nuc_euler_test tools/lin_syntax_check/euler_test.cpp src/engine/editor/EditorMath.cpp && /tmp/nuc_euler_test; then :; else FAIL=1; fi
+if g++ -std=c++17 -Isrc -Ithird_party -o /tmp/nuc_euler_test tools/lin_syntax_check/euler_test.cpp src/engine/editor/EditorMath.cpp src/engine/core/EngineMath.cpp && /tmp/nuc_euler_test; then :; else FAIL=1; fi
 
 echo "== unit tests (doctest) =="
 if g++ -std=c++17 -DGLM_FORCE_CTOR_INIT -Isrc -Ithird_party \
-     -o /tmp/nuc_unit_tests tools/tests/main.cpp tools/tests/test_transform.cpp src/engine/scene/Transform.cpp \
+     -o /tmp/nuc_unit_tests tools/tests/main.cpp tools/tests/test_transform.cpp src/engine/scene/Transform.cpp src/engine/core/EngineMath.cpp \
    && /tmp/nuc_unit_tests; then :; else FAIL=1; fi
 
 if [ $FAIL -eq 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED"; fi

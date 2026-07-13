@@ -117,6 +117,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\core\Application.cpp" />
+    <ClCompile Include="src\engine\core\EngineMath.cpp" />
     <ClCompile Include="src\engine\core\Time.cpp" />
     <ClCompile Include="src\engine\core\Window.cpp" />
     <ClCompile Include="src\engine\input\Controller.cpp" />

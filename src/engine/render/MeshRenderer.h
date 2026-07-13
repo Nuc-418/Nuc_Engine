@@ -17,9 +17,11 @@ public:
 	Transform* transformPtr = nullptr;
 
 	GLuint program = 0;
-	
+
 	void SetProgramShader(GLuint program);
 
-	void Draw(GLenum mode,Camera* camera);
+	// Draws with an explicit model matrix (the owner's WORLD matrix; with
+	// hierarchy the local transform alone is not enough).
+	void Draw(GLenum mode, Camera* camera, const glm::mat4& model);
 	
 };

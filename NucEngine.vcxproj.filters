@@ -198,6 +198,9 @@
     <ClCompile Include="src\engine\editor\UndoStack.cpp">
       <Filter>src\engine\editor</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\core\EngineMath.cpp">
+      <Filter>src\engine\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\editor\MeshPreview.cpp">
       <Filter>src\engine\editor</Filter>
     </ClCompile>

@@ -34,6 +34,12 @@ public:
 	void Translate(glm::vec3 deltaPosVec);
 	void SetPos(glm::vec3 posVec);
 
+	// Decomposes a TRS matrix into position/rotation/scale (rotation via
+	// EulerYXZFromMatrix, matching CalcRotationMatrix's convention) and
+	// refreshes the cached matrices. Used to keep an object's world transform
+	// when it is reparented (local = inverse(parentWorld) * world).
+	void SetFromMatrix(const glm::mat4& matrix);
+
 	//Update do modelo
 	void UpdateModel();
 

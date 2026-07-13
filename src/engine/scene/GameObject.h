@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <iostream>
+#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
@@ -46,13 +46,15 @@ public:
 		return component;
 	}
 
-	// First component of type T, or nullptr.
+	// First component of type T, or nullptr. Matches on the component's
+	// stable TypeId (T must expose StaticTypeId(), as MeshComponent does)
+	// instead of RTTI.
 	template <class T>
 	T* GetComponent() const
 	{
 		for (const std::unique_ptr<Component>& component : components)
-			if (T* typed = dynamic_cast<T*>(component.get()))
-				return typed;
+			if (std::strcmp(component->TypeId(), T::StaticTypeId()) == 0)
+				return static_cast<T*>(component.get());
 		return nullptr;
 	}
 
@@ -61,6 +63,24 @@ public:
 	Component* GetComponentById(const std::string& typeId) const;
 
 	const std::vector<std::unique_ptr<Component>>& Components() const { return components; }
+
+	// --- Hierarchy -----------------------------------------------------------
+	// The transform is LOCAL to the parent; world = parentWorld * local.
+	// Parent/child links are non-owning (World owns every object); World::Destroy
+	// reparents children to the destroyed object's parent.
+
+	// Reparents this object (nullptr = scene root). Refuses self/descendant
+	// parents (returns false). With keepWorldTransform the local transform is
+	// rewritten so the object does not move in the world.
+	bool SetParent(GameObject* newParent, bool keepWorldTransform = true);
+
+	GameObject* Parent() const { return parent; }
+	const std::vector<GameObject*>& Children() const { return children; }
+	bool IsAncestorOf(const GameObject* other) const;
+
+	// Composes the world matrix up the parent chain (refreshes each local
+	// model on the way).
+	glm::mat4 WorldMatrix();
 
 	// --- Per-frame dispatch ------------------------------------------------
 	void Update(float deltaTime);
@@ -79,4 +99,6 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Component>> components;
+	GameObject* parent = nullptr;
+	std::vector<GameObject*> children;
 };

@@ -16,7 +16,8 @@ public:
 	MeshRenderer renderer;
 	Material material;
 
-	const char* TypeId() const override { return "Mesh"; }
+	static const char* StaticTypeId() { return "Mesh"; } // GetComponent<T> matches on this
+	const char* TypeId() const override { return StaticTypeId(); }
 	const char* DisplayName() const override { return "Mesh"; }
 
 	void OnAttach() override;                          // wire renderer to owner's transform
