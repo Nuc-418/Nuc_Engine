@@ -5,7 +5,6 @@
 #include "JoltPhysics/PhysicsBodyComponent.h"
 #include "JoltPhysics/JoltPhysicsPlugin.h"
 
-#include "engine/scene/ComponentRegistry.h"
 #include "engine/scene/GameObject.h"
 #include "engine/scene/Serialization.h"
 
@@ -62,12 +61,4 @@ void PhysicsBodyComponent::Serialize(ISerializer& out) const
 void PhysicsBodyComponent::Deserialize(const IDeserializer& in)
 {
 	dynamic = in.ReadBool("dynamic", dynamic);
-}
-
-namespace {
-const bool kPhysicsBodyRegistered = [] {
-	ComponentRegistry::Register("PhysicsBody", "Physics Body",
-		[] { return std::unique_ptr<Component>(new PhysicsBodyComponent()); });
-	return true;
-}();
 }

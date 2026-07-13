@@ -213,6 +213,9 @@
     <ClCompile Include="src\engine\plugin\PluginManager.cpp">
       <Filter>src\engine\plugin</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\plugin\PluginSort.cpp">
+      <Filter>src\engine\plugin</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\render\MeshComponent.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
@@ -402,6 +405,9 @@
       <Filter>src\engine\plugin</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\plugin\PluginManager.h">
+      <Filter>src\engine\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\plugin\PluginSort.h">
       <Filter>src\engine\plugin</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\render\MeshComponent.h">

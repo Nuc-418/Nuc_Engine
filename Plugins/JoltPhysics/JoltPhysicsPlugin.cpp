@@ -5,6 +5,7 @@
 
 #include "engine/core/Application.h"
 #include "engine/core/EngineMath.h"
+#include "engine/scene/ComponentRegistry.h"
 #include "engine/render/MeshComponent.h"
 #include "engine/scene/GameObject.h"
 #include "engine/scene/Transform.h"
@@ -34,6 +35,12 @@ JoltPhysicsPlugin::~JoltPhysicsPlugin()
 {
 	if (instance == this)
 		instance = nullptr;
+}
+
+void JoltPhysicsPlugin::RegisterTypes()
+{
+	ComponentRegistry::Register("PhysicsBody", "Physics Body",
+		[] { return std::unique_ptr<Component>(new PhysicsBodyComponent()); });
 }
 
 bool JoltPhysicsPlugin::OnLoad(Application& app)

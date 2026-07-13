@@ -194,10 +194,12 @@ Goal: from "compiled-in modules" to a real module system.
   `RegisterPlugin(PluginRegistrar&)` function that declares its name,
   version, dependencies, components (into `ComponentRegistry`) and spawn
   types. Immune to static-init order and dead-stripping; one visible list
-  per plugin.
+  per plugin. *(Done as EnginePlugin::RegisterTypes + Version +
+  Dependencies; JoltPhysics registers PhysicsBody there.)*
 - **Dependency-ordered lifecycle**: `PluginManager` topo-sorts by declared
   dependencies for `LoadAll`/`UpdateAll` (today: registration order) and
-  fails loudly on cycles/missing deps.
+  fails loudly on cycles/missing deps. *(Done: stable Kahn sort in
+  PluginSort, unit-tested; unload runs the reverse order.)*
 - **Engine services registry**: `Application` exposes named services
   (assets, renderer, physics query interface) so plugins talk to interfaces
   rather than `Get<ConcreteType>()`. Keep `GetOrAdd<T>` as typed sugar.

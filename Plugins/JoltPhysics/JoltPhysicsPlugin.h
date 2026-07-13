@@ -31,6 +31,12 @@ public:
 	static JoltPhysicsPlugin* Instance();
 
 	const char* Name() const override { return "JoltPhysics"; }
+	const char* Version() const override { return "0.2.0"; }
+
+	// Registers PhysicsBodyComponent with the ComponentRegistry — explicit
+	// registration (called by PluginManager::GetOrAdd), not a static
+	// initializer a static-library link could strip.
+	void RegisterTypes() override;
 
 	bool OnLoad(Application& app) override;
 	void OnUpdate(Application& app, float deltaTime) override;

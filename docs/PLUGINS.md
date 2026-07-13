@@ -7,11 +7,19 @@ can be added or removed without touching core.
 
 ## Pieces
 
-- **`EnginePlugin`** (`src/engine/plugin/Plugin.h`) — the base interface. Hooks:
-  `OnLoad`, `OnUpdate(app, deltaTime)`, `OnUnload`, plus `Name()`.
+- **`EnginePlugin`** (`src/engine/plugin/Plugin.h`) — the base interface.
+  Identity: `Name()`, `Version()`, `Dependencies()` (names of plugins that
+  must load/update first). Registration: `RegisterTypes()`, called once right
+  after the plugin is registered (before any `OnLoad`) — register component
+  types, spawn types and other engine-facing hooks here, NOT in static
+  initializers (a static-library link can silently strip those). Runtime
+  hooks: `OnLoad`, `OnUpdate(app, deltaTime)`, `OnUnload`.
 - **`PluginManager`** (`src/engine/plugin/PluginManager.h`) — owns plugins,
-  keyed by concrete type. `GetOrAdd<T>()` fetches or lazily creates one;
-  `Get<T>()` retrieves it; `LoadAll`/`UpdateAll`/`UnloadAll` drive the lifecycle.
+  keyed by concrete type. `GetOrAdd<T>()` fetches or lazily creates one
+  (calling its `RegisterTypes()`); `Get<T>()` retrieves it.
+  `LoadAll`/`UpdateAll` run **dependencies-first** (stable topological sort,
+  `PluginSort.h`); `UnloadAll` runs the reverse. Missing dependencies and
+  cycles are logged loudly and the offenders fall back to registration order.
 - **`Application`** owns one `PluginManager plugins` and a `bool simulating`
   flag. `Application::Run`:
   1. `scene.Load(app)` — scenes register plugins here via `app.plugins.GetOrAdd<T>()`.
@@ -45,7 +53,8 @@ this by hiding Jolt behind a pimpl (`PhysicsWorld`), so only the plugin's own
 
 1. Create `Plugins/<Name>/` with a `src/` (and `vendor/` for any third-party
    library). Keep public headers free of the vendored library's headers.
-2. Implement `EnginePlugin`.
+2. Implement `EnginePlugin`: give it a `Name()`/`Version()`, declare any
+   `Dependencies()`, and register component/spawn types in `RegisterTypes()`.
 3. Add the plugin's `.cpp` files to `NucEngine.vcxproj` (include roots
    `$(ProjectDir)Plugins` and any `vendor` path are already configured; add
    more as needed). Scope compiler settings (e.g. `LanguageStandard`) per file

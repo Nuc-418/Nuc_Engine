@@ -11,6 +11,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 class Application;
 
 class EnginePlugin
@@ -18,8 +21,22 @@ class EnginePlugin
 public:
 	virtual ~EnginePlugin() = default;
 
-	// Human-readable identifier, for logs and tooling.
+	// Stable identifier: what Dependencies() entries refer to, and what logs
+	// and tooling show.
 	virtual const char* Name() const = 0;
+
+	virtual const char* Version() const { return "0.1.0"; }
+
+	// Names of plugins that must load and update before this one. Missing
+	// names and cycles are reported loudly by the PluginManager (the plugin
+	// still loads, in registration order).
+	virtual std::vector<std::string> Dependencies() const { return {}; }
+
+	// Called once, right after the plugin is registered (before any OnLoad).
+	// Register component types, spawn types and other engine-facing hooks
+	// here — explicit registration instead of static initializers, which a
+	// static-library link can silently strip.
+	virtual void RegisterTypes() {}
 
 	// Called once after the scene has loaded, while the GL context is current.
 	// Return false to report a failed initialization (the engine logs and

@@ -169,6 +169,7 @@
     <ClCompile Include="src\engine\platform\WindowChrome.cpp" />
     <ClCompile Include="src\engine\editor\MeshPreview.cpp" />
     <ClCompile Include="src\engine\plugin\PluginManager.cpp" />
+    <ClCompile Include="src\engine\plugin\PluginSort.cpp" />
     <!-- JoltPhysics plugin. JoltPhysicsPlugin.cpp is Jolt-free; PhysicsWorld.cpp
          and the vendored Jolt sources are the only TUs that include Jolt and so
          are built as C++17 with /sdl off (Jolt trips a few /sdl warnings). -->
@@ -246,6 +247,7 @@
     <ClInclude Include="src\engine\editor\MeshPreview.h" />
     <ClInclude Include="src\engine\plugin\Plugin.h" />
     <ClInclude Include="src\engine\plugin\PluginManager.h" />
+    <ClInclude Include="src\engine\plugin\PluginSort.h" />
     <ClInclude Include="Plugins\JoltPhysics\PhysicsWorld.h" />
     <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h" />
     <ClInclude Include="Plugins\JoltPhysics\PhysicsBodyComponent.h" />

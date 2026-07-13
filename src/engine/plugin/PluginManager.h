@@ -33,6 +33,9 @@ public:
 
 		plugins.emplace_back(std::unique_ptr<EnginePlugin>(new T(std::forward<Args>(args)...)));
 		index.emplace(key, plugins.size() - 1);
+		loaded.push_back(false);
+		orderDirty = true;
+		plugins.back()->RegisterTypes(); // explicit registration, pre-OnLoad
 		return static_cast<T&>(*plugins.back());
 	}
 
@@ -44,18 +47,25 @@ public:
 		return it == index.end() ? nullptr : static_cast<T*>(plugins[it->second].get());
 	}
 
-	// Calls OnLoad on every plugin not yet loaded (append-only; safe to call
-	// again after new plugins are registered).
+	// Calls OnLoad on every plugin not yet loaded, dependencies first (safe
+	// to call again after new plugins are registered). Missing dependencies
+	// and cycles are logged; the offenders still load in registration order.
 	void LoadAll(Application& app);
 
-	// Calls OnUpdate on every loaded plugin, in registration order.
+	// Calls OnUpdate on every loaded plugin, dependencies first.
 	void UpdateAll(Application& app, float deltaTime);
 
-	// Calls OnUnload on every loaded plugin, in reverse registration order.
+	// Calls OnUnload on every loaded plugin, reverse dependency order.
 	void UnloadAll(Application& app);
 
 private:
+	// Recomputes the dependency order (SortByDependencies) when plugins were
+	// added since the last computation.
+	void RefreshOrder();
+
 	std::vector<std::unique_ptr<EnginePlugin>> plugins;
 	std::unordered_map<std::type_index, size_t> index;
-	size_t loadedCount = 0; // plugins[0, loadedCount) have had OnLoad called
+	std::vector<bool> loaded;       // parallel to plugins
+	std::vector<size_t> order;      // dependency-sorted indices into plugins
+	bool orderDirty = false;
 };
