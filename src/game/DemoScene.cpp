@@ -465,6 +465,23 @@ void DemoScene::LoadObjects(Application& app)
 		if (object == ironMan2) ironMan2 = nullptr;
 		if (object == indexedCube) indexedCube = nullptr;
 		gridCubes.erase(std::remove(gridCubes.begin(), gridCubes.end(), object), gridCubes.end());
+
+		/* Physics demo objects: drop their body and stop syncing before the
+		   GameObject (and its Transform) is freed, so nothing dangles. */
+		if (object == physicsCube) {
+			if (physics) {
+				physics->UnbindTransform(&object->transform);
+				physics->World().RemoveBody(cubeBody);
+			}
+			physicsCube = nullptr;
+			cubeBody = PhysicsWorld::InvalidBody;
+		}
+		if (object == physicsFloor) {
+			if (physics)
+				physics->World().RemoveBody(floorBody);
+			physicsFloor = nullptr;
+			floorBody = PhysicsWorld::InvalidBody;
+		}
 	};
 
 	/* Indexed cube */
@@ -497,11 +514,44 @@ void DemoScene::LoadObjects(Application& app)
 	world.lights.AddPointLight(ironManProgramShader, vec3(1.0, 2.0, 0.0), vec3(0.1, 0.1, 0.1), vec3(1.0, 0, 0.1)*2.0f, vec3(1.0, 0, 0.1)*10.0f, 1, 0.06f, 0.002f);
 	world.lights.AddSpotLight(ironManProgramShader, vec3(0, 3, 2), vec3(0, 0, -2), vec3(0.1, 0.1, 0.1), vec3(1, 1, 1)*2.0f, vec3(1.0, 1.0, 1.0), 1, 0.006f, 0.002f, (SMALL_PI / 12));
 
+	/* Physics demo: a dynamic cube falling onto a static floor (JoltPhysics
+	   plugin). Runs in the standalone game and in the editor's Play mode. */
+	SetupPhysicsDemo(app);
+
 	glViewport(0, 0, app.config.width, app.config.height);
 	glEnable(GL_DEPTH_TEST);
 	// Culling stays off: the built-in primitives are drawn double-sided so their
 	// winding never matters, and closed shapes still sort correctly via depth.
 	glDisable(GL_CULL_FACE);
+}
+
+void DemoScene::SetupPhysicsDemo(Application& app)
+{
+	// Register (or fetch) the physics plugin. GetOrAdd constructs it and brings
+	// up its world, so bodies can be created immediately, here in Scene::Load.
+	physics = &app.plugins.GetOrAdd<JoltPhysicsPlugin>();
+	PhysicsWorld& pw = physics->World();
+	if (!pw.IsInitialized())
+		return;
+
+	// Static floor: a wide, thin box whose top surface sits at y = 0.
+	const glm::vec3 floorHalf(25.0f, 0.5f, 25.0f);
+	const glm::vec3 floorCenter(0.0f, -0.5f, 0.0f);
+	floorBody = pw.CreateBox(floorCenter, floorHalf, PhysicsWorld::Motion::Static);
+	physicsFloor = world.Spawn("Cube", "PhysicsFloor");
+	if (physicsFloor) {
+		physicsFloor->transform.SetPos(floorCenter);
+		physicsFloor->transform.scale = floorHalf * 2.0f; // unit cube -> full box size
+	}
+
+	// Dynamic cube dropped from above; it falls and rests on the floor at y = 0.5.
+	const glm::vec3 cubeStart(0.0f, 8.0f, 0.0f);
+	cubeBody = pw.CreateBox(cubeStart, glm::vec3(0.5f), PhysicsWorld::Motion::Dynamic);
+	physicsCube = world.Spawn("Cube", "PhysicsCube");
+	if (physicsCube) {
+		physicsCube->transform.SetPos(cubeStart);
+		physics->Bind(cubeBody, &physicsCube->transform); // sync sim pose -> transform
+	}
 }
 
 void DemoScene::Update(Application& app)

@@ -8,6 +8,7 @@
 #include "engine/core/Application.h"
 #include "engine/scene/World.h"
 #include "engine/render/Texture.h"
+#include "JoltPhysics/JoltPhysicsPlugin.h"
 
 class DemoScene : public Scene
 {
@@ -42,6 +43,17 @@ private:
 	GameObject* ironMan2 = nullptr;
 	GameObject* indexedCube = nullptr;
 	std::vector<GameObject*> gridCubes;
+
+	// --- Physics demo (JoltPhysics plugin) ---------------------------------
+	// A dynamic cube dropped onto a static floor. Both are visualised by cube
+	// GameObjects; the plugin writes the simulated pose back into their
+	// transforms every frame while the app is simulating (Play mode / game).
+	void SetupPhysicsDemo(Application& app);
+	JoltPhysicsPlugin* physics = nullptr;
+	GameObject* physicsFloor = nullptr;
+	GameObject* physicsCube = nullptr;
+	PhysicsWorld::BodyId floorBody = PhysicsWorld::InvalidBody;
+	PhysicsWorld::BodyId cubeBody = PhysicsWorld::InvalidBody;
 
 	int offsetToggle = 0;
 };

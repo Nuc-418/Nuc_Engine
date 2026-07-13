@@ -11,7 +11,8 @@ deliberately left untouched.
 - Rename the project and everything in it to `NucEngine`.
 - Fix latent bugs and obvious inefficiencies **without changing the demo's
   behavior** — same controls, same visuals.
-- Keep the Visual Studio build (v141 toolset); no CMake migration.
+- Keep the Visual Studio build (v141 toolset). (A CMake build was later added
+  alongside it — see `docs/BUILD.md` — but the `.vcxproj` remains.)
 
 ## Layout
 

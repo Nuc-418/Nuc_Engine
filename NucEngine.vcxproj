@@ -65,7 +65,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;$(ProjectDir)Plugins;$(ProjectDir)Plugins\JoltPhysics\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;NOMINMAX;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -81,7 +81,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;$(ProjectDir)Plugins;$(ProjectDir)Plugins\JoltPhysics\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLM_FORCE_CTOR_INIT;NOMINMAX;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -99,7 +99,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)third_party;$(ProjectDir)third_party\imgui;$(ProjectDir)Plugins;$(ProjectDir)Plugins\JoltPhysics\vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NUC_GAME_BUILD;GLM_FORCE_CTOR_INIT;NOMINMAX;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -154,6 +154,19 @@
     <ClCompile Include="src\engine\editor\panels\MapsPanel.cpp" />
     <ClCompile Include="src\engine\platform\WindowChrome.cpp" />
     <ClCompile Include="src\engine\editor\MeshPreview.cpp" />
+    <ClCompile Include="src\engine\plugin\PluginManager.cpp" />
+    <!-- JoltPhysics plugin. JoltPhysicsPlugin.cpp is Jolt-free; PhysicsWorld.cpp
+         and the vendored Jolt sources are the only TUs that include Jolt and so
+         are built as C++17 with /sdl off (Jolt trips a few /sdl warnings). -->
+    <ClCompile Include="Plugins\JoltPhysics\JoltPhysicsPlugin.cpp" />
+    <ClCompile Include="Plugins\JoltPhysics\PhysicsWorld.cpp">
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+    <ClCompile Include="Plugins\JoltPhysics\vendor\Jolt\**\*.cpp">
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
@@ -206,6 +219,10 @@
     <ClInclude Include="src\engine\editor\panels\MapsPanel.h" />
     <ClInclude Include="src\engine\platform\WindowChrome.h" />
     <ClInclude Include="src\engine\editor\MeshPreview.h" />
+    <ClInclude Include="src\engine\plugin\Plugin.h" />
+    <ClInclude Include="src\engine\plugin\PluginManager.h" />
+    <ClInclude Include="Plugins\JoltPhysics\PhysicsWorld.h" />
+    <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

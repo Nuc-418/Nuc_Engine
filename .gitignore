@@ -17,3 +17,11 @@ x64/
 editor_layout.ini
 Builds/
 assets/scenes/
+
+# CMake (out-of-source build directories and generated files)
+/build/
+/out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cmake.stamp

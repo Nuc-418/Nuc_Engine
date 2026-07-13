@@ -8,22 +8,43 @@ sources. See `docs/EDITOR.md` for the editor guide.
 ## Layout
 
 ```
-src/engine/     Engine code (core, input, render, scene, io)
+src/engine/     Engine code (core, input, render, scene, io, plugin)
 src/game/       The demo application (Main.cpp, DemoScene, AssetPaths)
+Plugins/        Self-contained engine plugins (JoltPhysics)
 third_party/    Vendored code and prebuilt libs (stb_image, LoadShaders, GLEW/GLFW)
 assets/         Runtime assets (GLSL shaders, models)
-docs/           docs/RESTRUCTURE.md explains the structure and its rationale
+docs/           RESTRUCTURE.md (layout), PLUGINS.md (plugin system), EDITOR.md
 ```
+
+## Plugins
+
+Optional features live outside engine core as plugins under `Plugins/`, hooked
+in through a small `EnginePlugin` interface (`src/engine/plugin/`). The first is
+**JoltPhysics**, 3D rigid-body physics backed by [Jolt](https://github.com/jrouwe/JoltPhysics).
+See `docs/PLUGINS.md` and `Plugins/JoltPhysics/README.md`. The demo drops a
+cube onto a floor — visible in the standalone game and in the editor's Play mode.
 
 ## Building
 
-Open `NucEngine.sln` in Visual Studio (2017 or later with the v141 toolset)
-and build the x64 configuration. GLM must be available on the compiler's
-include path; GLEW and GLFW are shipped prebuilt in `third_party/libs/x64`.
+Two equivalent builds are provided; both compile the same sources and link the
+prebuilt GLEW/GLFW in `third_party/libs/x64` (GLM is vendored in `third_party`).
 
-Run from Visual Studio (the debugger's working directory, `$(ProjectDir)`,
-is the repo root) or run the built exe with the repo root as the working
-directory — asset paths are resolved relative to it.
+**Visual Studio:** open `NucEngine.sln` (2017 or later, v141 toolset) and build
+the x64 configuration.
+
+**CMake** (alternative; auto-detects the installed Windows SDK):
+
+```
+cmake -S . -B build
+cmake --build build --config Debug
+```
+
+It produces two executables — `NucEngine` (editor build) and `NucEngineGame`
+(standalone game, `NUC_GAME_BUILD`). See `docs/BUILD.md` for details.
+
+Run from Visual Studio (the debugger's working directory is the repo root) or
+run the built exe with the repo root as the working directory — asset paths are
+resolved relative to it.
 
 ## Controls
 

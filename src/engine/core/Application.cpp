@@ -34,10 +34,16 @@ void Application::Run(Scene& scene)
 {
 	if (!scene.Load(*this)) return;
 
+	// Load plugins the scene registered during Scene::Load.
+	plugins.LoadAll(*this);
+
 	while (!glfwWindowShouldClose(window.windowPtr)) {
 
 		clock_t begin = clock();
 
+		// Advance plugins before scene logic so this frame's scene update and
+		// draw see the results (e.g. physics-driven transforms).
+		plugins.UpdateAll(*this, (float)Time::deltaTime);
 		scene.Update(*this);
 		scene.Draw(*this);
 
@@ -50,6 +56,7 @@ void Application::Run(Scene& scene)
 	}
 
 	scene.Unload(*this);
+	plugins.UnloadAll(*this);
 }
 
 void Application::Shutdown()

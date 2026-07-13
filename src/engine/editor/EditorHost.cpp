@@ -25,6 +25,9 @@ bool EditorHost::Load(Application& app)
 	world.ResetToDefaultMap();
 
 	app.inputs.SetCursorCaptured(false);
+
+	// Edit mode: freeze simulation plugins (physics, ...) until Play.
+	app.simulating = false;
 	return true;
 }
 
@@ -129,6 +132,7 @@ void EditorHost::EnterPlay(Application& app)
 	/* ImGui must not fight the recentered, hidden cursor while playing. */
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange;
 
+	app.simulating = true; // run simulation plugins while playing
 	editor.playing = true;
 	mode = Mode::Play;
 }
@@ -142,6 +146,7 @@ void EditorHost::ExitPlay(Application& app)
 
 	ImGui::GetIO().ConfigFlags &= ~(ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange);
 
+	app.simulating = false; // freeze simulation plugins back in Edit mode
 	editor.playing = false;
 	mode = Mode::Edit;
 }
