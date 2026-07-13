@@ -2,7 +2,6 @@
 
 #include "engine/core/Application.h"
 #include "engine/core/Time.h"
-#include <time.h>
 
 bool Application::Init(const Config& appConfig)
 {
@@ -39,7 +38,7 @@ void Application::Run(Scene& scene)
 
 	while (!glfwWindowShouldClose(window.windowPtr)) {
 
-		clock_t begin = clock();
+		double begin = glfwGetTime();
 
 		// Advance plugins before scene logic so this frame's scene update and
 		// draw see the results (e.g. physics-driven transforms).
@@ -49,9 +48,11 @@ void Application::Run(Scene& scene)
 
 		glfwSwapBuffers(window.windowPtr);
 		glfwPollEvents();
-		clock_t end = clock();
+		double end = glfwGetTime();
 
-		double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+		// Wall-clock frame time (glfwGetTime), not CPU time (clock()), so
+		// deltaTime reflects real elapsed time.
+		double elapsed_secs = end - begin;
 		Time::Update(elapsed_secs);
 	}
 

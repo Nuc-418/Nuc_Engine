@@ -54,7 +54,9 @@ private:
 	glm::mat4 projection;
 	glm::mat4 view;
 	glm::mat4 viewProjection;
-	glm::mat4 normalMatrix;
+	// Packed 3x3 so glProgramUniformMatrix3fv receives a contiguous mat3
+	// (a mat4 would hand it the first 9 floats of a 4x4 column layout).
+	glm::mat3 normalMatrix;
 
 };
 

@@ -29,11 +29,8 @@ void UserInputs::SetWindowSize(int wWidth, int wHeight)
 
 void UserInputs::CenterCursor()
 {
-	int x = 0, y = 0;
-	glfwGetWindowPos(windowPtr, &x, &y);
-	x += (int)fabs(windowWidth / 2);
-	y += (int)fabs(windowHeight / 2);
-	SetCursorPos(x, y);
+	// Content-area center in GLFW cursor coordinates (top-left origin).
+	glfwSetCursorPos(windowPtr, windowWidth / 2.0, windowHeight / 2.0);
 }
 
 
@@ -170,26 +167,20 @@ void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
 /*Atualização da posição do cursor*/
 void UserInputs::UpdateMouse(bool getDelta)
 {
-	int x = 0, y = 0;
-
-
-	GetCursorPos(&mousePos);
+	glfwGetCursorPos(windowPtr, &mousePos.x, &mousePos.y);
 
 	if (getDelta)
 	{
-		//Obter pos da window
-		glfwGetWindowPos(windowPtr, &x, &y);
+		// Window center in content-area coordinates.
+		double centerX = windowWidth / 2.0;
+		double centerY = windowHeight / 2.0;
 
-		//Obter o centro da window
-		x += (int)fabs(windowWidth / 2);
-		y += (int)fabs(windowHeight / 2);
-
-		deltaMouse.x = (float)mousePos.x - x;
-		deltaMouse.y = (float)mousePos.y - y;
+		deltaMouse.x = (float)(mousePos.x - centerX);
+		deltaMouse.y = (float)(mousePos.y - centerY);
 
 		deltaMouseSum += deltaMouse;
 
 		if (deltaMouse.x != 0 || deltaMouse.y != 0)
-			SetCursorPos(x, y);
+			glfwSetCursorPos(windowPtr, centerX, centerY);
 	}
 }

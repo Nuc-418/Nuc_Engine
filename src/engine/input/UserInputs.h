@@ -2,8 +2,7 @@
 
 #pragma once
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp> // vec2
-#include <windows.h> // POINT, GetCursorPos/SetCursorPos
+#include <glm/glm.hpp> // vec2, dvec2
 
 
 
@@ -38,7 +37,8 @@ public:
 
 
 
-	POINT mousePos = { NULL };
+	// Cursor position in GLFW content-area coordinates (top-left origin).
+	glm::dvec2 mousePos = glm::dvec2(0.0);
 	glm::vec2 deltaMouse = glm::vec2(0.0f);
 	glm::vec2 deltaMouseSum = glm::vec2(0.0f);
 

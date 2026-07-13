@@ -134,20 +134,26 @@ the app.
   configurations, so shader compile/link error logs appear in Debug builds
   and are compiled out of Release builds.
 
-## Known issues intentionally left alone
+## Previously-known issues now fixed
 
-Fixing these would visibly change behavior, so they are documented instead:
+These four issues were once documented as "intentionally left alone" because
+fixing them changes observable behavior. They have now been corrected:
 
-- `Texture::load_texture` binds the texture name to `GL_TEXTURE_CUBE_MAP` but
-  uploads and parameterizes `GL_TEXTURE_2D`. It happens to work today; a
-  correct fix (bind `GL_TEXTURE_2D`) should be verified on hardware.
-- The main loop measures the frame with `clock()`, which is CPU time, not
-  wall time; `Time::deltaTime` therefore under-reports real frame time.
-  `glfwGetTime()` would be the right tool, but it changes all animation
-  speeds.
-- `Camera` stores the normal matrix in a `glm::mat4` and uploads it with
-  `glProgramUniformMatrix3fv`, so the GPU receives the first 9 floats of a
-  4x4 layout rather than a packed 3x3. The lighting was tuned with this in
-  place; fixing it changes the shading.
-- `UserInputs` is Windows-only (`GetCursorPos`/`SetCursorPos`) and uses a
-  file-static instance pointer, so only one input handler can exist.
+- `Texture::load_texture` bound the texture name to `GL_TEXTURE_CUBE_MAP` but
+  uploaded and parameterized `GL_TEXTURE_2D`. It now binds `GL_TEXTURE_2D`, so
+  the bind target matches the upload and parameter calls.
+- The main loop measured the frame with `clock()` (CPU time), so
+  `Time::deltaTime` under-reported real frame time. It now uses
+  `glfwGetTime()` (wall time), which reports true elapsed time — animation and
+  movement that scale with `deltaTime` now advance at real-world rates.
+- `Camera` stored the normal matrix in a `glm::mat4` and uploaded it with
+  `glProgramUniformMatrix3fv`, so the GPU received the first 9 floats of a 4x4
+  column layout rather than a packed 3x3. `normalMatrix` is now a `glm::mat3`,
+  so the upload sends a contiguous, correct 3x3 (matching the pattern already
+  used in `MeshPreview`). This corrects the shading normals.
+- `UserInputs` was Windows-only (`GetCursorPos`/`SetCursorPos` on screen
+  coordinates via `<windows.h>`). It now uses GLFW's cursor API
+  (`glfwGetCursorPos`/`glfwSetCursorPos`) in content-area coordinates, so the
+  input layer builds and runs on any GLFW platform. It still uses a
+  file-static instance pointer for the key callback, so only one input handler
+  can exist at a time.

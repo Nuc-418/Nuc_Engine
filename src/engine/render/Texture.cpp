@@ -11,8 +11,8 @@ void Texture::load_texture(string textureFile) {
 	// Ativa a Unidade de Textura #0
 	glActiveTexture(GL_TEXTURE0);
 
-	// Vincula esse nome de textura ao target GL_TEXTURE_CUBE_MAP da Unidade de Textura ativa.
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureName);
+	// Vincula esse nome de textura ao target GL_TEXTURE_2D da Unidade de Textura ativa.
+	glBindTexture(GL_TEXTURE_2D, textureName);
 
 	// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
 	stbi_set_flip_vertically_on_load(true);
