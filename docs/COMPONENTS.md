@@ -92,6 +92,10 @@ geometry is not duplicated.
 3. Register it with `ComponentRegistry::Register(id, label, factory)` (a static
    initializer in the component's `.cpp`, as `MeshComponent` does).
 
-A plugin-provided component follows the same steps from inside the plugin, so
-the physics body will be a `PhysicsBodyComponent` registered by the JoltPhysics
-plugin — no core change required.
+A plugin-provided component follows the same steps from inside the plugin —
+`PhysicsBodyComponent` (registered by the JoltPhysics plugin, no core change)
+is the reference: add it to any object and the plugin realizes a box body from
+the mesh AABB and the object's scale (static or dynamic), keeps it following
+the object in Edit mode, and syncs simulated poses back while playing. The
+component owns its body's lifetime (created on the plugin's next update,
+removed on unload/destroy) and serializes its `dynamic` flag.

@@ -45,15 +45,13 @@ private:
 	std::vector<GameObject*> gridCubes;
 
 	// --- Physics demo (JoltPhysics plugin) ---------------------------------
-	// A dynamic cube dropped onto a static floor. Both are visualised by cube
-	// GameObjects; the plugin writes the simulated pose back into their
-	// transforms every frame while the app is simulating (Play mode / game).
+	// A dynamic cube dropped onto a static floor, both plain cube objects
+	// carrying a PhysicsBodyComponent (the component owns its body's
+	// lifetime; the plugin syncs poses while the app is simulating).
 	void SetupPhysicsDemo(Application& app);
 	JoltPhysicsPlugin* physics = nullptr;
 	GameObject* physicsFloor = nullptr;
 	GameObject* physicsCube = nullptr;
-	PhysicsWorld::BodyId floorBody = PhysicsWorld::InvalidBody;
-	PhysicsWorld::BodyId cubeBody = PhysicsWorld::InvalidBody;
 
 	int offsetToggle = 0;
 };

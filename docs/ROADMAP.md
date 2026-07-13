@@ -204,7 +204,10 @@ Goal: from "compiled-in modules" to a real module system.
 - **`PhysicsBodyComponent`** in the JoltPhysics plugin (the docs already
   promise it): body kind + shape from the mesh AABB, `Serialize`d, editable
   in Details via the registry — replacing `DemoScene::SetupPhysicsDemo`'s
-  hand-wiring and `Bind/UnbindTransform` bookkeeping.
+  hand-wiring and `Bind/UnbindTransform` bookkeeping. *(Done: the demo's
+  floor/cube now carry the component; bodies follow objects in Edit mode
+  and round-trip through scene files. Details-panel parameter editing
+  waits on Phase 6 reflection.)*
 - **(Stretch) DLL plugins**: the registrar function is `extern "C"`-able, so
   dynamic loading becomes a loader detail. Only worth it once a second real
   plugin exists; static linking remains the default.

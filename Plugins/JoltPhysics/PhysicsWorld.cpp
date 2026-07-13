@@ -281,6 +281,18 @@ void PhysicsWorld::RemoveBody(BodyId id)
 	bodyInterface.DestroyBody(bodyId);
 }
 
+void PhysicsWorld::SetPose(BodyId id, const glm::vec3& position, const glm::quat& rotation)
+{
+	if (!impl->initialized || id == InvalidBody)
+		return;
+	BodyInterface& bodyInterface = impl->system.GetBodyInterface();
+	bodyInterface.SetPositionAndRotation(ToBodyID(id),
+		RVec3(position.x, position.y, position.z),
+		Quat(rotation.x, rotation.y, rotation.z, rotation.w),
+		EActivation::Activate);
+	bodyInterface.SetLinearAndAngularVelocity(ToBodyID(id), Vec3::sZero(), Vec3::sZero());
+}
+
 glm::vec3 PhysicsWorld::GetPosition(BodyId id) const
 {
 	if (!impl->initialized || id == InvalidBody)

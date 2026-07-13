@@ -52,6 +52,10 @@ public:
 	glm::vec3 GetPosition(BodyId id) const;
 	glm::quat GetRotation(BodyId id) const;
 
+	// Teleports a body (zeroing its velocity). Used to keep edit-mode bodies
+	// following their objects; activates dynamic bodies so they resettle.
+	void SetPose(BodyId id, const glm::vec3& position, const glm::quat& rotation);
+
 private:
 	struct Impl;
 	std::unique_ptr<Impl> impl;

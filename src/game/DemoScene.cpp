@@ -9,6 +9,7 @@
 #include "engine/render/Primitives.h"
 #include "engine/render/LightComponent.h"
 #include "engine/render/CameraComponent.h"
+#include "JoltPhysics/PhysicsBodyComponent.h"
 
 #include <algorithm>
 #include <cctype>
@@ -279,22 +280,10 @@ void DemoScene::LoadObjects(Application& app)
 		if (object == indexedCube) indexedCube = nullptr;
 		gridCubes.erase(std::remove(gridCubes.begin(), gridCubes.end(), object), gridCubes.end());
 
-		/* Physics demo objects: drop their body and stop syncing before the
-		   GameObject (and its Transform) is freed, so nothing dangles. */
-		if (object == physicsCube) {
-			if (physics) {
-				physics->UnbindTransform(&object->transform);
-				physics->World().RemoveBody(cubeBody);
-			}
-			physicsCube = nullptr;
-			cubeBody = PhysicsWorld::InvalidBody;
-		}
-		if (object == physicsFloor) {
-			if (physics)
-				physics->World().RemoveBody(floorBody);
-			physicsFloor = nullptr;
-			floorBody = PhysicsWorld::InvalidBody;
-		}
+		/* Physics demo handles: the PhysicsBodyComponent releases its own
+		   body (unbind + remove) when the object is destroyed. */
+		if (object == physicsCube) physicsCube = nullptr;
+		if (object == physicsFloor) physicsFloor = nullptr;
 	};
 
 	/* Indexed cube */
@@ -341,29 +330,25 @@ void DemoScene::LoadObjects(Application& app)
 void DemoScene::SetupPhysicsDemo(Application& app)
 {
 	// Register (or fetch) the physics plugin. GetOrAdd constructs it and brings
-	// up its world, so bodies can be created immediately, here in Scene::Load.
+	// up its world; bodies are realized by the plugin's next update from each
+	// object's PhysicsBodyComponent (box shape from the mesh AABB and scale).
 	physics = &app.plugins.GetOrAdd<JoltPhysicsPlugin>();
-	PhysicsWorld& pw = physics->World();
-	if (!pw.IsInitialized())
+	if (!physics->World().IsInitialized())
 		return;
 
-	// Static floor: a wide, thin box whose top surface sits at y = 0.
-	const glm::vec3 floorHalf(25.0f, 0.5f, 25.0f);
-	const glm::vec3 floorCenter(0.0f, -0.5f, 0.0f);
-	floorBody = pw.CreateBox(floorCenter, floorHalf, PhysicsWorld::Motion::Static);
+	// Static floor: a wide, thin cube whose top surface sits at y = 0.
 	physicsFloor = world.Spawn("Cube", "PhysicsFloor");
 	if (physicsFloor) {
-		physicsFloor->transform.SetPos(floorCenter);
-		physicsFloor->transform.scale = floorHalf * 2.0f; // unit cube -> full box size
+		physicsFloor->transform.SetPos(glm::vec3(0.0f, -0.5f, 0.0f));
+		physicsFloor->transform.scale = glm::vec3(50.0f, 1.0f, 50.0f);
+		physicsFloor->AddComponent<PhysicsBodyComponent>()->dynamic = false;
 	}
 
 	// Dynamic cube dropped from above; it falls and rests on the floor at y = 0.5.
-	const glm::vec3 cubeStart(0.0f, 8.0f, 0.0f);
-	cubeBody = pw.CreateBox(cubeStart, glm::vec3(0.5f), PhysicsWorld::Motion::Dynamic);
 	physicsCube = world.Spawn("Cube", "PhysicsCube");
 	if (physicsCube) {
-		physicsCube->transform.SetPos(cubeStart);
-		physics->Bind(cubeBody, &physicsCube->transform); // sync sim pose -> transform
+		physicsCube->transform.SetPos(glm::vec3(0.0f, 8.0f, 0.0f));
+		physicsCube->AddComponent<PhysicsBodyComponent>();
 	}
 }
 

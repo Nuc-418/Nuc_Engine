@@ -23,6 +23,12 @@ class JoltPhysicsPlugin : public EnginePlugin
 {
 public:
 	JoltPhysicsPlugin();
+	~JoltPhysicsPlugin() override;
+
+	// The registered plugin, or null before a scene registers one. Lets
+	// PhysicsBodyComponent manage its body without an Application in scope
+	// (a proper service registry is a later roadmap phase).
+	static JoltPhysicsPlugin* Instance();
 
 	const char* Name() const override { return "JoltPhysics"; }
 
@@ -42,6 +48,10 @@ public:
 	void UnbindTransform(Transform* transform);
 
 private:
+	// Creates bodies for PhysicsBodyComponents that don't have one yet and,
+	// in edit mode, teleports bodies to follow their objects.
+	void SyncBodyComponents(bool simulating);
+
 	PhysicsWorld world;
 
 	struct Binding { PhysicsWorld::BodyId id; Transform* transform; };

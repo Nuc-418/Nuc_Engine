@@ -173,6 +173,7 @@
          and the vendored Jolt sources are the only TUs that include Jolt and so
          are built as C++17 with /sdl off (Jolt trips a few /sdl warnings). -->
     <ClCompile Include="Plugins\JoltPhysics\JoltPhysicsPlugin.cpp" />
+    <ClCompile Include="Plugins\JoltPhysics\PhysicsBodyComponent.cpp" />
     <ClCompile Include="Plugins\JoltPhysics\PhysicsWorld.cpp">
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>false</SDLCheck>
@@ -246,6 +247,7 @@
     <ClInclude Include="src\engine\plugin\PluginManager.h" />
     <ClInclude Include="Plugins\JoltPhysics\PhysicsWorld.h" />
     <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h" />
+    <ClInclude Include="Plugins\JoltPhysics\PhysicsBodyComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\cubeShader\cube.frag" />

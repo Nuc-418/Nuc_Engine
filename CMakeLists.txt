@@ -62,6 +62,7 @@ set(THIRD_PARTY_SOURCES
 set(PLUGIN_SOURCES
 	${REPO_ROOT}/Plugins/JoltPhysics/PhysicsWorld.cpp
 	${REPO_ROOT}/Plugins/JoltPhysics/JoltPhysicsPlugin.cpp
+	${REPO_ROOT}/Plugins/JoltPhysics/PhysicsBodyComponent.cpp
 )
 file(GLOB_RECURSE JOLT_SOURCES CONFIGURE_DEPENDS ${REPO_ROOT}/Plugins/JoltPhysics/vendor/Jolt/*.cpp)
 
