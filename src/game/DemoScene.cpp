@@ -9,6 +9,7 @@
 #include "engine/render/Primitives.h"
 #include "engine/render/LightComponent.h"
 #include "engine/render/CameraComponent.h"
+#include "engine/scene/RotatorComponent.h"
 #include "JoltPhysics/PhysicsBodyComponent.h"
 
 #include <algorithm>
@@ -184,6 +185,8 @@ bool DemoScene::Load(Application& app)
 		fclose(startupScene);
 		SceneSerializer::Load(world, SceneSerializer::StartupScenePath);
 	}
+	/* Standalone: the simulation starts as soon as the scene is up. */
+	world.NotifyPlayBegin();
 #endif
 
 	return true;
@@ -318,6 +321,12 @@ void DemoScene::LoadObjects(Application& app)
 		ironMan2 = world.Spawn(ironManId, "IronMan_2");
 		if (ironMan2)
 			ironMan2->transform.SetPos(vec3(6, 0, 0));
+
+		/* The spin is a behavior component now: it only runs while the
+		   simulation does (Play / game build), same as before, but it also
+		   serializes and is editable in Details like any component. */
+		if (ironMan1) ironMan1->AddComponent<RotatorComponent>()->radiansPerSecond = vec3(1, 0, 0);
+		if (ironMan2) ironMan2->AddComponent<RotatorComponent>()->radiansPerSecond = vec3(-1, 0, 0);
 	}
 
 	/* Light sources for the Iron Man shader program */
@@ -367,12 +376,13 @@ void DemoScene::Update(Application& app)
 {
 	float deltaTime = Time::deltaTime;
 
+	/* Component dispatch: OnUpdate + behaviors (OnSimulate). Under the
+	   editor this Update only runs in Play mode; standalone it runs always
+	   with app.simulating true. */
+	world.Tick(deltaTime, app.simulating);
+
 	/* Basic camera movement */
 	app.controller.BasicMovement(&world.camera.transform, 0.15f*deltaTime, 5 * deltaTime);
-
-	/* Object rotations */
-	if (ironMan1) ironMan1->transform.Rotate(vec3(1, 0, 0)*deltaTime);
-	if (ironMan2) ironMan2->transform.Rotate(vec3(-1, 0, 0)*deltaTime);
 
 	/* Toggle the model deformation */
 	if (app.actions.Toggle("ToggleDeform"))

@@ -92,6 +92,16 @@ public:
 	// component was added/removed/edited or its object moved). Call once per
 	// frame before drawing.
 	void SyncComponentLights();
+
+	// Per-frame component dispatch: OnUpdate for every object, plus
+	// OnSimulate while `simulating`. Scenes call this once per frame (the
+	// editor ticks with simulating=false in Edit mode).
+	void Tick(float deltaTime, bool simulating);
+
+	// Fired around simulation start/stop (editor Play/Stop; game boot);
+	// dispatches OnPlayBegin/OnPlayEnd to every component.
+	void NotifyPlayBegin();
+	void NotifyPlayEnd();
 	Camera camera{ glm::vec3(1.0f, 1.0f, -10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f) };
 	GLenum renderMode = GL_TRIANGLES;
 

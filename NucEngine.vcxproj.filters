@@ -240,6 +240,9 @@
     <ClCompile Include="src\engine\scene\ComponentRegistry.cpp">
       <Filter>src\engine\scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\scene\RotatorComponent.cpp">
+      <Filter>src\engine\scene</Filter>
+    </ClCompile>
     <ClCompile Include="Plugins\JoltPhysics\JoltPhysicsPlugin.cpp">
       <Filter>Plugins\JoltPhysics</Filter>
     </ClCompile>
@@ -447,6 +450,9 @@
       <Filter>src\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\scene\FieldStore.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\RotatorComponent.h">
       <Filter>src\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h">

@@ -268,6 +268,27 @@ void World::SyncComponentLights()
 	UploadLights();
 }
 
+void World::Tick(float deltaTime, bool simulating)
+{
+	for (WorldEntry& entry : entries) {
+		entry.object->Update(deltaTime);
+		if (simulating)
+			entry.object->Simulate(deltaTime);
+	}
+}
+
+void World::NotifyPlayBegin()
+{
+	for (WorldEntry& entry : entries)
+		entry.object->PlayBegin();
+}
+
+void World::NotifyPlayEnd()
+{
+	for (WorldEntry& entry : entries)
+		entry.object->PlayEnd();
+}
+
 Camera* World::ActiveCamera()
 {
 	if (activeCameraId == 0)

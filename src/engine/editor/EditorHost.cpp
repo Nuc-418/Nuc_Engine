@@ -75,6 +75,9 @@ void EditorHost::Update(Application& app)
 			editor.savePath = path;
 	}
 
+	/* Edit mode still ticks component OnUpdate (no OnSimulate). */
+	world.Tick(Time::deltaTime, false);
+
 	/* UE5-style fly: only while RMB is held over the viewport. */
 	if (editor.viewportFlying) {
 		float deltaTime = Time::deltaTime;
@@ -135,6 +138,7 @@ void EditorHost::EnterPlay(Application& app)
 	app.simulating = true; // run simulation plugins while playing
 	editor.playing = true;
 	mode = Mode::Play;
+	world.NotifyPlayBegin();
 }
 
 void EditorHost::ExitPlay(Application& app)
@@ -146,6 +150,7 @@ void EditorHost::ExitPlay(Application& app)
 
 	ImGui::GetIO().ConfigFlags &= ~(ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange);
 
+	world.NotifyPlayEnd();
 	app.simulating = false; // freeze simulation plugins back in Edit mode
 	editor.playing = false;
 	mode = Mode::Edit;

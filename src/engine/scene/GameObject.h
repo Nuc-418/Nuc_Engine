@@ -84,6 +84,9 @@ public:
 
 	// --- Per-frame dispatch ------------------------------------------------
 	void Update(float deltaTime);
+	void Simulate(float deltaTime); // OnSimulate; only called while simulating
+	void PlayBegin();
+	void PlayEnd();
 	void Draw(GLenum mode, Camera* camera);
 	void Unload(); // frees component GL/external resources (GL context must be current)
 

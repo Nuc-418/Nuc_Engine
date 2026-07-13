@@ -72,6 +72,24 @@ void GameObject::Update(float deltaTime)
 		component->OnUpdate(deltaTime);
 }
 
+void GameObject::Simulate(float deltaTime)
+{
+	for (const std::unique_ptr<Component>& component : components)
+		component->OnSimulate(deltaTime);
+}
+
+void GameObject::PlayBegin()
+{
+	for (const std::unique_ptr<Component>& component : components)
+		component->OnPlayBegin();
+}
+
+void GameObject::PlayEnd()
+{
+	for (const std::unique_ptr<Component>& component : components)
+		component->OnPlayEnd();
+}
+
 void GameObject::Draw(GLenum mode, Camera* camera)
 {
 	for (const std::unique_ptr<Component>& component : components)

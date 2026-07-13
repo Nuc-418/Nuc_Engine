@@ -9,8 +9,12 @@ prefab features build on.
 
 - **`Component`** (`src/engine/scene/Component.h`) — base class. Lifecycle hooks:
   `OnAttach`, `OnUpdate(dt)`, `OnRender(mode, camera)`, `OnUnload`, plus
-  `Serialize`/`Deserialize`. Each component has a stable `TypeId()` (e.g.
-  `"Mesh"`) used for serialization and the registry.
+  `Serialize`/`Deserialize`. Behavior hooks — `OnPlayBegin`, `OnSimulate(dt)`,
+  `OnPlayEnd` — run only while the app simulates (editor Play / standalone
+  game): `World::Tick` dispatches per frame and `World::NotifyPlayBegin/End`
+  fire around Play/Stop. `RotatorComponent` is the reference behavior. Each
+  component has a stable `TypeId()` (e.g. `"Mesh"`) used for serialization
+  and the registry.
 - **`GameObject`** (`src/engine/scene/GameObject.h`) — the actor. Owns
   `vector<unique_ptr<Component>>`. Key API:
   - `AddComponent<T>(...)`, `GetComponent<T>()` — typed access.

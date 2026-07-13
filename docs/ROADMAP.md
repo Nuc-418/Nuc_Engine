@@ -231,6 +231,11 @@ scene-code involvement.
   `OnPlayBegin`/`OnUpdate`/`OnPlayEnd` (only active while
   `app.simulating`), so gameplay is written as components — the demo's
   wave animation in `DemoScene::Update` becomes the first behavior.
+  *(Done as base-Component hooks: OnPlayBegin/OnSimulate/OnPlayEnd
+  dispatched by World::Tick and NotifyPlayBegin/End (editor Play/Stop and
+  game boot). RotatorComponent is the first behavior — the Iron Man spins
+  are components now, serializable and editable. The wave animation stays
+  scene code for now: behaviors can't yet read input actions.)*
 - **(Later, as a plugin)** a Lua scripting plugin exposing the component
   and input APIs — the real proof that Phase 4's seams are sufficient.
 

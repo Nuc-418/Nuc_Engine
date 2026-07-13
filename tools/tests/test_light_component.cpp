@@ -85,3 +85,27 @@ TEST_CASE("the registry creates a Camera component by id")
 	REQUIRE(created != nullptr);
 	CHECK(std::string(created->TypeId()) == "Camera");
 }
+
+#include "engine/scene/GameObject.h"
+#include "engine/scene/RotatorComponent.h"
+
+TEST_CASE("RotatorComponent spins its owner only through OnSimulate")
+{
+	GameObject object;
+	RotatorComponent rotator;
+	rotator.owner = &object;
+	rotator.radiansPerSecond = glm::vec3(1.0f, 0.0f, 0.0f);
+
+	rotator.OnUpdate(1.0f); // per-frame hook: no motion
+	CHECK(object.transform.rotation == glm::vec3(0.0f));
+
+	rotator.OnSimulate(1.0f);
+	// Transform::Rotate applies its (-1,1,1) offset to the delta.
+	CHECK(object.transform.rotation.x == doctest::Approx(-1.0f));
+
+	FieldStore store;
+	rotator.Serialize(store);
+	RotatorComponent restored;
+	restored.Deserialize(store);
+	CHECK(restored.radiansPerSecond == rotator.radiansPerSecond);
+}

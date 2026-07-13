@@ -133,6 +133,7 @@
     <ClCompile Include="src\engine\render\Texture.cpp" />
     <ClCompile Include="src\engine\scene\GameObject.cpp" />
     <ClCompile Include="src\engine\scene\ComponentRegistry.cpp" />
+    <ClCompile Include="src\engine\scene\RotatorComponent.cpp" />
     <ClCompile Include="src\engine\render\MeshComponent.cpp" />
     <ClCompile Include="src\engine\render\LightComponent.cpp" />
     <ClCompile Include="src\engine\render\CameraComponent.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="src\engine\scene\ComponentRegistry.h" />
     <ClInclude Include="src\engine\scene\Serialization.h" />
     <ClInclude Include="src\engine\scene\FieldStore.h" />
+    <ClInclude Include="src\engine\scene\RotatorComponent.h" />
     <ClInclude Include="src\engine\render\MeshComponent.h" />
     <ClInclude Include="src\engine\render\LightComponent.h" />
     <ClInclude Include="src\engine\render\CameraComponent.h" />

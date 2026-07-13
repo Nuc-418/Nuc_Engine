@@ -38,6 +38,15 @@ public:
 	virtual void OnUpdate(float deltaTime) {}
 	virtual void OnRender(GLenum mode, Camera* camera) {}
 
+	// Behavior hooks, active only while the app simulates (editor Play mode
+	// or a standalone game). OnPlayBegin/OnPlayEnd fire when the simulation
+	// starts/stops (World::NotifyPlayBegin/End); OnSimulate ticks each
+	// simulating frame (World::Tick). Gameplay lives here, so it never runs
+	// while editing.
+	virtual void OnPlayBegin() {}
+	virtual void OnSimulate(float deltaTime) {}
+	virtual void OnPlayEnd() {}
+
 	// Release GL / external resources while the context is still current
 	// (called from GameObject::Unload on destroy).
 	virtual void OnUnload() {}
