@@ -2,6 +2,8 @@
 
 #include "engine/editor/panels/DetailsPanel.h"
 #include "engine/editor/Editor.h"
+#include "engine/scene/Component.h"
+#include "engine/scene/ComponentRegistry.h"
 
 #include <glm/glm.hpp>
 #include <cstring>
@@ -62,6 +64,22 @@ void DrawDetailsPanel(Editor& editor)
 
 	ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
 	trackEdit();
+
+	/* Components: list what's attached, and offer the registered types to add.
+	   Per-component editors arrive with the light/physics component phases. */
+	ImGui::SeparatorText("Components");
+	for (const std::unique_ptr<Component>& component : object->Components())
+		ImGui::BulletText("%s", component->DisplayName());
+
+	if (ImGui::Button("Add Component"))
+		ImGui::OpenPopup("AddComponentPopup");
+	if (ImGui::BeginPopup("AddComponentPopup")) {
+		for (const std::string& typeId : ComponentRegistry::TypeIds()) {
+			if (ImGui::Selectable(ComponentRegistry::Label(typeId).c_str()))
+				object->AddComponentById(typeId);
+		}
+		ImGui::EndPopup();
+	}
 
 	ImGui::End();
 }

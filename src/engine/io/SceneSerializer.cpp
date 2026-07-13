@@ -2,6 +2,8 @@
 
 #include "engine/io/SceneSerializer.h"
 #include "engine/scene/World.h"
+#include "engine/scene/Component.h"
+#include "engine/scene/Serialization.h"
 
 #include "nlohmann/json.hpp"
 
@@ -22,6 +24,41 @@ static glm::vec3 Vec3FromJson(const json& j, glm::vec3 fallback = glm::vec3(0.0f
 	return glm::vec3(j[0].get<float>(), j[1].get<float>(), j[2].get<float>());
 }
 
+// Adapters that back the engine's serialization interfaces with nlohmann::json.
+// Each component writes/reads its fields into one JSON object.
+namespace {
+
+class JsonWriter : public ISerializer
+{
+public:
+	explicit JsonWriter(json& target) : j(target) {}
+	void Write(const char* key, float value) override { j[key] = value; }
+	void Write(const char* key, int value) override { j[key] = value; }
+	void Write(const char* key, bool value) override { j[key] = value; }
+	void Write(const char* key, const glm::vec3& value) override { j[key] = ToJson(value); }
+	void Write(const char* key, const std::string& value) override { j[key] = value; }
+private:
+	json& j;
+};
+
+class JsonReader : public IDeserializer
+{
+public:
+	explicit JsonReader(const json& source) : j(source) {}
+	float ReadFloat(const char* key, float fallback) const override { return j.value(key, fallback); }
+	int ReadInt(const char* key, int fallback) const override { return j.value(key, fallback); }
+	bool ReadBool(const char* key, bool fallback) const override { return j.value(key, fallback); }
+	glm::vec3 ReadVec3(const char* key, const glm::vec3& fallback) const override
+	{
+		return j.contains(key) ? Vec3FromJson(j[key], fallback) : fallback;
+	}
+	std::string ReadString(const char* key, const std::string& fallback) const override { return j.value(key, fallback); }
+private:
+	const json& j;
+};
+
+} // namespace
+
 bool SceneSerializer::Save(const World& world, const std::string& path)
 {
 	json root;
@@ -36,12 +73,26 @@ bool SceneSerializer::Save(const World& world, const std::string& path)
 	json objects = json::array();
 	for (const WorldEntry& entry : world.entries) {
 		const Transform& transform = entry.object->transform;
+
+		// Each component records its type + state; the mesh's geometry still
+		// comes from the spawn factory (keyed by "type"), so MeshComponent has
+		// no state of its own here.
+		json components = json::array();
+		for (const std::unique_ptr<Component>& component : entry.object->Components()) {
+			json record;
+			record["type"] = component->TypeId();
+			JsonWriter writer(record);
+			component->Serialize(writer);
+			components.push_back(record);
+		}
+
 		objects.push_back({
 			{ "type", entry.typeId },
 			{ "name", entry.object->name },
 			{ "position", ToJson(transform.position) },
 			{ "rotation", ToJson(transform.rotation) },
 			{ "scale", ToJson(transform.scale) },
+			{ "components", components },
 		});
 	}
 	root["objects"] = objects;
@@ -116,6 +167,22 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 		object->transform.position = Vec3FromJson(item.value("position", json()));
 		object->transform.rotation = Vec3FromJson(item.value("rotation", json()));
 		object->transform.scale = Vec3FromJson(item.value("scale", json()), glm::vec3(1.0f));
+
+		// Restore components. The spawn factory already created this type's
+		// default components (e.g. Mesh); reuse a matching one if present,
+		// otherwise create it via the registry, then let it read its state.
+		for (const json& record : item.value("components", json::array())) {
+			std::string componentType = record.value("type", "");
+			if (componentType.empty())
+				continue;
+			Component* component = object->GetComponentById(componentType);
+			if (!component)
+				component = object->AddComponentById(componentType);
+			if (component) {
+				JsonReader reader(record);
+				component->Deserialize(reader);
+			}
+		}
 	}
 
 	world.camera.transform.position = Vec3FromJson(root["camera"].value("position", json()), world.camera.transform.position);

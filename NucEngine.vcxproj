@@ -123,6 +123,8 @@
     <ClCompile Include="src\engine\render\MeshRenderer.cpp" />
     <ClCompile Include="src\engine\render\Texture.cpp" />
     <ClCompile Include="src\engine\scene\GameObject.cpp" />
+    <ClCompile Include="src\engine\scene\ComponentRegistry.cpp" />
+    <ClCompile Include="src\engine\render\MeshComponent.cpp" />
     <ClCompile Include="src\engine\scene\Transform.cpp" />
     <ClCompile Include="src\game\DemoScene.cpp" />
     <ClCompile Include="src\game\Main.cpp" />
@@ -184,6 +186,10 @@
     <ClInclude Include="src\engine\render\MeshRenderer.h" />
     <ClInclude Include="src\engine\render\Texture.h" />
     <ClInclude Include="src\engine\scene\GameObject.h" />
+    <ClInclude Include="src\engine\scene\Component.h" />
+    <ClInclude Include="src\engine\scene\ComponentRegistry.h" />
+    <ClInclude Include="src\engine\scene\Serialization.h" />
+    <ClInclude Include="src\engine\render\MeshComponent.h" />
     <ClInclude Include="src\engine\scene\Transform.h" />
     <ClInclude Include="src\game\AssetPaths.h" />
     <ClInclude Include="src\game\DemoScene.h" />

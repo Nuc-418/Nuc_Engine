@@ -79,7 +79,7 @@ bool World::Destroy(GameObject* object)
 		if (entries[i].object.get() == object) {
 			if (onDestroyed)
 				onDestroyed(object);
-			object->meshRenderer.mesh.Unload();
+			object->Unload();
 			entries.erase(entries.begin() + i);
 			return true;
 		}

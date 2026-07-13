@@ -37,8 +37,11 @@ namespace MeshPreview
 			if (!object)
 				continue;
 
-			Mesh& mesh = object->meshRenderer.mesh;
-			GLuint program = object->meshRenderer.program;
+			MeshComponent* meshComponent = object->GetMesh();
+			if (!meshComponent)
+				continue;
+			Mesh& mesh = meshComponent->renderer.mesh;
+			GLuint program = meshComponent->renderer.program;
 
 			Framebuffer& fb = out[type];
 			fb.Create(size, size);

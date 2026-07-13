@@ -133,7 +133,10 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		GameObject* closest = nullptr;
 		float closestDistance = 0.0f;
 		for (WorldEntry& entry : editor.world->entries) {
-			Mesh& mesh = entry.object->meshRenderer.mesh;
+			MeshComponent* meshComponent = entry.object->GetMesh();
+			if (!meshComponent)
+				continue;
+			Mesh& mesh = meshComponent->renderer.mesh;
 			if (!mesh.hasAabb)
 				continue;
 			entry.object->transform.UpdateModel();

@@ -13,8 +13,15 @@ src/game/       The demo application (Main.cpp, DemoScene, AssetPaths)
 Plugins/        Self-contained engine plugins (JoltPhysics)
 third_party/    Vendored code and prebuilt libs (stb_image, LoadShaders, GLEW/GLFW)
 assets/         Runtime assets (GLSL shaders, models)
-docs/           RESTRUCTURE.md (layout), PLUGINS.md (plugin system), EDITOR.md
+docs/           RESTRUCTURE.md (layout), COMPONENTS.md (actor/component model),
+                PLUGINS.md (plugin system), BUILD.md, EDITOR.md
 ```
+
+## Scene model
+
+Objects are UE5-style **actors**: a `GameObject` is a `Transform` plus a list of
+`Component`s (mesh today; physics, lights and prefabs build on this). See
+`docs/COMPONENTS.md`.
 
 ## Plugins
 

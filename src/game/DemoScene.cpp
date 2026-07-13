@@ -429,7 +429,7 @@ void DemoScene::LoadObjects(Application& app)
 	world.RegisterType("IndexedCube", "IndexedCube", [cubeProgram] {
 		std::unique_ptr<GameObject> object(new GameObject());
 		object->CreateObjPosColor(cubeProgram, &IndexedCubeVertices(), &IndexedCubeColors());
-		object->meshRenderer.mesh.AssignElementArray(&IndexedCubeElements());
+		object->GetMesh()->renderer.mesh.AssignElementArray(&IndexedCubeElements());
 		return object;
 	});
 
@@ -626,9 +626,9 @@ void DemoScene::Draw(Application& app)
 	/* Feed the primitive shader the scene's directional + ambient light. */
 	world.lights.StorePrimitiveLight(primitiveProgramShader);
 
-	/* Render every world object */
+	/* Render every world object (dispatches to each object's components) */
 	for (WorldEntry& entry : world.entries)
-		entry.object->meshRenderer.Draw(world.renderMode, &world.camera);
+		entry.object->Draw(world.renderMode, &world.camera);
 }
 
 void DemoScene::Unload(Application& app)
