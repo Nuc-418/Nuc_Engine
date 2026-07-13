@@ -75,7 +75,7 @@ void EditorHost::Update(Application& app)
 	/* UE5-style fly: only while RMB is held over the viewport. */
 	if (editor.viewportFlying) {
 		float deltaTime = Time::deltaTime;
-		app.controller.BasicMovement(&world.camera.transform, 0.15f * deltaTime, 5 * deltaTime);
+		app.controller.BasicMovement(&world.camera.transform, 0.15f * deltaTime, editor.flySpeed * deltaTime);
 	}
 }
 

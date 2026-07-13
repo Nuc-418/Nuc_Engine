@@ -9,7 +9,7 @@ The app starts in **Edit mode** (1600x900, free cursor):
 
 | Panel | What it does |
 |---|---|
-| **Viewport** (center) | The scene, rendered to a framebuffer at the panel's aspect ratio. **Click** an object to select it (empty space deselects). Hold **RMB** to fly with WASD/Space/Ctrl (Shift = boost), UE5-style. **W/E/R** switch the translate/rotate/scale gizmo, the corner button toggles Local/World, **F** focuses the selected object. |
+| **Viewport** (center) | The scene, rendered to a framebuffer at the panel's aspect ratio. **Click** an object to select it (empty space deselects). Hold **RMB** to fly with WASD/Space/Ctrl (Shift = boost), UE5-style — the cursor is hidden while flying, and the **mouse wheel** speeds up / slows down the fly speed (multiplicative per notch, clamped to 0.5–100, persists between flights). **W/E/R** switch the translate/rotate/scale gizmo, the corner button toggles Local/World, **F** focuses the selected object. |
 | **Maps** (right, tabbed with Outliner) | All maps in `assets/scenes`. **+ New Map** creates an empty map (default ambient + directional light) and switches to it; **double-click** switches maps; right-click offers Load and **Delete** (with confirmation). Switching discards unsaved changes — Ctrl+S first. Deleting the open map keeps the world in memory; saving recreates the file. |
 | **Outliner** (right) | All world objects. Click to select, right-click or **Del** to delete, **+ Add** spawns a Cube / IndexedCube / IronMan in front of the camera. |
 | **Details** (right, below) | Name and Position / Rotation (degrees) / Scale of the selection, live. |
@@ -69,8 +69,12 @@ main() -> Application::Run(EditorHost)
 - **Input integration**: `UserInputs::AssociateWindow` installs the GLFW key
   callback exactly once, *before* `Editor::Init`, so the ImGui GLFW backend
   (install_callbacks=true) chains to it. The cursor is hidden/recentered only
-  while flying or playing; Play mode additionally sets
-  `ImGuiConfigFlags_NoMouse` so ImGui never fights the recenter.
+  while flying or playing. Both paths set `ImGuiConfigFlags_NoMouse |
+  ImGuiConfigFlags_NoMouseCursorChange` for the duration: `NoMouseCursorChange`
+  stops the ImGui GLFW backend from re-showing the OS cursor every frame (so it
+  stays hidden while rotating), and `NoMouse` keeps ImGui from reacting to the
+  recenter warps. `ViewportPanel` sets/clears them on RMB fly enter/exit;
+  `EditorHost` does the same across Play/Stop.
 - **Gizmo rotation**: the engine's Euler convention is unusual —
   `Transform::CalcRotationMatrix` builds `Ry(rot.x) * Rx(rot.y) * Rz(rot.z)`.
   `EulerYXZFromMatrix` inverts exactly that convention and is verified by a
@@ -78,6 +82,20 @@ main() -> Application::Run(EditorHost)
 - **GL context**: the window now requests 4.4 compatibility (shaders are
   `#version 440`; the engine needs 4.3+ program-resource queries) and falls
   back to a hint-less context if creation fails.
+- **Window chrome** (`engine/platform/WindowChrome`, Win32-only): the OS title
+  bar is dropped so the editor draws its own (menu bar + centered title +
+  minimize/maximize/close in `Editor::DrawTitleBarControls`). It subclasses the
+  GLFW `HWND`: `WM_NCCALCSIZE` returns 0 to make the client cover the whole
+  window, and `WM_NCHITTEST` reports the strip between the menus and the window
+  buttons as `HTCAPTION` (drag) plus edge/corner resize bands when not
+  maximized. The editor publishes that caption layout each frame via
+  `WindowChrome::SetTitleBar(barHeight, menuRight, buttonsLeft)`. **Maximize:**
+  a borderless maximized window is sized by Windows to the work area *plus* the
+  invisible resize frame, which would push the top bar off-screen; so while
+  maximized `WM_NCCALCSIZE` insets the client by the frame thickness
+  (`SM_CxFRAME + SM_CXPADDEDBORDER`) on all sides. The default maximize sizing
+  already respects the work area, so the taskbar stays visible without a
+  `WM_GETMINMAXINFO` clamp.
 
 ## Verification
 
@@ -90,6 +108,8 @@ Manual checklist on Windows after building:
 1. Editor opens with the default layout; demo scene visible in the Viewport.
 2. RMB fly, W/E/R gizmos, F focus; click objects in the viewport to select
    (clicking the sky deselects); select/rename/spawn/delete in the Outliner.
+   While flying the cursor disappears and the mouse wheel changes fly speed;
+   releasing RMB restores the cursor.
 3. Light edits take effect immediately; add/remove point and spot lights.
 4. Ctrl+S then File > Open round-trips the scene; Content Browser double-click loads it.
    Ctrl+Z / Ctrl+Y undo and redo a gizmo drag, a Details edit, a spawn and a delete.
@@ -102,7 +122,10 @@ Manual checklist on Windows after building:
 7. Build the Game|x64 configuration, then File > Package Game: the resulting
    Builds/<name>/NucEngineGame.exe runs standalone, starts in the scene that
    was open in the editor, and quits on Esc.
-8. If linking fails with missing `glfwCreateStandardCursor` /
+8. Maximize the window (custom title-bar button or double-click the caption):
+   the menu/title bar stays fully visible at the top and the taskbar is not
+   covered; restore returns to the previous size.
+9. If linking fails with missing `glfwCreateStandardCursor` /
    `glfwSetCharModsCallback`: the committed `glfw3.lib` (and the GLFW headers
    on the global include path) are older than 3.2 — refresh
    `third_party/libs/x64/glfw3.lib` and the headers to GLFW 3.2+.

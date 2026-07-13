@@ -6,6 +6,7 @@
 #include "engine/core/Application.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include <cmath> // powf
 
 void DrawViewportPanel(Editor& editor, Application& app)
 {
@@ -79,10 +80,24 @@ void DrawViewportPanel(Editor& editor, Application& app)
 	if (wantFly && !editor.viewportFlying) {
 		app.inputs.SetCursorCaptured(true);
 		app.inputs.CenterCursor(); // first-frame delta must be zero (no view snap)
+		// Stop ImGui's backend from re-showing the cursor every frame while flying.
+		ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange;
 	}
-	if (!wantFly && editor.viewportFlying)
+	if (!wantFly && editor.viewportFlying) {
 		app.inputs.SetCursorCaptured(false);
+		ImGui::GetIO().ConfigFlags &= ~(ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange);
+	}
 	editor.viewportFlying = wantFly;
+
+	/* Mouse wheel while flying scales the fly speed, UE5-style: up = faster,
+	   down = slower. Multiplicative so each notch is a proportional step. */
+	if (editor.viewportFlying) {
+		float wheel = ImGui::GetIO().MouseWheel;
+		if (wheel != 0.0f) {
+			editor.flySpeed *= powf(1.1f, wheel);
+			editor.flySpeed = glm::clamp(editor.flySpeed, 0.5f, 100.0f);
+		}
+	}
 
 	if (hovered && !editor.viewportFlying) {
 		/* UE5 gizmo keys */

@@ -29,6 +29,7 @@ public:
 	// -- cross-frame state read/consumed by EditorHost --
 	bool playing = false;          // set by EditorHost while in play mode
 	bool viewportFlying = false;   // RMB held over the viewport
+	float flySpeed = 5.0f;         // WASD fly speed; mouse wheel adjusts it while flying
 	bool playClicked = false;
 	bool exitClicked = false;
 	bool saveClicked = false;

@@ -43,7 +43,25 @@ namespace
 			// title bar used to be). We keep WS_THICKFRAME/WS_CAPTION on the
 			// window, so move/resize/snap/maximize still work natively.
 			if (wParam == TRUE)
+			{
+				// A maximized borderless window is sized by Windows to the work
+				// area *plus* the invisible resize frame, so that frame band (top
+				// included) spills off-screen and clips our title/menu bar. Inset
+				// the client by the frame thickness while maximized so the top bar
+				// stays fully on-screen; the taskbar remains visible because the
+				// default maximized size already respects the work area.
+				if (WindowIsMaximized(hwnd))
+				{
+					NCCALCSIZE_PARAMS* params = (NCCALCSIZE_PARAMS*)lParam;
+					int frameX = GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+					int frameY = GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+					params->rgrc[0].left   += frameX;
+					params->rgrc[0].right  -= frameX;
+					params->rgrc[0].top    += frameY;
+					params->rgrc[0].bottom -= frameY;
+				}
 				return 0;
+			}
 			break;
 
 		case WM_NCHITTEST:
@@ -78,26 +96,6 @@ namespace
 				return HTCAPTION;
 
 			return HTCLIENT;
-		}
-
-		case WM_GETMINMAXINFO:
-		{
-			// Constrain the maximized window to the monitor work area so the
-			// taskbar stays visible (a borderless window would otherwise cover
-			// the whole monitor).
-			HMONITOR mon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-			MONITORINFO mi = { sizeof(mi) };
-			if (GetMonitorInfo(mon, &mi))
-			{
-				MINMAXINFO* mmi = (MINMAXINFO*)lParam;
-				mmi->ptMaxPosition.x = mi.rcWork.left - mi.rcMonitor.left;
-				mmi->ptMaxPosition.y = mi.rcWork.top - mi.rcMonitor.top;
-				mmi->ptMaxSize.x = mi.rcWork.right - mi.rcWork.left;
-				mmi->ptMaxSize.y = mi.rcWork.bottom - mi.rcWork.top;
-				mmi->ptMaxTrackSize = mmi->ptMaxSize;
-				return 0;
-			}
-			break;
 		}
 		}
 
