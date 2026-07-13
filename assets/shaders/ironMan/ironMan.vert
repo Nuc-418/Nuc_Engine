@@ -26,7 +26,7 @@ void main()
 
 
 
-	// Transformar a normal do vértice.
+	// Transformar a normal do vÃ©rtice.
 	vNormalEyeSpace = vec3(ModelView * vec4(vNormal, 0.0f));
 
 	uv = vUV;
@@ -35,7 +35,7 @@ void main()
 	vec3 offset;
 	offset = (Offset()*offsetToggle);
 
-	// Posição do vértice em coordenadas do olho.
+	// PosiÃ§Ã£o do vÃ©rtice em coordenadas do olho.
 	vPositionEyeSpace = (ModelView * vec4(vPosition + offset, 1.0)).xyz;
 
 	fragPos = vec3(Model * vec4(vPosition + offset,1.0));

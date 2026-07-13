@@ -17,9 +17,12 @@ public:
 	glm::vec3 rotation = glm::vec3(0.0f);
 	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	glm::vec3 forward = { 1.0f ,0.0f ,0.0f };
+	// In-class values match what CalcLocalAxis computes at identity rotation
+	// (note: CalcLocalAxis negates defaultRight), so an un-updated Transform
+	// agrees with an updated one.
+	glm::vec3 forward = { 0.0f ,0.0f ,1.0f };
 	glm::vec3 up = { 0.0f ,1.0f ,0.0f };
-	glm::vec3 right = { 0.0f ,0.0f ,1.0f };
+	glm::vec3 right = { -1.0f ,0.0f ,0.0f };
 
 	glm::mat4 model;
 

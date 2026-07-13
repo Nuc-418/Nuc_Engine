@@ -1,6 +1,9 @@
 // Mesh: owns the VAO/VBOs/EBO for a set of vertex arrays.
 
 #include "engine/render/Mesh.h"
+#include <iostream>
+
+using namespace std;
 
  /*Fun��o que associa um array de posi��es e um array de cores � mesh*/
 void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray)

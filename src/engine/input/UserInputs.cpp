@@ -34,7 +34,7 @@ void UserInputs::CenterCursor()
 }
 
 
-/*Função que recebe valores do input do utilizador*/
+/*FunÃ§Ã£o que recebe valores do input do utilizador*/
 void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_W && action == GLFW_PRESS)
@@ -164,7 +164,7 @@ void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 }
 
-/*Atualização da posição do cursor*/
+/*AtualizaÃ§Ã£o da posiÃ§Ã£o do cursor*/
 void UserInputs::UpdateMouse(bool getDelta)
 {
 	glfwGetCursorPos(windowPtr, &mousePos.x, &mousePos.y);

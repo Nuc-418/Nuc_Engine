@@ -23,8 +23,6 @@
 #include "engine/scene/Component.h"
 #include "engine/render/MeshComponent.h"
 
-using namespace std;
-
 class GameObject
 {
 public:
@@ -33,7 +31,7 @@ public:
 	GameObject(const GameObject&) = delete;
 	GameObject& operator=(const GameObject&) = delete;
 
-	string name;
+	std::string name;
 	Transform transform;
 
 	// --- Components --------------------------------------------------------
@@ -74,10 +72,10 @@ public:
 	MeshComponent& EnsureMesh(); // returns the mesh component, creating one if absent
 
 	// Authoring helpers used by the spawn factories; populate the MeshComponent.
-	bool LoadObjFile(GLuint programShader, string folderPath, string fileName);
-	void CreateObjPosColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* colorArray);
-	void CreateObjPosNormColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray);
-	void CreateObjPosUvNorm(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray);
+	bool LoadObjFile(GLuint programShader, std::string folderPath, std::string fileName);
+	void CreateObjPosColor(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec3>* colorArray);
+	void CreateObjPosNormColor(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec3>* normalArray, std::vector<glm::vec3>* colorArray);
+	void CreateObjPosUvNorm(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec2>* uvArray, std::vector<glm::vec3>* normalArray);
 
 private:
 	std::vector<std::unique_ptr<Component>> components;

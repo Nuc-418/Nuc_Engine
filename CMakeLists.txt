@@ -24,11 +24,14 @@ if(NOT MSVC)
 		"prebuilt x64 libs in third_party/libs/x64, and some input code is Win32-only.")
 endif()
 
-# NOTE: C++17 is applied per-file (to Jolt + the physics wrapper) further down,
-# NOT globally. The engine uses `using namespace std;` together with <windows.h>,
-# and under C++17 that makes std::byte ambiguous with the Windows SDK's `byte`
-# (C2872). Everything else builds as the MSVC default (C++14), mirroring the
-# .vcxproj, which sets stdcpp17 only on the Jolt sources.
+# The whole project builds as C++17 with UTF-8 sources, mirroring the .vcxproj.
+# (The old std::byte/windows.h C2872 hazard is gone: no public header does
+# `using namespace std;` anymore.)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(MSVC)
+	add_compile_options(/utf-8)
+endif()
 
 # Default single-config generators to Debug.
 if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
@@ -62,18 +65,6 @@ set(PLUGIN_SOURCES
 	${REPO_ROOT}/Plugins/JoltPhysics/JoltPhysicsPlugin.cpp
 )
 file(GLOB_RECURSE JOLT_SOURCES CONFIGURE_DEPENDS ${REPO_ROOT}/Plugins/JoltPhysics/vendor/Jolt/*.cpp)
-
-# Only Jolt and the physics wrapper (the TUs that include Jolt) are built as
-# C++17; see the std::byte note above.
-set(CXX17_SOURCES
-	${REPO_ROOT}/Plugins/JoltPhysics/PhysicsWorld.cpp
-	${JOLT_SOURCES}
-)
-if(MSVC)
-	set_source_files_properties(${CXX17_SOURCES} PROPERTIES COMPILE_FLAGS "/std:c++17")
-else()
-	set_source_files_properties(${CXX17_SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++17")
-endif()
 
 # ---------------------------------------------------------------------------
 # Core static library: everything that does not depend on NUC_GAME_BUILD.

@@ -64,6 +64,18 @@
     <Filter Include="src\engine\editor\panels">
       <UniqueIdentifier>{0da99318-257e-435e-9cd0-447778f88ace}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\engine\plugin">
+      <UniqueIdentifier>{e231676c-8fde-4926-b98c-f96d3d6f9f6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\engine\platform">
+      <UniqueIdentifier>{71b635b7-2a88-4508-a86b-421a85bdaef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{2268d0f2-c02d-4a59-8802-51ed6fc83532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\JoltPhysics">
+      <UniqueIdentifier>{6c7ceb46-4656-4bfb-b8f8-7fd67e2b4584}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\core\Application.cpp">
@@ -185,6 +197,30 @@
     </ClCompile>
     <ClCompile Include="src\engine\editor\UndoStack.cpp">
       <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\editor\MeshPreview.cpp">
+      <Filter>src\engine\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\platform\WindowChrome.cpp">
+      <Filter>src\engine\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\plugin\PluginManager.cpp">
+      <Filter>src\engine\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\MeshComponent.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\scene\ComponentRegistry.cpp">
+      <Filter>src\engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\JoltPhysics\JoltPhysicsPlugin.cpp">
+      <Filter>Plugins\JoltPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\JoltPhysics\PhysicsWorld.cpp">
+      <Filter>Plugins\JoltPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\JoltPhysics\vendor\Jolt\**\*.cpp">
+      <Filter>Plugins\JoltPhysics</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\editor\GamePackager.cpp">
       <Filter>src\engine\editor</Filter>
@@ -334,6 +370,36 @@
     </ClInclude>
     <ClInclude Include="src\engine\editor\GamePackager.h">
       <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\editor\MeshPreview.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\platform\WindowChrome.h">
+      <Filter>src\engine\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\plugin\Plugin.h">
+      <Filter>src\engine\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\plugin\PluginManager.h">
+      <Filter>src\engine\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\MeshComponent.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\Component.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\ComponentRegistry.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\scene\Serialization.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\JoltPhysics\JoltPhysicsPlugin.h">
+      <Filter>Plugins\JoltPhysics</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\JoltPhysics\PhysicsWorld.h">
+      <Filter>Plugins\JoltPhysics</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\editor\panels\MapsPanel.h">
       <Filter>src\engine\editor\panels</Filter>

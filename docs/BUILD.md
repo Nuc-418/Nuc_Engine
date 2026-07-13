@@ -37,14 +37,13 @@ Ninja from a Developer Command Prompt). Targets:
 - `nuc_engine` — the static library both executables link (engine + third-party
   + the JoltPhysics plugin, including vendored Jolt).
 
-### Why C++17 is scoped per-file
+### Language standard and encoding
 
-Jolt and its wrapper (`Plugins/JoltPhysics/PhysicsWorld.cpp`) require C++17, but
-the rest of the engine is built as the MSVC default (C++14). Compiling the whole
-tree as C++17 breaks the Windows-header code: the engine's `using namespace std;`
-plus `<windows.h>` makes `std::byte` ambiguous with the SDK's `byte` (C2872).
-Both the `.vcxproj` and `CMakeLists.txt` therefore apply C++17 only to the Jolt
-translation units.
+The whole tree builds as **C++17** with **UTF-8 sources** (`/utf-8`), in both
+the `.vcxproj` and `CMakeLists.txt`. (C++17 used to be scoped to the Jolt
+translation units because `using namespace std;` in engine headers made
+`std::byte` ambiguous with the Windows SDK's `byte` (C2872); those `using`
+directives are gone from public headers, so the restriction is too.)
 
 ## Running
 

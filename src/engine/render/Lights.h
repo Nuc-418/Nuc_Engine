@@ -7,8 +7,6 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-using namespace glm;
-using namespace std;
 
 /*Fonte de luz ambiente*/
 struct AmbientLight {
@@ -17,7 +15,7 @@ struct AmbientLight {
 	int switchL= true;
 
 	//Componente de luz ambiente global
-	vec3 ambient;	
+	glm::vec3 ambient;	
 
 };
 
@@ -28,16 +26,16 @@ struct DirectionalLight {
 	int switchL = true;
 
 	//Dire��o da luz no espa�o do mundo
-	vec3 direction;		
+	glm::vec3 direction;		
 
 	//Componente de luz ambiente
-	vec3 ambient;	
+	glm::vec3 ambient;	
 
 	//Componente de luz difusa
-	vec3 diffuse;
+	glm::vec3 diffuse;
 
 	//Componente de luz especular
-	vec3 specular;		
+	glm::vec3 specular;		
 };
 
 /*Fonte de luz pontual*/
@@ -47,16 +45,16 @@ struct PointLight {
 	int switchL = true;
 
 	//Posi��o do ponto de luz no espa�o do mundo
-	vec3 position;		
+	glm::vec3 position;		
 
 	//Componente de luz ambiente
-	vec3 ambient;	
+	glm::vec3 ambient;	
 
 	//Componente de luz difusa
-	vec3 diffuse;	
+	glm::vec3 diffuse;	
 
 	//Componente de luz especular
-	vec3 specular;		
+	glm::vec3 specular;		
 
 	//Coeficiente de atenua��o constante
 	float constant;	
@@ -75,18 +73,18 @@ struct SpotLight {
 	int switchL = true;
 
 	//Posi��o do ponto de luz no espa�o do mundo
-	vec3 position;		
-	vec3 direction;
+	glm::vec3 position;		
+	glm::vec3 direction;
 	float cutOff;
 
 	//Componente de luz ambiente
-	vec3 ambient;	
+	glm::vec3 ambient;	
 
 	//Componente de luz difusa
-	vec3 diffuse;	
+	glm::vec3 diffuse;	
 
 	//Componente de luz especular
-	vec3 specular;		
+	glm::vec3 specular;		
 
 	//Coeficiente de atenua��o constante
 	float constant;		
@@ -101,10 +99,10 @@ struct SpotLight {
 /*Defini��o de vetores que armazenam v�rias fontes de luz de um determinado tipo*/
 struct VectorLight
 {
-	vector<AmbientLight> ambientLight;
-	vector<DirectionalLight> directionalLight;
-	vector<PointLight> pointLight;
-	vector<SpotLight> spotLight;
+	std::vector<AmbientLight> ambientLight;
+	std::vector<DirectionalLight> directionalLight;
+	std::vector<PointLight> pointLight;
+	std::vector<SpotLight> spotLight;
 
 };
 
@@ -115,10 +113,10 @@ public:
 	VectorLight lightInfo;
 
 
-	void AddAmbientLight(GLuint program,vec3 ambient);
-	void AddDirectionalLight(GLuint program, vec3 direction,vec3 ambient, vec3 diffuse, vec3 specular);
-	void AddPointLight(GLuint program, vec3 position,vec3 ambient,vec3 diffuse,vec3 specular,float constant,float linear,float quadratic);
-	void AddSpotLight(GLuint program, vec3 position,vec3 direction,vec3 ambient,vec3 diffuse,vec3 specular,float constant,float linear,float quadratic, float cutOff);
+	void AddAmbientLight(GLuint program,glm::vec3 ambient);
+	void AddDirectionalLight(GLuint program, glm::vec3 direction,glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	void AddPointLight(GLuint program, glm::vec3 position,glm::vec3 ambient,glm::vec3 diffuse,glm::vec3 specular,float constant,float linear,float quadratic);
+	void AddSpotLight(GLuint program, glm::vec3 position,glm::vec3 direction,glm::vec3 ambient,glm::vec3 diffuse,glm::vec3 specular,float constant,float linear,float quadratic, float cutOff);
 
 	void ToggleAmbientLight(GLuint program,bool switchL);
 	void ToggleDirectionalLight(GLuint program, bool switchL);

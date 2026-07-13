@@ -22,6 +22,7 @@
 #endif
 
 using namespace std;
+using namespace glm;
 
 /* Cube geometry lives in statics so the World spawn factories can reuse it
    for editor spawns; Mesh uploads the data immediately, so sharing is safe. */

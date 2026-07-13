@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# First-party sources are UTF-8 (MSVC builds with /utf-8; see the vcxproj and
+# CMakeLists). Vendored third_party and plugin vendor trees keep their upstream
+# encodings.
+src/** working-tree-encoding=UTF-8
+tools/** working-tree-encoding=UTF-8

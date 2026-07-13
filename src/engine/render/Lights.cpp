@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
 using namespace std;
+using namespace glm;
 
 void Lights::StorePrimitiveLight(GLuint program)
 {

@@ -1,10 +1,7 @@
 // Material: .mtl parsing and upload of the material.* shader uniforms.
 
 #pragma once
-#include <iostream>
 #include <string>
-#include <vector>
-using namespace std;
 #include <GL/glew.h>
 
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
@@ -24,7 +21,7 @@ struct MaterialInfo
 class Material
 {
 public:
-	MaterialInfo materialInfo = {NULL};
+	MaterialInfo materialInfo = {};
 
 	void materialStorage(GLuint program);
 

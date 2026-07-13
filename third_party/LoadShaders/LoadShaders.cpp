@@ -14,16 +14,16 @@
 
 static const GLchar* ReadShader(const char* filename) {
 
-	// Abre o ficheiro 'filename' em bin·rio, e coloca-se na ˙ltima posiÁ„o do ficheiro.
+	// Abre o ficheiro 'filename' em bin√°rio, e coloca-se na √∫ltima posi√ß√£o do ficheiro.
 	std::ifstream ficheiro(filename, std::ifstream::ate | std::ifstream::binary);
 	// Se o ficheiro foi aberto.
 	if (ficheiro.is_open()) {
-		// Leitura da prÛxima posiÁ„o de leitura.
+		// Leitura da pr√≥xima posi√ß√£o de leitura.
 		std::streampos tamanhoDoFicheiroEmBytes = ficheiro.tellg();
-		// Reposiciona a leitura do ficheiro no seu inÌcio.
+		// Reposiciona a leitura do ficheiro no seu in√≠cio.
 		ficheiro.seekg(0, std::ios::beg);
 
-		// AlocaÁ„o de espaÁo de memÛria para dados do ficheiro.
+		// Aloca√ß√£o de espa√ßo de mem√≥ria para dados do ficheiro.
 		GLchar* source = new GLchar[int(tamanhoDoFicheiroEmBytes) + 1];
 		// Leitura do ficheiro para o array 'source'.
 		ficheiro.read(source, tamanhoDoFicheiroEmBytes);
@@ -33,7 +33,7 @@ static const GLchar* ReadShader(const char* filename) {
 		// Fecha o ficheiro.
 		ficheiro.close();
 
-		// Retorna o endereÁo da string alocada.
+		// Retorna o endere√ßo da string alocada.
 		return const_cast<const GLchar*>(source);
 	}
 	else {
@@ -53,13 +53,13 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 		// Cria um objeto shader
 		shaders[i].shader = glCreateShader(shaders[i].type);
 
-		// Efetua a leitura do cÛdigo do shader
+		// Efetua a leitura do c√≥digo do shader
 		const GLchar* source = ReadShader(shaders[i].filename);
-		// Se n„o conseguir ler o cÛdigo
+		// Se n√£o conseguir ler o c√≥digo
 		if (source == NULL) {
-			// DestrÛi os shaders que tinham criados
+			// Destr√≥i os shaders que tinham criados
 			for (int j = 0; shaders[j].type != GL_NONE; j++) {
-				// Se tem um shader v·lido (i.e., != 0)
+				// Se tem um shader v√°lido (i.e., != 0)
 				if (shaders[j].shader != 0)
 					glDeleteShader(shaders[j].shader);
 				shaders[j].shader = 0;
@@ -68,17 +68,17 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 			return 0;
 		}
 
-		// Carrega o cÛdigo do shader
+		// Carrega o c√≥digo do shader
 		glShaderSource(shaders[i].shader, 1, &source, NULL);
 		delete[] source;
 
 		// Compila o shader
 		glCompileShader(shaders[i].shader);
 
-		// Verifica o estado da compilaÁ„o
+		// Verifica o estado da compila√ß√£o
 		GLint compiled;
 		glGetShaderiv(shaders[i].shader, GL_COMPILE_STATUS, &compiled);
-		// Em caso de erro na compilaÁ„o
+		// Em caso de erro na compila√ß√£o
 		if (!compiled) {
 #ifdef _DEBUG
 			GLsizei len;
@@ -90,9 +90,9 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 			delete[] log;
 #endif /* DEBUG */
 
-			// DestrÛi os shaders que tinham criados
+			// Destr√≥i os shaders que tinham criados
 			for (int j = 0; shaders[j].type != GL_NONE; j++) {
-				// Se tem um shader v·lido (i.e., != 0)
+				// Se tem um shader v√°lido (i.e., != 0)
 				if (shaders[j].shader != 0)
 					glDeleteShader(shaders[j].shader);
 				shaders[j].shader = 0;
@@ -123,9 +123,9 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 		delete[] log;
 #endif /* DEBUG */
 
-		// DestrÛi os shaders que tinham criados
+		// Destr√≥i os shaders que tinham criados
 		for (int j = 0; shaders[j].type != GL_NONE; j++) {
-			// Se tem um shader v·lido (i.e., != 0)
+			// Se tem um shader v√°lido (i.e., != 0)
 			if (shaders[j].shader != 0)
 				glDeleteShader(shaders[j].shader);
 			shaders[j].shader = 0;

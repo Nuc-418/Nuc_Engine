@@ -2,7 +2,11 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <string>
 #include "stb/stb_image.h"
+
+using namespace std;
 
 void Texture::load_texture(string textureFile) {
 	// Gera um nome de textura
@@ -14,7 +18,7 @@ void Texture::load_texture(string textureFile) {
 	// Vincula esse nome de textura ao target GL_TEXTURE_2D da Unidade de Textura ativa.
 	glBindTexture(GL_TEXTURE_2D, textureName);
 
-	// Ativa a invers„o vertical da imagem, aquando da sua leitura para memÛria.
+	// Ativa a invers√£o vertical da imagem, aquando da sua leitura para mem√≥ria.
 	stbi_set_flip_vertically_on_load(true);
 
 
@@ -26,13 +30,13 @@ void Texture::load_texture(string textureFile) {
 	
 
 
-	// Leitura/descompress„o do ficheiro com imagem de textura
+	// Leitura/descompress√£o do ficheiro com imagem de textura
 	int width, height, nChannels;
 	unsigned char *imageData = stbi_load(textureFile.c_str(), &width, &height, &nChannels, 0);
 	if (imageData) {
 		// Carrega os dados da imagem para o Objeto de Textura vinculado ao target da face
 		glTexImage2D(GL_TEXTURE_2D,
-			0,					// NÌvel do Mipmap
+			0,					// N√≠vel do Mipmap
 			GL_RGB,				// Formato interno do OpenGL
 			width, height,		// width, height
 			0,					// border
@@ -41,7 +45,7 @@ void Texture::load_texture(string textureFile) {
 			imageData);			// Apontador para os dados da imagem de textura
 
 
-		// Liberta a imagem da memÛria do CPU
+		// Liberta a imagem da mem√≥ria do CPU
 		stbi_image_free(imageData);
 
 		glGenerateMipmap(GL_TEXTURE_2D);

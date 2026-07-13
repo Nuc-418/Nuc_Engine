@@ -1,6 +1,7 @@
 // MeshRenderer: draws a Mesh with a shader program and a Transform.
 
 #include "engine/render/MeshRenderer.h"
+#include <iostream>
 
 using namespace std;
 
@@ -27,9 +28,9 @@ void MeshRenderer::Draw(GLenum mode,Camera* camera)
 		glDrawArrays(mode, 0, mesh.nVertex);
 	else
 	{
-		//Vincula-se o buffer de índices ao EBO 
+		//Vincula-se o buffer de Ã­ndices ao EBO 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-		//Desenham-se as primitivas com recurso aos índices
+		//Desenham-se as primitivas com recurso aos Ã­ndices
 		glDrawElements(mode, mesh.nElements, GL_UNSIGNED_INT, 0);
 	}
 		
