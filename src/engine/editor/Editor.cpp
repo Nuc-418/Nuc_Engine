@@ -11,9 +11,12 @@
 #include "engine/editor/panels/StatsPanel.h"
 #include "engine/editor/panels/ContentBrowserPanel.h"
 #include "engine/editor/panels/MapsPanel.h"
+#include "engine/platform/WindowChrome.h"
 
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
+
+#include <GLFW/glfw3.h>
 
 #include <cstdio>
 #include <cstring>
@@ -21,6 +24,7 @@
 bool Editor::Init(GLFWwindow* window, World* worldPtr)
 {
 	world = worldPtr;
+	windowHandle = window;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -46,6 +50,10 @@ bool Editor::Init(GLFWwindow* window, World* worldPtr)
 		return false;
 	}
 
+	// Drop the OS title bar and draw our own (see DrawMenuBar). Must come after
+	// the ImGui backend so our window procedure wraps the backend's.
+	WindowChrome::Install(window);
+
 	if (!sceneFramebuffer.Create((int)viewportSize.x, (int)viewportSize.y))
 		return false;
 
@@ -54,6 +62,8 @@ bool Editor::Init(GLFWwindow* window, World* worldPtr)
 
 void Editor::Shutdown()
 {
+	for (auto& preview : meshPreviews)
+		preview.second.Unload();
 	sceneFramebuffer.Unload();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -169,7 +179,82 @@ void Editor::DrawMenuBar()
 	else if (ImGui::MenuItem("[ Play ]", "toolbar"))
 		playClicked = true;
 
+	DrawTitleBarControls();
+
 	ImGui::EndMainMenuBar();
+}
+
+// Right side of the main menu bar: the centered window title plus custom
+// minimize / maximize / close buttons, drawn to match the editor theme. The
+// empty strip between the menus and the buttons is the draggable caption
+// (see WindowChrome); the layout is published there each frame.
+void Editor::DrawTitleBarControls()
+{
+	const float barHeight = ImGui::GetFrameHeight();
+	const float menuRight = ImGui::GetItemRectMax().x;  // right edge of [ Play ]
+	const ImVec2 winPos = ImGui::GetWindowPos();
+	const float winW = ImGui::GetWindowWidth();
+	ImDrawList* draw = ImGui::GetWindowDrawList();
+
+	// Centered title. Drawn (not a widget) so it never eats caption drags.
+	const char* title = playing ? "NucEngine  -  Playing" : "NucEngine Editor";
+	const ImVec2 titleSize = ImGui::CalcTextSize(title);
+	draw->AddText(ImVec2(winPos.x + (winW - titleSize.x) * 0.5f,
+	                     winPos.y + (barHeight - titleSize.y) * 0.5f),
+	              ImGui::GetColorU32(ImGuiCol_Text, 0.55f), title);
+
+	const float buttonW = 46.0f;
+	const float startX = winW - buttonW * 3.0f;
+	ImGui::SameLine(startX);
+	const float buttonsLeft = ImGui::GetCursorScreenPos().x;
+
+	auto controlButton = [&](const char* id, int glyph) -> bool {
+		const ImVec2 p0 = ImGui::GetCursorScreenPos();
+		const ImVec2 size(buttonW, barHeight);
+		const bool clicked = ImGui::InvisibleButton(id, size);
+		const bool hovered = ImGui::IsItemHovered();
+
+		ImU32 fg = IM_COL32(224, 224, 224, 255);
+		if (hovered) {
+			const ImU32 bg = (glyph == 2) ? IM_COL32(232, 17, 35, 255)   // close: red
+			                              : IM_COL32(255, 255, 255, 28);  // subtle
+			draw->AddRectFilled(p0, ImVec2(p0.x + size.x, p0.y + size.y), bg);
+			if (glyph == 2) fg = IM_COL32(255, 255, 255, 255);
+		}
+
+		const ImVec2 c(p0.x + size.x * 0.5f, p0.y + size.y * 0.5f);
+		const float r = 5.0f;
+		if (glyph == 0) {                                   // minimize
+			draw->AddLine(ImVec2(c.x - r, c.y), ImVec2(c.x + r, c.y), fg, 1.0f);
+		} else if (glyph == 1) {                            // maximize / restore
+			if (glfwGetWindowAttrib(windowHandle, GLFW_MAXIMIZED)) {
+				draw->AddRect(ImVec2(c.x - r + 2, c.y - r), ImVec2(c.x + r, c.y + r - 2), fg, 0, 0, 1.0f);
+				draw->AddRectFilled(ImVec2(c.x - r, c.y - r + 2), ImVec2(c.x + r - 2, c.y + r), IM_COL32(0, 0, 0, 0), 0);
+				draw->AddRect(ImVec2(c.x - r, c.y - r + 2), ImVec2(c.x + r - 2, c.y + r), fg, 0, 0, 1.0f);
+			} else {
+				draw->AddRect(ImVec2(c.x - r, c.y - r), ImVec2(c.x + r, c.y + r), fg, 0, 0, 1.0f);
+			}
+		} else {                                            // close
+			draw->AddLine(ImVec2(c.x - r, c.y - r), ImVec2(c.x + r, c.y + r), fg, 1.2f);
+			draw->AddLine(ImVec2(c.x - r, c.y + r), ImVec2(c.x + r, c.y - r), fg, 1.2f);
+		}
+		return clicked;
+	};
+
+	if (controlButton("##min", 0))
+		glfwIconifyWindow(windowHandle);
+	ImGui::SameLine(0.0f, 0.0f);
+	if (controlButton("##max", 1)) {
+		if (glfwGetWindowAttrib(windowHandle, GLFW_MAXIMIZED))
+			glfwRestoreWindow(windowHandle);
+		else
+			glfwMaximizeWindow(windowHandle);
+	}
+	ImGui::SameLine(0.0f, 0.0f);
+	if (controlButton("##close", 2))
+		exitClicked = true;
+
+	WindowChrome::SetTitleBar(barHeight, menuRight, buttonsLeft);
 }
 
 void Editor::DrawSaveAsModal()

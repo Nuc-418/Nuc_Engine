@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 
 #include "imgui/imgui.h"
@@ -52,11 +53,17 @@ public:
 	ImVec2 viewportSize = ImVec2(1280, 720);
 	std::string contentPath = "assets";
 
+	// Content Browser mesh thumbnails, keyed by type id, rendered once on first use.
+	std::map<std::string, Framebuffer> meshPreviews;
+	bool meshPreviewsReady = false;
+
 private:
 	void DrawMenuBar();
+	void DrawTitleBarControls();
 	void DrawSaveAsModal();
 	void DrawPackageModal();
 
+	GLFWwindow* windowHandle = nullptr;  // for the custom title bar controls
 	bool layoutNeedsBuild = false;
 	bool openSaveAs = false;
 	char saveAsBuffer[128] = "demo_scene.json";

@@ -2,12 +2,12 @@
 
 #include "engine/render/Mesh.h"
 
- /*Função que associa um array de posições e um array de cores à mesh*/
+ /*Funï¿½ï¿½o que associa um array de posiï¿½ï¿½es e um array de cores ï¿½ mesh*/
 void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray)
 {
-	//Número de vértices
+	//Nï¿½mero de vï¿½rtices
 	nVertex = positionArray->size();
-	//Array de posições
+	//Array de posiï¿½ï¿½es
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
 	//Array de cores
@@ -17,12 +17,24 @@ void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  
 	Load();
 }
 
-/*Função que associa um array de posições, um array de normais e um array de coordenadas de textura à mesh*/
+/*Associa posiï¿½ï¿½es, normais e cores ï¿½ mesh (para as primitivas iluminadas)*/
+void Mesh::AssignPosNormColor(vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray)
+{
+	nVertex = positionArray->size();
+	vertexArrayPtr[Positions] = positionArray;
+	CaptureBounds(positionArray);
+	vertexArrayPtr[Normals] = normalArray;
+	vertexArrayPtr[Colors] = colorArray;
+
+	Load();
+}
+
+/*Funï¿½ï¿½o que associa um array de posiï¿½ï¿½es, um array de normais e um array de coordenadas de textura ï¿½ mesh*/
 void Mesh::AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray)
 {
-	//Número de vértices
+	//Nï¿½mero de vï¿½rtices
 	nVertex = positionArray->size();
-	//Array de posições
+	//Array de posiï¿½ï¿½es
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
 	//Array de normais
@@ -34,7 +46,7 @@ void Mesh::AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* 
 	Load();
 }
 
-/*Função que associa um array de índices à mesh*/
+/*Funï¿½ï¿½o que associa um array de ï¿½ndices ï¿½ mesh*/
 void Mesh::AssignElementArray(vector<GLuint>* elementArray)
 {
 	nElements = elementArray->size();
@@ -44,17 +56,17 @@ void Mesh::AssignElementArray(vector<GLuint>* elementArray)
 	Load();
 }
 
-/*Função que associa um novo array de posições à mesh*/
+/*Funï¿½ï¿½o que associa um novo array de posiï¿½ï¿½es ï¿½ mesh*/
 void Mesh::RewriteVertexPos(vector<glm::vec3>* positionArray)
 {
-	//Array de posições
+	//Array de posiï¿½ï¿½es
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
-	//Vetor que armazena o primeiro índice do array de posições da mesh
+	//Vetor que armazena o primeiro ï¿½ndice do array de posiï¿½ï¿½es da mesh
 	glm::vec3* auxVecStartPtr = &vertexArrayPtr[Positions]->at(0);
-	//É criado e vinculado um novo VBO 
+	//ï¿½ criado e vinculado um novo VBO 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[Positions]);
-	//Passa-se a nova informação sobre posições de vértice para o VBO criado
+	//Passa-se a nova informaï¿½ï¿½o sobre posiï¿½ï¿½es de vï¿½rtice para o VBO criado
 	glBufferData(GL_ARRAY_BUFFER, vertexArrayPtr[Positions]->size() * sizeof(glm::vec3), auxVecStartPtr, GL_STATIC_DRAW);
 
 	//Cria-se a mesh
@@ -76,7 +88,7 @@ void Mesh::CaptureBounds(vector<glm::vec3>* positionArray)
 /*Cria-se um VAO*/
 void Mesh::LoadVAO()
 {
-	if (VAO == 0) //se não houver um VAO vinculado
+	if (VAO == 0) //se nï¿½o houver um VAO vinculado
 	{
 		//Geram-se nomes para um VAO
 		glGenVertexArrays(1, &VAO);
@@ -90,22 +102,22 @@ void Mesh::LoadVBOs()
 {
 	for (int index = 0; index < 3; index++)
 	{
-		//Se existir um vértice
+		//Se existir um vï¿½rtice
 		if (vertexArrayPtr[index])
 		{
 			
-			//Cria-se um apontador que aponta para o primeiro elemento desse vértice
+			//Cria-se um apontador que aponta para o primeiro elemento desse vï¿½rtice
 			glm::vec3* auxVecStartPtr = &vertexArrayPtr[index]->at(0);
 			//Criam-se nomes para o VBO
 			glGenBuffers(1, &VBO[index]);
 			//Cria-se e vincula-se o VBO
 			glBindBuffer(GL_ARRAY_BUFFER, VBO[index]);
-			//Passa-se a informação do CPU para o VBO 
+			//Passa-se a informaï¿½ï¿½o do CPU para o VBO 
 			glBufferData(GL_ARRAY_BUFFER, (vertexArrayPtr[index]->size() * sizeof(glm::vec3)), auxVecStartPtr, GL_STATIC_DRAW);
 
 			cout << "Array of " << resourceLocations[index] << " loaded to VBO : " << VBO[index] << endl;
 
-			//Encontra-se a localização do objeto no programa
+			//Encontra-se a localizaï¿½ï¿½o do objeto no programa
 			GLuint id = glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, resourceLocations[index]);
 			//Une-se o VBO ao VAO e liga-se o VAO ao programa shader
 			glVertexAttribPointer(id, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);

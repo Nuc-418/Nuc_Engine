@@ -23,6 +23,8 @@ public:
 
 	void CreateObjPosColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray);
 
+	void CreateObjPosNormColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray);
+
 	void CreateObjPosUvNorm(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray);
 
 	string name;

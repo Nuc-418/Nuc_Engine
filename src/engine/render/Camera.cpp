@@ -7,7 +7,7 @@
 using namespace std;
 
 
-/*Função que cria uma câmara dados uma determinada posição, um alvo e um vetor normal*/
+/*Funï¿½ï¿½o que cria uma cï¿½mara dados uma determinada posiï¿½ï¿½o, um alvo e um vetor normal*/
 Camera::Camera(glm::vec3 camPos, glm::vec3 lookAt, glm::vec3 vecUp)
 {
 	transform.position = camPos;
@@ -15,7 +15,7 @@ Camera::Camera(glm::vec3 camPos, glm::vec3 lookAt, glm::vec3 vecUp)
 	projection = glm::perspective(glm::radians(fovDegrees), aspectRatio, nearPlane, farPlane);
 
 	view = glm::lookAt(
-		camPos,	//Posição
+		camPos,	//Posiï¿½ï¿½o
 		lookAt,	//Alvo 
 		vecUp	//Vetor normal
 	);
@@ -39,7 +39,7 @@ void Camera::SetAspect(float aspect)
 	SetPerspective(fovDegrees, aspect, nearPlane, farPlane);
 }
 
-/*Função que atualiza a câmara e retorna o valor da matriz MVP*/
+/*Funï¿½ï¿½o que atualiza a cï¿½mara e retorna o valor da matriz MVP*/
 glm::mat4 Camera::GetMVP(glm::mat4 model)
 {
 	UpdateCam();
@@ -47,7 +47,7 @@ glm::mat4 Camera::GetMVP(glm::mat4 model)
 	return (viewProjection * model);
 }
 
-/*Função que envia as diversas matrizes da câmara para o programa shader*/
+/*Funï¿½ï¿½o que envia as diversas matrizes da cï¿½mara para o programa shader*/
 void Camera::CamToProgram(GLuint program, glm::mat4 model)
 {
 	auto cached = locationCache.find(program);
@@ -62,7 +62,7 @@ void Camera::CamToProgram(GLuint program, glm::mat4 model)
 	}
 	const UniformLocations& loc = cached->second;
 
-	/*Os valores Model, View e Projection da matriz MVP são enviados para o programa shader*/
+	/*Os valores Model, View e Projection da matriz MVP sï¿½o enviados para o programa shader*/
 	glProgramUniformMatrix4fv(program, loc.model, 1, GL_FALSE, glm::value_ptr(model));
 
 	glProgramUniformMatrix4fv(program, loc.view, 1, GL_FALSE, glm::value_ptr(view));
@@ -78,7 +78,7 @@ void Camera::CamToProgram(GLuint program, glm::mat4 model)
 
 }
 
-/*Função que atualiza a câmara*/
+/*Funï¿½ï¿½o que atualiza a cï¿½mara*/
 void Camera::UpdateCam()
 {
 
@@ -86,7 +86,7 @@ void Camera::UpdateCam()
 	transform.CalcLocalAxisCam();
 
 	view = glm::lookAt(
-		transform.position,	//Posição
+		transform.position,	//Posiï¿½ï¿½o
 		transform.forward + transform.position,	//Alvo
 		transform.up	//Vetor normal
 	);

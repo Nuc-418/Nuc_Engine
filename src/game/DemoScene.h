@@ -28,11 +28,13 @@ private:
 	// Shader programs
 	GLuint ironManProgramShader = 0;
 	GLuint cubeProgramShader = 0;
+	GLuint primitiveProgramShader = 0; // lit shader for the built-in primitives
 
 	// Cached at load time; the programs are never recreated.
 	GLint offsetToggleLocation = -1;
 
-	Texture ironManTexture;
+	// One texture per discovered model (bound to the shared model shader).
+	std::vector<Texture> modelTextures;
 
 	// Raw handles into the world for the demo animations. Nulled through
 	// World::onDestroyed if the editor deletes the objects.

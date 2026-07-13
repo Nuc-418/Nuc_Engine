@@ -41,6 +41,7 @@ public:
 
 
 	void AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray);
+	void AssignPosNormColor(vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray);
 	void AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray);
 	void AssignElementArray(vector<GLuint>* elementArray);
 

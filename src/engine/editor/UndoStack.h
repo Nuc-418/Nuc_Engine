@@ -25,8 +25,8 @@ class UndoStack
 {
 public:
 	void RecordTransform(unsigned long long id, const TransformState& before, const TransformState& after);
-	void RecordSpawn(ObjectType type, const std::string& name, unsigned long long id, const TransformState& state);
-	void RecordDelete(ObjectType type, const std::string& name, unsigned long long id, const TransformState& state);
+	void RecordSpawn(const std::string& typeId, const std::string& name, unsigned long long id, const TransformState& state);
+	void RecordDelete(const std::string& typeId, const std::string& name, unsigned long long id, const TransformState& state);
 	void RecordRename(unsigned long long id, const std::string& before, const std::string& after);
 	void RecordLights(const VectorLight& before, const VectorLight& after);
 
@@ -47,7 +47,7 @@ private:
 		enum class Kind { Transform, Spawn, Delete, Rename, Lights };
 		Kind kind;
 		unsigned long long id = 0;
-		ObjectType type = ObjectType::Cube;
+		std::string typeId;         // Spawn/Delete: the type to respawn
 		std::string name;           // Spawn/Delete: object name; Rename: name before the edit
 		std::string nameAfter;      // Rename only
 		TransformState before = {}; // Transform: pre-edit; Spawn/Delete: state at record time

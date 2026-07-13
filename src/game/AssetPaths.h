@@ -6,6 +6,8 @@ namespace AssetPaths
 {
 	constexpr const char* CubeVertexShader     = "assets/shaders/cubeShader/cube.vert";
 	constexpr const char* CubeFragmentShader   = "assets/shaders/cubeShader/cube.frag";
+	constexpr const char* PrimitiveVertexShader = "assets/shaders/primitive/primitive.vert";
+	constexpr const char* PrimitiveFragmentShader = "assets/shaders/primitive/primitive.frag";
 	constexpr const char* IronManVertexShader  = "assets/shaders/ironMan/ironMan.vert";
 	constexpr const char* IronManFragmentShader = "assets/shaders/ironMan/ironMan.frag";
 	constexpr const char* IronManFolder        = "assets/models/Iron_Man/";

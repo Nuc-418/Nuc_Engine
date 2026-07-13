@@ -13,7 +13,13 @@ bool Application::Init(const Config& appConfig)
 	if (!window.NewWindow(config.width, config.height, config.title, NULL, NULL))
 		return false;
 
-	window.SetWindowPos(0, 0);
+	// Place the window flush to the top-left. glfwSetWindowPos positions the
+	// content area, so offset by the frame's top/left edges (the title bar and
+	// border) — otherwise the caption is pushed off-screen and the window can't
+	// be grabbed to move or maximize it.
+	int frameLeft = 0, frameTop = 0, frameRight = 0, frameBottom = 0;
+	glfwGetWindowFrameSize(window.windowPtr, &frameLeft, &frameTop, &frameRight, &frameBottom);
+	window.SetWindowPos(frameLeft, frameTop);
 	window.MakeContextCurrent();
 
 	inputs.AssociateWindow(window.windowPtr, config.width, config.height);

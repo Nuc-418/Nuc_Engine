@@ -27,7 +27,7 @@ struct DirectionalLight {
 	//Estado da luz - On/Off
 	int switchL = true;
 
-	//Direção da luz no espaço do mundo
+	//Direï¿½ï¿½o da luz no espaï¿½o do mundo
 	vec3 direction;		
 
 	//Componente de luz ambiente
@@ -46,7 +46,7 @@ struct PointLight {
 	//Estado da luz - On/Off
 	int switchL = true;
 
-	//Posição do ponto de luz no espaço do mundo
+	//Posiï¿½ï¿½o do ponto de luz no espaï¿½o do mundo
 	vec3 position;		
 
 	//Componente de luz ambiente
@@ -58,23 +58,23 @@ struct PointLight {
 	//Componente de luz especular
 	vec3 specular;		
 
-	//Coeficiente de atenuação constante
+	//Coeficiente de atenuaï¿½ï¿½o constante
 	float constant;	
 
-	//Coeficiente de atenuação linear
+	//Coeficiente de atenuaï¿½ï¿½o linear
 	float linear;		
 
-	//Coeficiente de atenuação quadrática
+	//Coeficiente de atenuaï¿½ï¿½o quadrï¿½tica
 	float quadratic;	
 };
 
-/*Fonte de luz cónica*/
+/*Fonte de luz cï¿½nica*/
 struct SpotLight {
 
 	//Estado da luz - On/Off
 	int switchL = true;
 
-	//Posição do ponto de luz no espaço do mundo
+	//Posiï¿½ï¿½o do ponto de luz no espaï¿½o do mundo
 	vec3 position;		
 	vec3 direction;
 	float cutOff;
@@ -88,17 +88,17 @@ struct SpotLight {
 	//Componente de luz especular
 	vec3 specular;		
 
-	//Coeficiente de atenuação constante
+	//Coeficiente de atenuaï¿½ï¿½o constante
 	float constant;		
 
-	//Coeficiente de atenuação linear
+	//Coeficiente de atenuaï¿½ï¿½o linear
 	float linear;	
 
-	//Coeficiente de atenuação quadrática
+	//Coeficiente de atenuaï¿½ï¿½o quadrï¿½tica
 	float quadratic;	
 };
 
-/*Definição de vetores que armazenam várias fontes de luz de um determinado tipo*/
+/*Definiï¿½ï¿½o de vetores que armazenam vï¿½rias fontes de luz de um determinado tipo*/
 struct VectorLight
 {
 	vector<AmbientLight> ambientLight;
@@ -111,7 +111,7 @@ struct VectorLight
 class Lights
 {
 public:
-	//Cria-se um vetor com informações sobre cada luz
+	//Cria-se um vetor com informaï¿½ï¿½es sobre cada luz
 	VectorLight lightInfo;
 
 
@@ -124,6 +124,11 @@ public:
 	void ToggleDirectionalLight(GLuint program, bool switchL);
 	void TogglePointLight(GLuint program, int lightIndex, bool switchL);
 	void ToggleSpotLight(GLuint program, int lightIndex, bool switchL);
+
+	// Uploads the first directional + ambient light as the plain uLight*
+	// uniforms used by the primitive shader (see primitive.frag). Safe to call
+	// with no lights present (falls back to a lit-from-above default).
+	void StorePrimitiveLight(GLuint program);
 
 	void StoreAmbientLights(GLuint program);
 	void StoreDirectionalLights(GLuint program,int vectorSize);

@@ -45,22 +45,22 @@ void UndoStack::RecordTransform(unsigned long long id, const TransformState& bef
 	Push(action);
 }
 
-void UndoStack::RecordSpawn(ObjectType type, const std::string& name, unsigned long long id, const TransformState& state)
+void UndoStack::RecordSpawn(const std::string& typeId, const std::string& name, unsigned long long id, const TransformState& state)
 {
 	Action action;
 	action.kind = Action::Kind::Spawn;
-	action.type = type;
+	action.typeId = typeId;
 	action.name = name;
 	action.id = id;
 	action.before = state;
 	Push(action);
 }
 
-void UndoStack::RecordDelete(ObjectType type, const std::string& name, unsigned long long id, const TransformState& state)
+void UndoStack::RecordDelete(const std::string& typeId, const std::string& name, unsigned long long id, const TransformState& state)
 {
 	Action action;
 	action.kind = Action::Kind::Delete;
-	action.type = type;
+	action.typeId = typeId;
 	action.name = name;
 	action.id = id;
 	action.before = state;
@@ -125,7 +125,7 @@ unsigned long long UndoStack::Apply(World& world, const Action& action, bool und
 			if (object)
 				world.Destroy(object);
 		} else {
-			GameObject* object = world.Spawn(action.type, action.name, action.id);
+			GameObject* object = world.Spawn(action.typeId, action.name, action.id);
 			if (object)
 				ApplyTransform(*object, action.before);
 		}
@@ -144,7 +144,7 @@ unsigned long long UndoStack::Apply(World& world, const Action& action, bool und
 	}
 	case Action::Kind::Delete: {
 		if (undo) {
-			GameObject* object = world.Spawn(action.type, action.name, action.id);
+			GameObject* object = world.Spawn(action.typeId, action.name, action.id);
 			if (object)
 				ApplyTransform(*object, action.before);
 		} else {

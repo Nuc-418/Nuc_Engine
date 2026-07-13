@@ -19,6 +19,11 @@ bool EditorHost::Load(Application& app)
 	if (!editor.Init(app.window.windowPtr, &world))
 		return false;
 
+	// Open on a clean UE5-style default map (ground + directional light) rather
+	// than the sample scene's demo clutter. The factories the demo registered in
+	// game.Load stay available, so spawning still works.
+	world.ResetToDefaultMap();
+
 	app.inputs.SetCursorCaptured(false);
 	return true;
 }

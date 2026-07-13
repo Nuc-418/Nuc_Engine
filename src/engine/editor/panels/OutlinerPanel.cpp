@@ -10,7 +10,7 @@ static void DestroyObject(Editor& editor, GameObject* object)
 
 	const WorldEntry* entry = editor.world->EntryOf(object);
 	if (entry)
-		editor.undoStack.RecordDelete(entry->type, object->name, entry->id, CaptureTransform(*object));
+		editor.undoStack.RecordDelete(entry->typeId, object->name, entry->id, CaptureTransform(*object));
 
 	editor.world->Destroy(object);
 }
@@ -23,9 +23,9 @@ void DrawOutlinerPanel(Editor& editor)
 	if (ImGui::Button("+ Add"))
 		ImGui::OpenPopup("outliner_add");
 	if (ImGui::BeginPopup("outliner_add")) {
-		const ObjectType types[] = { ObjectType::Cube, ObjectType::IndexedCube, ObjectType::IronMan };
-		for (ObjectType type : types) {
-			if (ImGui::MenuItem(ToString(type), NULL, false, world.CanSpawn(type))) {
+		// Every registered type, straight from the World's dynamic registry.
+		for (const std::string& type : world.TypeIds()) {
+			if (ImGui::MenuItem(world.TypeLabel(type).c_str())) {
 				GameObject* spawned = world.Spawn(type);
 				if (spawned) {
 					// Drop new objects in front of the camera.
@@ -53,7 +53,7 @@ void DrawOutlinerPanel(Editor& editor)
 
 		if (ImGui::BeginPopupContextItem("outliner_item")) {
 			editor.selected = object;
-			ImGui::TextDisabled("%s", ToString(entry.type));
+			ImGui::TextDisabled("%s", world.TypeLabel(entry.typeId).c_str());
 			ImGui::Separator();
 			if (ImGui::MenuItem("Delete", "Del"))
 				toDestroy = object;

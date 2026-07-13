@@ -8,7 +8,39 @@
 
 using namespace std;
 
-/*Função que cria uma fonte de luz ambiente*/
+void Lights::StorePrimitiveLight(GLuint program)
+{
+	vec3 direction(0.4f, -1.0f, 0.5f);
+	vec3 diffuse(1.0f);
+	vec3 ambient(0.0f);
+	int  on = 0;
+
+	const bool haveDirectional = !lightInfo.directionalLight.empty();
+	const bool haveAmbient = !lightInfo.ambientLight.empty();
+
+	// Honour each light's on/off switch so toggling lights in the editor
+	// actually darkens the primitives (the directional term is also gated by
+	// uLightOn in the shader).
+	if (haveDirectional) {
+		direction = lightInfo.directionalLight[0].direction;
+		diffuse = lightInfo.directionalLight[0].diffuse;
+		on = lightInfo.directionalLight[0].switchL;
+	}
+	if (haveAmbient && lightInfo.ambientLight[0].switchL)
+		ambient = lightInfo.ambientLight[0].ambient;
+
+	// A map with no light sources at all keeps a soft fill so it is not pitch
+	// black; a map whose lights are simply switched off goes dark as expected.
+	if (!haveDirectional && !haveAmbient)
+		ambient = vec3(0.25f);
+
+	glProgramUniform3fv(program, glGetUniformLocation(program, "uLightDir"), 1, value_ptr(direction));
+	glProgramUniform3fv(program, glGetUniformLocation(program, "uLightColor"), 1, value_ptr(diffuse));
+	glProgramUniform3fv(program, glGetUniformLocation(program, "uAmbient"), 1, value_ptr(ambient));
+	glProgramUniform1i(program, glGetUniformLocation(program, "uLightOn"), on);
+}
+
+/*Funï¿½ï¿½o que cria uma fonte de luz ambiente*/
 void Lights::AddAmbientLight(GLuint program, vec3 ambient)
 {
 	if (lightInfo.ambientLight.size())
@@ -21,7 +53,7 @@ void Lights::AddAmbientLight(GLuint program, vec3 ambient)
 	StoreAmbientLights(program);
 
 }
-/*Função que cria uma fonte de luz direcional*/
+/*Funï¿½ï¿½o que cria uma fonte de luz direcional*/
 void Lights::AddDirectionalLight(GLuint program, vec3 direction, vec3 ambient, vec3 diffuse, vec3 specular)
 {
 	if (lightInfo.directionalLight.size())
@@ -38,7 +70,7 @@ void Lights::AddDirectionalLight(GLuint program, vec3 direction, vec3 ambient, v
 
 }
 
-/*Função que cria uma fonte de luz pontual*/
+/*Funï¿½ï¿½o que cria uma fonte de luz pontual*/
 void Lights::AddPointLight(GLuint program, vec3 position, vec3 ambient, vec3 diffuse, vec3 specular, float constant, float linear, float quadratic)
 {
 	PointLight pointLight;
@@ -54,7 +86,7 @@ void Lights::AddPointLight(GLuint program, vec3 position, vec3 ambient, vec3 dif
 	StorePointLights(program, lightInfo.pointLight.size());
 }
 
-/*Função que cria uma fonte de luz cónica*/
+/*Funï¿½ï¿½o que cria uma fonte de luz cï¿½nica*/
 void Lights::AddSpotLight(GLuint program, vec3 position, vec3 direction, vec3 ambient, vec3 diffuse, vec3 specular, float constant, float linear, float quadratic, float cutOff)
 {
 	SpotLight spotLight;
@@ -75,7 +107,7 @@ void Lights::AddSpotLight(GLuint program, vec3 position, vec3 direction, vec3 am
 }
 
 
-/*Função que armazena as fontes de luz ambientes*/
+/*Funï¿½ï¿½o que armazena as fontes de luz ambientes*/
 void Lights::StoreAmbientLights(GLuint program)
 {
 	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "ambientLight.switchL"), lightInfo.ambientLight[0].switchL);
@@ -83,7 +115,7 @@ void Lights::StoreAmbientLights(GLuint program)
 }
 
 
-/*Função que armazena as fontes de luz direcionais*/
+/*Funï¿½ï¿½o que armazena as fontes de luz direcionais*/
 void Lights::StoreDirectionalLights(GLuint program, int vectorSize)
 {
 	
@@ -109,7 +141,7 @@ void Lights::StoreDirectionalLights(GLuint program, int vectorSize)
 
 }
 
-/*Função que armazena as fontes de luz pontuais*/
+/*Funï¿½ï¿½o que armazena as fontes de luz pontuais*/
 void Lights::StorePointLights(GLuint program, int vectorSize)
 {
 	for (int index = 0; index < vectorSize; index++)
@@ -146,7 +178,7 @@ void Lights::StorePointLights(GLuint program, int vectorSize)
 
 }
 
-/*Função que armazena as fontes de luz cónicas*/
+/*Funï¿½ï¿½o que armazena as fontes de luz cï¿½nicas*/
 void Lights::StoreSpotLights(GLuint program, int vectorSize)
 {
 	string lightType = "spotLight[";
@@ -189,7 +221,7 @@ void Lights::StoreSpotLights(GLuint program, int vectorSize)
 }
 
 
-/*Função que armazena os valores dos switches de cada fonte de luz ambiente (ligada/desligada)*/
+/*Funï¿½ï¿½o que armazena os valores dos switches de cada fonte de luz ambiente (ligada/desligada)*/
 void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 {
 	lightInfo.ambientLight[0].switchL = switchL;
@@ -202,7 +234,7 @@ void Lights::ToggleAmbientLight(GLuint program, bool switchL)
 }
 
 
-/*Função que armazena os valores dos switches de cada fonte de luz direcional (ligada/desligada)*/
+/*Funï¿½ï¿½o que armazena os valores dos switches de cada fonte de luz direcional (ligada/desligada)*/
 void Lights::ToggleDirectionalLight(GLuint program, bool switchL)
 {
 	lightInfo.directionalLight[0].switchL = switchL;
@@ -214,7 +246,7 @@ void Lights::ToggleDirectionalLight(GLuint program, bool switchL)
 	glProgramUniform1i(program, it->second, lightInfo.directionalLight[0].switchL);
 }
 
-/*Função que armazena os valores dos switches de cada fonte de luz pontual (ligada/desligada)*/
+/*Funï¿½ï¿½o que armazena os valores dos switches de cada fonte de luz pontual (ligada/desligada)*/
 void Lights::TogglePointLight(GLuint program, int lightIndex, bool switchL)
 {
 	lightInfo.pointLight[lightIndex].switchL = switchL;
@@ -229,7 +261,7 @@ void Lights::TogglePointLight(GLuint program, int lightIndex, bool switchL)
 }
 
 
-/*Função que armazena os valores dos switches de cada fonte de luz cónica (ligada/desligada)*/
+/*Funï¿½ï¿½o que armazena os valores dos switches de cada fonte de luz cï¿½nica (ligada/desligada)*/
 void Lights::ToggleSpotLight(GLuint program, int lightIndex, bool switchL)
 {
 	lightInfo.spotLight[lightIndex].switchL = switchL;

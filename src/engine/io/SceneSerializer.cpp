@@ -37,7 +37,7 @@ bool SceneSerializer::Save(const World& world, const std::string& path)
 	for (const WorldEntry& entry : world.entries) {
 		const Transform& transform = entry.object->transform;
 		objects.push_back({
-			{ "type", ToString(entry.type) },
+			{ "type", entry.typeId },
 			{ "name", entry.object->name },
 			{ "position", ToJson(transform.position) },
 			{ "rotation", ToJson(transform.rotation) },
@@ -105,13 +105,12 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 	world.Clear();
 
 	for (const json& item : root.value("objects", json::array())) {
-		ObjectType type;
-		std::string typeName = item.value("type", "");
-		if (!ObjectTypeFromString(typeName, type) || !world.CanSpawn(type)) {
-			std::cout << "Scene load: skipping unknown object type '" << typeName << "'" << std::endl;
+		std::string typeId = item.value("type", "");
+		if (!world.CanSpawn(typeId)) {
+			std::cout << "Scene load: skipping unknown object type '" << typeId << "'" << std::endl;
 			continue;
 		}
-		GameObject* object = world.Spawn(type, item.value("name", ""));
+		GameObject* object = world.Spawn(typeId, item.value("name", ""));
 		if (!object)
 			continue;
 		object->transform.position = Vec3FromJson(item.value("position", json()));

@@ -20,7 +20,7 @@ void DrawDetailsPanel(Editor& editor)
 	/* Type (looked up in the world entry) */
 	for (const WorldEntry& entry : editor.world->entries) {
 		if (entry.object.get() == object) {
-			ImGui::TextDisabled("Type: %s", ToString(entry.type));
+			ImGui::TextDisabled("Type: %s", editor.world->TypeLabel(entry.typeId).c_str());
 			break;
 		}
 	}

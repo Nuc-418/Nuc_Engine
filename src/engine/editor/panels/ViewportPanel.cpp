@@ -23,6 +23,47 @@ void DrawViewportPanel(Editor& editor, Application& app)
 	             editor.viewportSize, ImVec2(0, 1), ImVec2(1, 0));
 	bool hovered = ImGui::IsItemHovered();
 
+	/* Drag-and-drop spawn: a "Place Actors" item dropped onto the viewport is
+	   placed where the drop ray meets the ground plane (y=0). */
+	if (!editor.playing && ImGui::BeginDragDropTarget()) {
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("NUC_SPAWN_TYPE");
+		if (payload && payload->Data) {
+			std::string type((const char*)payload->Data); // null-terminated type id
+			World& world = *editor.world;
+			if (world.CanSpawn(type)) {
+				ImVec2 mouse = ImGui::GetMousePos();
+				float ndcX = 2.0f * (mouse.x - imagePos.x) / editor.viewportSize.x - 1.0f;
+				float ndcY = 1.0f - 2.0f * (mouse.y - imagePos.y) / editor.viewportSize.y;
+
+				Camera& camera = world.camera;
+				glm::mat4 inverseViewProjection = glm::inverse(camera.GetProjection() * camera.GetView());
+				glm::vec4 farPoint = inverseViewProjection * glm::vec4(ndcX, ndcY, 1.0f, 1.0f);
+				farPoint /= farPoint.w;
+
+				glm::vec3 rayOrigin = camera.transform.position;
+				glm::vec3 rayDirection = glm::normalize(glm::vec3(farPoint) - rayOrigin);
+
+				/* Intersect the ground plane y=0; fall back to a point ahead. */
+				glm::vec3 dropPos;
+				float denom = rayDirection.y;
+				float t = (denom != 0.0f) ? (-rayOrigin.y / denom) : -1.0f;
+				if (t > 0.0f)
+					dropPos = rayOrigin + rayDirection * t;
+				else
+					dropPos = rayOrigin + rayDirection * 12.0f;
+
+				GameObject* spawned = world.Spawn(type);
+				if (spawned) {
+					spawned->transform.SetPos(dropPos);
+					editor.selected = spawned;
+					editor.undoStack.RecordSpawn(type, spawned->name, world.IdOf(spawned),
+					                             CaptureTransform(*spawned));
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
 	/* Play-in-viewport: the game is running; no editing interactions. */
 	if (editor.playing) {
 		ImGui::SetCursorScreenPos(ImVec2(imagePos.x + 8, imagePos.y + 8));

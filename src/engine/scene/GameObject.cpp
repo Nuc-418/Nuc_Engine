@@ -36,6 +36,12 @@ void GameObject::CreateObjPosColor(GLuint programShader, vector<glm::vec3>* posi
 	meshRenderer.mesh.AssignPosColor(positionArray, colorArray);
 }
 
+void GameObject::CreateObjPosNormColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray)
+{
+	meshRenderer.SetProgramShader(programShader);
+	meshRenderer.mesh.AssignPosNormColor(positionArray, normalArray, colorArray);
+}
+
 void GameObject::CreateObjPosUvNorm(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray)
 {
 	meshRenderer.SetProgramShader(programShader);

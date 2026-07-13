@@ -1,6 +1,9 @@
 // World: registry of scene objects plus the lights, camera and render settings
 // that belong to the running scene. The editor enumerates, spawns and deletes
 // objects through this; game scenes populate it and keep raw handles.
+//
+// Spawnable types are registered dynamically by string id (see RegisterType),
+// so adding a mesh or discovering a model at runtime needs no enum or switch.
 
 #pragma once
 
@@ -14,14 +17,11 @@
 #include "engine/render/Lights.h"
 #include "engine/render/Camera.h"
 
-enum class ObjectType { Cube, IndexedCube, IronMan };
-
-const char* ToString(ObjectType type);
-bool ObjectTypeFromString(const std::string& text, ObjectType& out);
-
 struct WorldEntry
 {
-	ObjectType type;
+	// Stable key of the type this object was spawned from (serialized as-is and
+	// used to respawn on undo). Empty only for objects added outside Spawn.
+	std::string typeId;
 	unsigned long long id = 0; // stable identity for undo history
 	// GameObject wires meshRenderer.transformPtr to its own transform, so the
 	// object itself must never be copied or moved; unique_ptr storage keeps
@@ -34,14 +34,24 @@ class World
 public:
 	using SpawnFn = std::function<std::unique_ptr<GameObject>()>;
 
-	// Scenes register how each ObjectType is created (capturing their shader
-	// programs and geometry); the editor spawns through the same factories.
-	void RegisterType(ObjectType type, SpawnFn factory);
-	bool CanSpawn(ObjectType type) const;
+	// Registers a spawnable type. `id` is the stable key (also what gets
+	// serialized); `label` is the human-readable name shown in the editor.
+	// Re-registering an id replaces its factory/label but keeps its order.
+	void RegisterType(const std::string& id, const std::string& label, SpawnFn factory);
+	bool CanSpawn(const std::string& id) const;
 
-	// Spawns an object; an empty name is replaced by a unique "<Type>_<n>".
-	// forcedId re-attaches a previous identity (undo of a delete); 0 = new id.
-	GameObject* Spawn(ObjectType type, std::string name = "", unsigned long long forcedId = 0);
+	// Spawns an object of the given type; an empty name is replaced by a unique
+	// "<Label>_<n>". forcedId re-attaches a previous identity (undo of a
+	// delete); 0 = new id.
+	GameObject* Spawn(const std::string& id, std::string name = "", unsigned long long forcedId = 0);
+
+	// Runs a type's factory without adding it to the world. Used to build
+	// throwaway objects (e.g. Content Browser thumbnails). Null if unregistered.
+	std::unique_ptr<GameObject> Create(const std::string& id) const;
+
+	// Registered type ids, in registration order (drives the editor palettes).
+	const std::vector<std::string>& TypeIds() const { return typeOrder; }
+	const std::string& TypeLabel(const std::string& id) const;
 
 	GameObject* FindById(unsigned long long id);
 	unsigned long long IdOf(const GameObject* object) const; // 0 if absent
@@ -53,8 +63,9 @@ public:
 	// Destroys every object (scene load / shutdown).
 	void Clear();
 
-	// Empties the world into a fresh default map: no objects, a soft ambient
-	// and one directional light, camera and render mode back to defaults.
+	// Empties the world into a fresh default map: no objects (bar a ground
+	// plane if registered), a soft ambient and one directional light, camera
+	// and render mode back to defaults.
 	void ResetToDefaultMap();
 
 	std::vector<WorldEntry> entries;
@@ -73,9 +84,11 @@ public:
 	GLenum renderMode = GL_TRIANGLES;
 
 private:
-	std::string UniqueName(const char* base);
+	std::string UniqueName(const std::string& base);
 
-	std::map<ObjectType, SpawnFn> factories;
+	struct TypeInfo { std::string label; SpawnFn factory; };
+	std::map<std::string, TypeInfo> types;
+	std::vector<std::string> typeOrder;
 	std::map<std::string, int> nameCounters;
 	unsigned long long nextId = 1;
 };
