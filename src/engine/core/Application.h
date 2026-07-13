@@ -8,6 +8,7 @@
 #include "engine/input/UserInputs.h"
 #include "engine/input/Controller.h"
 #include "engine/plugin/PluginManager.h"
+#include "engine/asset/AssetManager.h"
 
 class Application
 {
@@ -35,6 +36,9 @@ public:
 	// Registered engine plugins (physics, ...). Scenes register concrete
 	// plugins here; Application drives their lifecycle in Run().
 	PluginManager plugins;
+
+	// Shared shader/texture assets, freed by Run() after the scene unloads.
+	AssetManager assets;
 
 	// Whether gameplay/simulation is advancing this frame. True in a standalone
 	// game; the editor sets it false in Edit mode so simulation plugins freeze.

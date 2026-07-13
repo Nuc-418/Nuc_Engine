@@ -1,9 +1,9 @@
 // GameObject: an actor — a Transform root plus a list of Components.
 //
-// Behaviour lives in components (MeshComponent, and later LightComponent,
-// PhysicsBodyComponent, ...); the scene drives Update/Draw, which dispatch to
-// them. The mesh authoring helpers (LoadObjFile, CreateObj*) are kept for the
-// spawn factories and operate on the object's MeshComponent.
+// Behaviour lives in components (MeshComponent, LightComponent,
+// CameraComponent, ...); the scene drives Update/Draw, which dispatch to
+// them. Mesh authoring lives on MeshComponent (spawn factories reach it via
+// EnsureMesh()).
 //
 // A GameObject is heap-owned (unique_ptr in World) and never copied or moved,
 // so component back-pointers into it (e.g. MeshRenderer::transformPtr) stay
@@ -90,12 +90,6 @@ public:
 	// --- Mesh convenience --------------------------------------------------
 	MeshComponent* GetMesh() const { return GetComponent<MeshComponent>(); }
 	MeshComponent& EnsureMesh(); // returns the mesh component, creating one if absent
-
-	// Authoring helpers used by the spawn factories; populate the MeshComponent.
-	bool LoadObjFile(GLuint programShader, std::string folderPath, std::string fileName);
-	void CreateObjPosColor(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec3>* colorArray);
-	void CreateObjPosNormColor(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec3>* normalArray, std::vector<glm::vec3>* colorArray);
-	void CreateObjPosUvNorm(GLuint programShader, std::vector<glm::vec3>* positionArray, std::vector<glm::vec2>* uvArray, std::vector<glm::vec3>* normalArray);
 
 private:
 	std::vector<std::unique_ptr<Component>> components;

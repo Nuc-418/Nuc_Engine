@@ -1,6 +1,5 @@
 #include "engine/scene/GameObject.h"
 #include "engine/scene/ComponentRegistry.h"
-#include "engine/io/ObjLoader.h"
 #include "engine/render/Camera.h"
 
 #include <algorithm>
@@ -90,55 +89,4 @@ MeshComponent& GameObject::EnsureMesh()
 	if (MeshComponent* mesh = GetMesh())
 		return *mesh;
 	return *AddComponent<MeshComponent>();
-}
-
-bool GameObject::LoadObjFile(GLuint programShader, string folderPath, string fileName)
-{
-	string objPath = folderPath + fileName;
-
-	ObjLoader objLoader((char*)objPath.data());
-	if (objLoader.loaded)
-	{
-		MeshComponent& mesh = EnsureMesh();
-		mesh.renderer.SetProgramShader(programShader);
-		mesh.renderer.mesh.AssignPosUvNorm(&objLoader.objInfo.vertexPos, &objLoader.objInfo.vertexUvs, &objLoader.objInfo.vertexNormals);
-		cout << "Loaded : " << objPath << endl;
-
-		string mtlPath = folderPath + objLoader.mtlFile.data();
-		mesh.material.loadMaterial((char*)mtlPath.data());
-		if (mesh.material.loaded)
-		{
-			mesh.material.materialStorage(mesh.renderer.program);
-			cout << "Loaded : " << mtlPath << endl;
-			return true;
-		}
-		cout << "Error Loading : " << mtlPath << endl;
-
-		return false;
-	}
-
-	cout << "Error Loading : " << objPath << endl;
-
-	return false;
-}
-
-void GameObject::CreateObjPosColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* colorArray)
-{
-	MeshComponent& mesh = EnsureMesh();
-	mesh.renderer.SetProgramShader(programShader);
-	mesh.renderer.mesh.AssignPosColor(positionArray, colorArray);
-}
-
-void GameObject::CreateObjPosNormColor(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray)
-{
-	MeshComponent& mesh = EnsureMesh();
-	mesh.renderer.SetProgramShader(programShader);
-	mesh.renderer.mesh.AssignPosNormColor(positionArray, normalArray, colorArray);
-}
-
-void GameObject::CreateObjPosUvNorm(GLuint programShader, vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray)
-{
-	MeshComponent& mesh = EnsureMesh();
-	mesh.renderer.SetProgramShader(programShader);
-	mesh.renderer.mesh.AssignPosUvNorm(positionArray, uvArray, normalArray);
 }

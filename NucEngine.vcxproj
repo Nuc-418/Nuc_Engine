@@ -118,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="src\engine\core\Application.cpp" />
     <ClCompile Include="src\engine\core\EngineMath.cpp" />
+    <ClCompile Include="src\engine\asset\AssetManager.cpp" />
     <ClCompile Include="src\engine\core\Time.cpp" />
     <ClCompile Include="src\engine\core\Window.cpp" />
     <ClCompile Include="src\engine\input\Controller.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\engine\render\CameraComponent.h" />
     <ClInclude Include="src\engine\render\Primitives.h" />
     <ClInclude Include="src\engine\render\Shader.h" />
+    <ClInclude Include="src\engine\asset\AssetManager.h" />
     <ClInclude Include="src\engine\io\ModelDiscovery.h" />
     <ClInclude Include="src\engine\scene\Transform.h" />
     <ClInclude Include="src\game\AssetPaths.h" />

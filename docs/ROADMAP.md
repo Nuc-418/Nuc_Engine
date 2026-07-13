@@ -132,7 +132,9 @@ boundaries.
   handles: `MeshHandle`, `TextureHandle`, `ShaderHandle`, `MaterialHandle`.
   Path-keyed cache, explicit `Load`/`Get`, refcount or generation-checked
   handles. GPU objects are freed by the manager at shutdown — the
-  `Mesh::Unload`-by-hand era ends.
+  `Mesh::Unload`-by-hand era ends. *(First cut done: app.assets owns
+  path-keyed Shader and Texture caches, freed by Application::Run at
+  shutdown; mesh handles arrive with the Phase 3 render-queue work.)*
 - **`ShaderAsset`**: wraps program creation (absorbing `LoadShaders`),
   exposes uniform setting; owns the location caching that today lives in
   `Camera`, `Time` and `Lights`, and invalidates it on reload. Add
@@ -151,7 +153,8 @@ boundaries.
   and `loadMaterial(char*)` get typed, path-based replacements.
 - **`GameObject` sheds mesh authoring**: `LoadObjFile`/`CreateObj*` move to
   a `MeshComponent` builder or free functions in the asset layer; the actor
-  stops knowing how meshes are made (`GetMesh` convenience stays).
+  stops knowing how meshes are made (`GetMesh` convenience stays). *(Done:
+  authoring lives on MeshComponent as LoadObj/Create*.)*
 
 Exit criteria: no `GLuint program` parameter anywhere outside
 `engine/render`; deleting the demo still leaves a working engine + editor.

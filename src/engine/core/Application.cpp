@@ -58,6 +58,7 @@ void Application::Run(Scene& scene)
 
 	scene.Unload(*this);
 	plugins.UnloadAll(*this);
+	assets.UnloadAll(); // last: components/scenes may reference assets while unloading
 }
 
 void Application::Shutdown()

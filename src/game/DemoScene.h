@@ -8,7 +8,6 @@
 #include "engine/core/Application.h"
 #include "engine/scene/World.h"
 #include "engine/render/Shader.h"
-#include "engine/render/Texture.h"
 #include "JoltPhysics/JoltPhysicsPlugin.h"
 
 class DemoScene : public Scene
@@ -22,23 +21,21 @@ public:
 	World& GetWorld() { return world; }
 
 private:
-	bool LoadProgramShaders();
+	bool LoadProgramShaders(Application& app);
 	void LoadObjects(Application& app);
 
 	World world;
 
-	// Shader assets. The GLuint mirrors below feed the spawn factories and
-	// per-frame uniform calls; Shader::Reload keeps program ids stable, so
-	// they stay valid across a hot reload.
-	Shader ironManShader;
-	Shader cubeShader;
-	Shader primitiveShader; // lit shader for the built-in primitives
+	// Shader assets, owned by app.assets (freed by Application::Run after
+	// Unload). The GLuint mirrors feed the spawn factories and per-frame
+	// uniform calls; Shader::Reload keeps program ids stable across hot
+	// reloads. Model textures are also owned by app.assets.
+	Shader* ironManShader = nullptr;
+	Shader* cubeShader = nullptr;
+	Shader* primitiveShader = nullptr; // lit shader for the built-in primitives
 	GLuint ironManProgramShader = 0;
 	GLuint cubeProgramShader = 0;
 	GLuint primitiveProgramShader = 0;
-
-	// One texture per discovered model (bound to the shared model shader).
-	std::vector<Texture> modelTextures;
 
 	// Raw handles into the world for the demo animations. Nulled through
 	// World::onDestroyed if the editor deletes the objects.

@@ -160,7 +160,7 @@ static vector<GLuint>& IndexedCubeElements()
 
 bool DemoScene::Load(Application& app)
 {
-	if (!LoadProgramShaders())
+	if (!LoadProgramShaders(app))
 		return false;
 
 	LoadObjects(app);
@@ -177,18 +177,17 @@ bool DemoScene::Load(Application& app)
 	return true;
 }
 
-bool DemoScene::LoadProgramShaders()
+bool DemoScene::LoadProgramShaders(Application& app)
 {
-	if (!cubeShader.Load(AssetPaths::CubeVertexShader, AssetPaths::CubeFragmentShader))
-		return false;
-	if (!ironManShader.Load(AssetPaths::IronManVertexShader, AssetPaths::IronManFragmentShader))
-		return false;
-	if (!primitiveShader.Load(AssetPaths::PrimitiveVertexShader, AssetPaths::PrimitiveFragmentShader))
+	cubeShader = app.assets.LoadShader(AssetPaths::CubeVertexShader, AssetPaths::CubeFragmentShader);
+	ironManShader = app.assets.LoadShader(AssetPaths::IronManVertexShader, AssetPaths::IronManFragmentShader);
+	primitiveShader = app.assets.LoadShader(AssetPaths::PrimitiveVertexShader, AssetPaths::PrimitiveFragmentShader);
+	if (!cubeShader || !ironManShader || !primitiveShader)
 		return false;
 
-	cubeProgramShader = cubeShader.Program();
-	ironManProgramShader = ironManShader.Program();
-	primitiveProgramShader = primitiveShader.Program();
+	cubeProgramShader = cubeShader->Program();
+	ironManProgramShader = ironManShader->Program();
+	primitiveProgramShader = primitiveShader->Program();
 	return true;
 }
 
@@ -218,7 +217,7 @@ void DemoScene::LoadObjects(Application& app)
 		world.RegisterType(def.id, def.id, [primitiveProgram, mesh] {
 			std::unique_ptr<GameObject> object(new GameObject());
 			const PrimitiveMesh& m = mesh();
-			object->CreateObjPosNormColor(primitiveProgram,
+			object->EnsureMesh().CreatePosNormColor(primitiveProgram,
 			                              const_cast<vector<glm::vec3>*>(&m.positions),
 			                              const_cast<vector<glm::vec3>*>(&m.normals),
 			                              const_cast<vector<glm::vec3>*>(&m.colors));
@@ -229,7 +228,7 @@ void DemoScene::LoadObjects(Application& app)
 	// Indexed cube: legacy demo geometry (indexed, unlit) on the cube shader.
 	world.RegisterType("IndexedCube", "IndexedCube", [cubeProgram] {
 		std::unique_ptr<GameObject> object(new GameObject());
-		object->CreateObjPosColor(cubeProgram, &IndexedCubeVertices(), &IndexedCubeColors());
+		object->EnsureMesh().CreatePosColor(cubeProgram, &IndexedCubeVertices(), &IndexedCubeColors());
 		object->GetMesh()->renderer.mesh.AssignElementArray(&IndexedCubeElements());
 		return object;
 	});
@@ -255,7 +254,6 @@ void DemoScene::LoadObjects(Application& app)
 	// a model in and it shows up in the Content Browser automatically.
 	std::vector<std::string> objFiles;
 	DiscoverObjFiles("assets/models", objFiles);
-	modelTextures.reserve(objFiles.size());
 	for (const std::string& objPath : objFiles) {
 		size_t slash = objPath.find_last_of('/');
 		std::string folder = objPath.substr(0, slash + 1);
@@ -264,16 +262,14 @@ void DemoScene::LoadObjects(Application& app)
 
 		world.RegisterType(objPath, label, [modelProgram, folder, file] {
 			std::unique_ptr<GameObject> object(new GameObject());
-			object->LoadObjFile(modelProgram, folder, file);
+			object->EnsureMesh().LoadObj(modelProgram, folder, file);
 			return object;
 		});
 
 		// Bind the model's texture (first image beside it) to the model shader.
 		std::string texture = FindTextureInFolder(folder);
-		if (!texture.empty()) {
-			modelTextures.emplace_back();
-			modelTextures.back().TextureToProgram(modelProgram, texture);
-		}
+		if (!texture.empty())
+			app.assets.LoadTexture(modelProgram, texture);
 	}
 
 	/* Null the demo animation handles if the editor destroys their objects. */
@@ -402,7 +398,7 @@ void DemoScene::Update(Application& app)
 		offsetToggle = 0;
 
 	//offsetToggle is passed to the shader program as a uniform
-	glProgramUniform1i(ironManProgramShader, ironManShader.Location("offsetToggle"), offsetToggle);
+	glProgramUniform1i(ironManProgramShader, ironManShader->Location("offsetToggle"), offsetToggle);
 
 	if (app.inputs.key6) world.renderMode = GL_TRIANGLES;
 	if (app.inputs.key7) world.renderMode = GL_LINE_STRIP;
@@ -460,13 +456,11 @@ void DemoScene::Unload(Application& app)
 {
 	world.Clear();
 
-	for (Texture& texture : modelTextures)
-		texture.Unload();
-	modelTextures.clear();
-
-	cubeShader.Unload();
-	ironManShader.Unload();
-	primitiveShader.Unload();
+	// Shaders and textures are owned by app.assets, which Application::Run
+	// frees after this unload returns.
+	cubeShader = nullptr;
+	ironManShader = nullptr;
+	primitiveShader = nullptr;
 	cubeProgramShader = 0;
 	ironManProgramShader = 0;
 	primitiveProgramShader = 0;

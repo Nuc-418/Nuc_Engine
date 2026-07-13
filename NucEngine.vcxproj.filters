@@ -64,6 +64,9 @@
     <Filter Include="src\engine\editor\panels">
       <UniqueIdentifier>{0da99318-257e-435e-9cd0-447778f88ace}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\engine\asset">
+      <UniqueIdentifier>{8ce3219b-16d2-4b18-9e6a-89632af77e6e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\engine\plugin">
       <UniqueIdentifier>{e231676c-8fde-4926-b98c-f96d3d6f9f6d}</UniqueIdentifier>
     </Filter>
@@ -197,6 +200,9 @@
     </ClCompile>
     <ClCompile Include="src\engine\core\EngineMath.cpp">
       <Filter>src\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\asset\AssetManager.cpp">
+      <Filter>src\engine\asset</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\editor\MeshPreview.cpp">
       <Filter>src\engine\editor</Filter>
@@ -409,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="src\engine\render\Shader.h">
       <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\asset\AssetManager.h">
+      <Filter>src\engine\asset</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\io\ModelDiscovery.h">
       <Filter>src\engine\io</Filter>
