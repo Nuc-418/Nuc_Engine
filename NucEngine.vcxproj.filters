@@ -219,6 +219,12 @@
     <ClCompile Include="src\engine\render\CameraComponent.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\render\Primitives.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\io\ModelDiscovery.cpp">
+      <Filter>src\engine\io</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\scene\ComponentRegistry.cpp">
       <Filter>src\engine\scene</Filter>
     </ClCompile>
@@ -400,6 +406,12 @@
     </ClInclude>
     <ClInclude Include="src\engine\render\CameraComponent.h">
       <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\Primitives.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\io\ModelDiscovery.h">
+      <Filter>src\engine\io</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\scene\Component.h">
       <Filter>src\engine\scene</Filter>

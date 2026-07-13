@@ -134,6 +134,8 @@
     <ClCompile Include="src\engine\render\MeshComponent.cpp" />
     <ClCompile Include="src\engine\render\LightComponent.cpp" />
     <ClCompile Include="src\engine\render\CameraComponent.cpp" />
+    <ClCompile Include="src\engine\render\Primitives.cpp" />
+    <ClCompile Include="src\engine\io\ModelDiscovery.cpp" />
     <ClCompile Include="src\engine\scene\Transform.cpp" />
     <ClCompile Include="src\game\DemoScene.cpp" />
     <ClCompile Include="src\game\Main.cpp" />
@@ -201,6 +203,8 @@
     <ClInclude Include="src\engine\render\MeshComponent.h" />
     <ClInclude Include="src\engine\render\LightComponent.h" />
     <ClInclude Include="src\engine\render\CameraComponent.h" />
+    <ClInclude Include="src\engine\render\Primitives.h" />
+    <ClInclude Include="src\engine\io\ModelDiscovery.h" />
     <ClInclude Include="src\engine\scene\Transform.h" />
     <ClInclude Include="src\game\AssetPaths.h" />
     <ClInclude Include="src\game\DemoScene.h" />

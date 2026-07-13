@@ -64,7 +64,7 @@ singletons (`Time`, the `UserInputs` callback pointer), hardcoded key fields
 (`keyW`..`key9`, `onceKey1`..`onceKey9`), and a Linux gate whose consistency
 lists have drifted from the Plugins restructure.
 
-## Phase 0 — Foundations (hygiene, unblockers)
+## Phase 0 — Foundations (hygiene, unblockers) — DONE
 
 Small, low-risk, and everything later leans on it.
 
@@ -91,10 +91,17 @@ Small, low-risk, and everything later leans on it.
   spawn/destroy/undo identity, serializer round-trip. These are the systems
   the reworks below rewrite; tests come first.
 
-## Phase 1 — Scene graph and transforms
+## Phase 1 — Scene graph and transforms — DONE (quaternions deferred)
 
 Goal: hierarchy and rotation done right, because retrofitting it later
 touches everything.
+
+*Status: shipped — hierarchy with keep-world reparenting (Outliner
+drag-and-drop, undoable), LightComponent and CameraComponent with an active
+scene camera, RTTI-free GetComponent. The quaternion storage rework is
+deferred: the tested matrix/Euler decompose path covers everything the
+hierarchy needs, and quaternions pay off more alongside the Phase 3 renderer
+work.*
 
 - **Quaternion-backed `Transform`** with cached local/world matrices and
   dirty flags. Keep Euler get/set for the editor UI (it already has
@@ -116,7 +123,7 @@ touches everything.
 Exit criteria: demo scene identical; an object parented under another moves
 with it; lights editable through Details like any component.
 
-## Phase 2 — Asset system
+## Phase 2 — Asset system — IN PROGRESS
 
 Goal: named, shared, ref-counted resources; no raw `GLuint`s crossing module
 boundaries.
@@ -134,7 +141,8 @@ boundaries.
   Primitives`): the cube/plane/cone/... generators currently in
   `DemoScene.cpp` become engine mesh assets; `DemoScene::LoadObjects`
   shrinks to registrations. Model discovery (`DiscoverObjFiles`) moves to
-  the asset manager as a content scan.
+  the asset manager as a content scan. *(Done: Primitives and ModelDiscovery
+  are engine modules; discovery runs on std::filesystem.)*
 - **`Mesh` API rework**: `Assign*(vector<...>*)` becomes value/`span`-style
   upload with clear CPU-side ownership; `MaterialInfo materialInfo = {NULL}`
   and `loadMaterial(char*)` get typed, path-based replacements.
