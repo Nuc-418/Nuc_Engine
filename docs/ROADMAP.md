@@ -186,7 +186,7 @@ Exit criteria: identical visuals; a `StatsPanel` draw-call counter shows
 sorting works; adding "render the scene again from a second camera" is a
 ten-line change.
 
-## Phase 4 — Plugin system v2
+## Phase 4 — Plugin system v2 — CORE DONE
 
 Goal: from "compiled-in modules" to a real module system.
 
@@ -218,13 +218,15 @@ Exit criteria: JoltPhysics registers itself through the new path; a physics
 body added in the editor round-trips through save/load with zero
 scene-code involvement.
 
-## Phase 5 — Gameplay and input
+## Phase 5 — Gameplay and input — IN PROGRESS
 
 - **Input action mapping**: replace the `keyW`..`key9`/`onceKey*` fields
   with named actions and axis bindings (`"MoveForward" -> W/S`), polled or
   event-subscribed; per-window instance instead of the file-static callback
   pointer; gamepad via GLFW joystick API. `Controller` becomes a consumer
-  of actions.
+  of actions. *(Done except gamepad: InputActions with actions/axes/toggle
+  latches, per-window callback via the GLFW user pointer, engine-default +
+  scene bindings, unit-tested.)*
 - **Behavior components**: a `ScriptableComponent` base with
   `OnPlayBegin`/`OnUpdate`/`OnPlayEnd` (only active while
   `app.simulating`), so gameplay is written as components — the demo's
@@ -232,7 +234,7 @@ scene-code involvement.
 - **(Later, as a plugin)** a Lua scripting plugin exposing the component
   and input APIs — the real proof that Phase 4's seams are sufficient.
 
-## Phase 6 — Editor and content workflow
+## Phase 6 — Editor and content workflow — IN PROGRESS
 
 - **Property reflection for components**: extend the `ISerializer` visitor
   so a component's `Serialize` doubles as a property enumeration

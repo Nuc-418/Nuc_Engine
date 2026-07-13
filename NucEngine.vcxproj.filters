@@ -93,6 +93,9 @@
     <ClCompile Include="src\engine\input\Controller.cpp">
       <Filter>src\engine\input</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\input\InputActions.cpp">
+      <Filter>src\engine\input</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\input\UserInputs.cpp">
       <Filter>src\engine\input</Filter>
     </ClCompile>
@@ -273,6 +276,9 @@
       <Filter>src\engine\core</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\input\Controller.h">
+      <Filter>src\engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\input\InputActions.h">
       <Filter>src\engine\input</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\input\UserInputs.h">

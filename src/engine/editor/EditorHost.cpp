@@ -35,7 +35,7 @@ void EditorHost::Update(Application& app)
 {
 	if (mode == Mode::Play) {
 		game.Update(app);
-		if (app.inputs.keyEsc)
+		if (app.actions.IsDown("Exit"))
 			ExitPlay(app);
 		return;
 	}
@@ -124,10 +124,10 @@ void EditorHost::EnterPlay(Application& app)
 	/* Sync the demo's once-key toggles with the current light switches so
 	   entering Play does not snap lights back to their key states. */
 	VectorLight& info = world.lights.lightInfo;
-	if (!info.ambientLight.empty())     app.inputs.onceKey1 = info.ambientLight[0].switchL != 0;
-	if (!info.directionalLight.empty()) app.inputs.onceKey2 = info.directionalLight[0].switchL != 0;
-	if (!info.pointLight.empty())       app.inputs.onceKey3 = info.pointLight[0].switchL != 0;
-	if (!info.spotLight.empty())        app.inputs.onceKey4 = info.spotLight[0].switchL != 0;
+	if (!info.ambientLight.empty())     app.actions.SetToggle("ToggleAmbientLight", info.ambientLight[0].switchL != 0);
+	if (!info.directionalLight.empty()) app.actions.SetToggle("ToggleDirectionalLight", info.directionalLight[0].switchL != 0);
+	if (!info.pointLight.empty())       app.actions.SetToggle("TogglePointLight", info.pointLight[0].switchL != 0);
+	if (!info.spotLight.empty())        app.actions.SetToggle("ToggleSpotLight", info.spotLight[0].switchL != 0);
 
 	/* ImGui must not fight the recentered, hidden cursor while playing. */
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoMouseCursorChange;

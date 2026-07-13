@@ -22,7 +22,14 @@ bool Application::Init(const Config& appConfig)
 	window.MakeContextCurrent();
 
 	inputs.AssociateWindow(window.windowPtr, config.width, config.height);
-	controller.AssociateUserInput(&inputs);
+	controller.AssociateUserInput(&inputs, &actions);
+
+	// Engine-default bindings; scenes bind their own actions in Scene::Load.
+	actions.BindAxis("MoveForward", GLFW_KEY_W, GLFW_KEY_S);
+	actions.BindAxis("MoveRight", GLFW_KEY_D, GLFW_KEY_A);
+	actions.BindAxis("MoveUp", GLFW_KEY_SPACE, GLFW_KEY_LEFT_CONTROL);
+	actions.BindAction("Sprint", GLFW_KEY_LEFT_SHIFT);
+	actions.BindAction("Exit", GLFW_KEY_ESCAPE);
 
 	glewInit();
 
@@ -39,6 +46,12 @@ void Application::Run(Scene& scene)
 	while (!glfwWindowShouldClose(window.windowPtr)) {
 
 		double begin = glfwGetTime();
+
+		// Snapshot this frame's key state for the action queries (flipping
+		// toggle latches on press edges), then clear the edges so the next
+		// glfwPollEvents accumulates fresh ones.
+		actions.BeginFrame(inputs.keyDown, inputs.keyPressed, UserInputs::KeyCount);
+		inputs.ClearPressed();
 
 		// Advance plugins before scene logic so this frame's scene update and
 		// draw see the results (e.g. physics-driven transforms).

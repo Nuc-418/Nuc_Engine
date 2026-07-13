@@ -164,6 +164,17 @@ bool DemoScene::Load(Application& app)
 	if (!LoadProgramShaders(app))
 		return false;
 
+	/* Demo bindings: light toggles, deformation, render-mode keys. */
+	app.actions.BindToggle("ToggleAmbientLight", GLFW_KEY_1);
+	app.actions.BindToggle("ToggleDirectionalLight", GLFW_KEY_2);
+	app.actions.BindToggle("TogglePointLight", GLFW_KEY_3);
+	app.actions.BindToggle("ToggleSpotLight", GLFW_KEY_4);
+	app.actions.BindToggle("ToggleDeform", GLFW_KEY_5);
+	app.actions.BindAction("RenderTriangles", GLFW_KEY_6);
+	app.actions.BindAction("RenderLines", GLFW_KEY_7);
+	app.actions.BindAction("RenderPoints", GLFW_KEY_8);
+	app.actions.BindAction("RenderFan", GLFW_KEY_9);
+
 	LoadObjects(app);
 
 #ifdef NUC_GAME_BUILD
@@ -364,7 +375,7 @@ void DemoScene::Update(Application& app)
 	if (ironMan2) ironMan2->transform.Rotate(vec3(-1, 0, 0)*deltaTime);
 
 	/* Toggle the model deformation */
-	if (app.inputs.onceKey5)
+	if (app.actions.Toggle("ToggleDeform"))
 	{
 		if (indexedCube) {
 			indexedCube->transform.Rotate(vec3(1, 1, 0)*2.0f*deltaTime);
@@ -385,23 +396,23 @@ void DemoScene::Update(Application& app)
 	//offsetToggle is passed to the shader program as a uniform
 	glProgramUniform1i(ironManProgramShader, ironManShader->Location("offsetToggle"), offsetToggle);
 
-	if (app.inputs.key6) world.renderMode = GL_TRIANGLES;
-	if (app.inputs.key7) world.renderMode = GL_LINE_STRIP;
-	if (app.inputs.key8) world.renderMode = GL_POINTS;
-	if (app.inputs.key9) world.renderMode = GL_TRIANGLE_FAN;
+	if (app.actions.IsDown("RenderTriangles")) world.renderMode = GL_TRIANGLES;
+	if (app.actions.IsDown("RenderLines")) world.renderMode = GL_LINE_STRIP;
+	if (app.actions.IsDown("RenderPoints")) world.renderMode = GL_POINTS;
+	if (app.actions.IsDown("RenderFan")) world.renderMode = GL_TRIANGLE_FAN;
 
 	/* Keys 1-4 toggle the corresponding lights. Guarded: a map need not have
 	   every light type (the default map has no point or spot light), and the
 	   Toggle* helpers index their vector without bounds-checking. */
 	VectorLight& lightInfo = world.lights.lightInfo;
 	if (!lightInfo.ambientLight.empty())
-		world.lights.ToggleAmbientLight(ironManProgramShader, app.inputs.onceKey1);
+		world.lights.ToggleAmbientLight(ironManProgramShader, app.actions.Toggle("ToggleAmbientLight"));
 	if (!lightInfo.directionalLight.empty())
-		world.lights.ToggleDirectionalLight(ironManProgramShader, app.inputs.onceKey2);
+		world.lights.ToggleDirectionalLight(ironManProgramShader, app.actions.Toggle("ToggleDirectionalLight"));
 	if (!lightInfo.pointLight.empty())
-		world.lights.TogglePointLight(ironManProgramShader, 0, app.inputs.onceKey3);
+		world.lights.TogglePointLight(ironManProgramShader, 0, app.actions.Toggle("TogglePointLight"));
 	if (!lightInfo.spotLight.empty())
-		world.lights.ToggleSpotLight(ironManProgramShader, 0, app.inputs.onceKey4);
+		world.lights.ToggleSpotLight(ironManProgramShader, 0, app.actions.Toggle("ToggleSpotLight"));
 
 #ifdef NUC_GAME_BUILD
 	/* Standalone game: ESC closes the window (in the editor, Esc stops Play). */

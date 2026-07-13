@@ -154,6 +154,6 @@ fixing them changes observable behavior. They have now been corrected:
 - `UserInputs` was Windows-only (`GetCursorPos`/`SetCursorPos` on screen
   coordinates via `<windows.h>`). It now uses GLFW's cursor API
   (`glfwGetCursorPos`/`glfwSetCursorPos`) in content-area coordinates, so the
-  input layer builds and runs on any GLFW platform. It still uses a
-  file-static instance pointer for the key callback, so only one input handler
-  can exist at a time.
+  input layer builds and runs on any GLFW platform. (The file-static
+  instance pointer it still used was later replaced by the GLFW window user
+  pointer, alongside the named-action input rework.)

@@ -6,6 +6,7 @@
 #include "engine/core/Window.h"
 #include "engine/core/Scene.h"
 #include "engine/input/UserInputs.h"
+#include "engine/input/InputActions.h"
 #include "engine/input/Controller.h"
 #include "engine/plugin/PluginManager.h"
 #include "engine/asset/AssetManager.h"
@@ -30,6 +31,9 @@ public:
 
 	Window window;
 	UserInputs inputs;
+	// Named bindings over the raw key state; Init installs the defaults
+	// (MoveForward/MoveRight/MoveUp axes, Sprint, Exit), scenes add theirs.
+	InputActions actions;
 	Controller controller;
 	Config config;
 

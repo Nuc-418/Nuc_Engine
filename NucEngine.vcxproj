@@ -122,6 +122,7 @@
     <ClCompile Include="src\engine\core\Time.cpp" />
     <ClCompile Include="src\engine\core\Window.cpp" />
     <ClCompile Include="src\engine\input\Controller.cpp" />
+    <ClCompile Include="src\engine\input\InputActions.cpp" />
     <ClCompile Include="src\engine\input\UserInputs.cpp" />
     <ClCompile Include="src\engine\io\ObjLoader.cpp" />
     <ClCompile Include="src\engine\render\Camera.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\engine\core\Time.h" />
     <ClInclude Include="src\engine\core\Window.h" />
     <ClInclude Include="src\engine\input\Controller.h" />
+    <ClInclude Include="src\engine\input\InputActions.h" />
     <ClInclude Include="src\engine\input\UserInputs.h" />
     <ClInclude Include="src\engine\io\ObjLoader.h" />
     <ClInclude Include="src\engine\render\Camera.h" />

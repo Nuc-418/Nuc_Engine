@@ -2,9 +2,18 @@
 
 #include "engine/input/UserInputs.h"
 
-static UserInputs *selectedUserInput = NULL;
-
-void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods);
+static void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	UserInputs* inputs = (UserInputs*)glfwGetWindowUserPointer(window);
+	if (!inputs || key < 0 || key >= UserInputs::KeyCount)
+		return;
+	if (action == GLFW_PRESS) {
+		inputs->keyDown[key] = true;
+		inputs->keyPressed[key] = true;
+	}
+	if (action == GLFW_RELEASE)
+		inputs->keyDown[key] = false;
+}
 
 void UserInputs::AssociateWindow(GLFWwindow *window, int wWidth, int wHeight)
 {
@@ -12,7 +21,7 @@ void UserInputs::AssociateWindow(GLFWwindow *window, int wWidth, int wHeight)
 	windowWidth = wWidth;
 	windowHeight = wHeight;
 
-	selectedUserInput = this;
+	glfwSetWindowUserPointer(windowPtr, this);
 	glfwSetKeyCallback(windowPtr, GetKeyInfo);
 }
 
@@ -33,135 +42,10 @@ void UserInputs::CenterCursor()
 	glfwSetCursorPos(windowPtr, windowWidth / 2.0, windowHeight / 2.0);
 }
 
-
-/*Função que recebe valores do input do utilizador*/
-void GetKeyInfo(GLFWwindow* window, int key, int scancode, int action, int mods)
+void UserInputs::ClearPressed()
 {
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-		selectedUserInput->keyW = true;
-	if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		selectedUserInput->keyW = false;
-
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-		selectedUserInput->keyA = true;
-	if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		selectedUserInput->keyA = false;
-
-	if (key == GLFW_KEY_S && action == GLFW_PRESS)
-		selectedUserInput->keyS = true;
-	if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		selectedUserInput->keyS = false;
-
-	if (key == GLFW_KEY_D && action == GLFW_PRESS)
-		selectedUserInput->keyD = true;
-	if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		selectedUserInput->keyD = false;
-
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-		selectedUserInput->keySpace = true;
-	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-		selectedUserInput->keySpace = false;
-
-	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
-		selectedUserInput->keyCtrl = true;
-	if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE)
-		selectedUserInput->keyCtrl = false;
-
-	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
-		selectedUserInput->keyShift = true;
-	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
-		selectedUserInput->keyShift = false;
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		selectedUserInput->keyEsc = true;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-		selectedUserInput->keyEsc = false;
-
-
-	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key1 = true;
-		((selectedUserInput->onceKey1) ? selectedUserInput->onceKey1 = false : selectedUserInput->onceKey1 = true);
-	}
-
-	if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
-		selectedUserInput->key1 = false;
-
-	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key2 = true;
-		((selectedUserInput->onceKey2) ? selectedUserInput->onceKey2 = false : selectedUserInput->onceKey2 = true);
-	}
-
-	if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
-		selectedUserInput->key2 = false;
-
-	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key3 = true;
-		((selectedUserInput->onceKey3) ? selectedUserInput->onceKey3 = false : selectedUserInput->onceKey3 = true);
-	}
-
-	if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
-		selectedUserInput->key3 = false;
-
-	if (key == GLFW_KEY_4 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key4 = true;
-		((selectedUserInput->onceKey4) ? selectedUserInput->onceKey4 = false : selectedUserInput->onceKey4 = true);
-	}
-
-	if (key == GLFW_KEY_4 && action == GLFW_RELEASE)
-		selectedUserInput->key4 = false;
-
-	if (key == GLFW_KEY_5 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key5 = true;
-
-		((selectedUserInput->onceKey5) ? selectedUserInput->onceKey5 = false : selectedUserInput->onceKey5 = true);
-	}
-	if (key == GLFW_KEY_5 && action == GLFW_RELEASE)
-		selectedUserInput->key5 = false;
-
-	if (key == GLFW_KEY_6 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key6 = true;
-
-		((selectedUserInput->onceKey6) ? selectedUserInput->onceKey6 = false : selectedUserInput->onceKey6 = true);
-	}
-	if (key == GLFW_KEY_6 && action == GLFW_RELEASE)
-		selectedUserInput->key6 = false;
-
-	if (key == GLFW_KEY_7 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key7 = true;
-
-		((selectedUserInput->onceKey7) ? selectedUserInput->onceKey7 = false : selectedUserInput->onceKey7 = true);
-	}
-	if (key == GLFW_KEY_7 && action == GLFW_RELEASE)
-		selectedUserInput->key7 = false;
-
-	if (key == GLFW_KEY_8 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key8 = true;
-
-		((selectedUserInput->onceKey8) ? selectedUserInput->onceKey8 = false : selectedUserInput->onceKey8 = true);
-	}
-	if (key == GLFW_KEY_8 && action == GLFW_RELEASE)
-		selectedUserInput->key8 = false;
-
-	if (key == GLFW_KEY_9 && action == GLFW_PRESS)
-	{
-		selectedUserInput->key9 = true;
-
-		((selectedUserInput->onceKey9) ? selectedUserInput->onceKey9 = false : selectedUserInput->onceKey9 = true);
-	}
-	if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
-		selectedUserInput->key9 = false;
-
-
-
-
+	for (int i = 0; i < KeyCount; i++)
+		keyPressed[i] = false;
 }
 
 /*Atualização da posição do cursor*/

@@ -7,29 +7,21 @@ void Controller::BasicMovement(Transform* transform, float rotationOffset, float
 	deltaMouseV3 = { userInputsPtr->deltaMouse.x,userInputsPtr->deltaMouse.y,0 };
 	transform->Rotate(deltaMouseV3 * rotationOffset);
 
+	float offset = actionsPtr->IsDown("Sprint") ? (movementOffset * 2) : movementOffset;
 
-	float offset = ((userInputsPtr->keyShift) ? (movementOffset * 2) : movementOffset);
-
-	if (userInputsPtr->keyW)
-		transform->Translate(transform->forward * offset);
-	if (userInputsPtr->keyA)
-		transform->Translate(-transform->right * offset);
-	if (userInputsPtr->keyS)
-		transform->Translate(-transform->forward * offset);
-	if (userInputsPtr->keyD)
-		transform->Translate(transform->right * offset);
-	if (userInputsPtr->keySpace)
-		transform->Translate(transform->up * offset);
-	if (userInputsPtr->keyCtrl)
-		transform->Translate(-transform->up * offset);
-
+	transform->Translate(transform->forward * (offset * actionsPtr->Axis("MoveForward")));
+	transform->Translate(transform->right * (offset * actionsPtr->Axis("MoveRight")));
+	transform->Translate(transform->up * (offset * actionsPtr->Axis("MoveUp")));
 }
-void Controller::AssociateUserInput(UserInputs* userInputs)
+
+void Controller::AssociateUserInput(UserInputs* userInputs, InputActions* inputActions)
 {
 	userInputsPtr = userInputs;
+	actionsPtr = inputActions;
 }
+
 void Controller::RequestExit(GLFWwindow* window)
 {
-	if (userInputsPtr->keyEsc)
+	if (actionsPtr->IsDown("Exit"))
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
