@@ -1,10 +1,11 @@
-// LightComponent: serialization round-trip and registry creation.
+// Light/Camera components: serialization round-trips and registry creation.
 
 #include "doctest/doctest.h"
 
 #include <map>
 #include <string>
 
+#include "engine/render/CameraComponent.h"
 #include "engine/render/LightComponent.h"
 #include "engine/scene/ComponentRegistry.h"
 #include "engine/scene/Serialization.h"
@@ -86,4 +87,30 @@ TEST_CASE("the registry creates a Light component by id")
 	std::unique_ptr<Component> created = ComponentRegistry::Create("Light");
 	REQUIRE(created != nullptr);
 	CHECK(std::string(created->TypeId()) == "Light");
+}
+
+TEST_CASE("CameraComponent serialization round-trips the lens")
+{
+	CameraComponent source;
+	source.fovDegrees = 75.0f;
+	source.nearPlane = 0.5f;
+	source.farPlane = 2500.0f;
+
+	FieldStore store;
+	source.Serialize(store);
+
+	CameraComponent restored;
+	restored.Deserialize(store);
+
+	CHECK(restored.fovDegrees == doctest::Approx(source.fovDegrees));
+	CHECK(restored.nearPlane == doctest::Approx(source.nearPlane));
+	CHECK(restored.farPlane == doctest::Approx(source.farPlane));
+}
+
+TEST_CASE("the registry creates a Camera component by id")
+{
+	CHECK(ComponentRegistry::IsRegistered("Camera"));
+	std::unique_ptr<Component> created = ComponentRegistry::Create("Camera");
+	REQUIRE(created != nullptr);
+	CHECK(std::string(created->TypeId()) == "Camera");
 }

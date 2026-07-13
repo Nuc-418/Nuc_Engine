@@ -23,6 +23,7 @@ public:
 	// Current matrices (view refreshed by UpdateCam during rendering).
 	const glm::mat4& GetView() const { return view; }
 	const glm::mat4& GetProjection() const { return projection; }
+	float Aspect() const { return aspectRatio; }
 
 	
 	Transform transform;

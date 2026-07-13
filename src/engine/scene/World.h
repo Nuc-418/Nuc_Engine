@@ -95,9 +95,23 @@ public:
 	Camera camera{ glm::vec3(1.0f, 1.0f, -10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f) };
 	GLenum renderMode = GL_TRIANGLES;
 
+	// The object whose CameraComponent renders the running game (0 = none:
+	// fall back to `camera`). Set from the Details panel; cleared when the
+	// object is destroyed. Persisted in the scene file.
+	unsigned long long activeCameraId = 0;
+
+	// Camera to render the simulating world through: the active object's
+	// CameraComponent (pose from its world transform, lens from the
+	// component, aspect from `camera`), or `camera` when none is set.
+	Camera* ActiveCamera();
+
 private:
 	std::string UniqueName(const std::string& base);
 	VectorLight BuildCombinedLights();
+
+	// Backing camera for ActiveCamera(); synced from the active object's
+	// component each call.
+	Camera gameCamera{ glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f) };
 
 	struct TypeInfo { std::string label; SpawnFn factory; };
 	std::map<std::string, TypeInfo> types;

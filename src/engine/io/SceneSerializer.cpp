@@ -72,6 +72,8 @@ bool SceneSerializer::Save(const World& world, const std::string& path)
 		{ "rotation", ToJson(world.camera.transform.rotation) },
 	};
 	root["renderMode"] = (int)world.renderMode;
+	// References an object's "id" below (0 = none); resolved after load.
+	root["activeCamera"] = world.activeCameraId;
 
 	json objects = json::array();
 	for (const WorldEntry& entry : world.entries) {
@@ -209,6 +211,14 @@ bool SceneSerializer::Load(World& world, const std::string& path)
 		auto it = bySavedId.find(link.second);
 		if (it != bySavedId.end())
 			link.first->SetParent(it->second, /*keepWorldTransform=*/false);
+	}
+
+	world.activeCameraId = 0;
+	unsigned long long savedActiveCamera = root.value("activeCamera", 0ULL);
+	if (savedActiveCamera != 0) {
+		auto it = bySavedId.find(savedActiveCamera);
+		if (it != bySavedId.end())
+			world.activeCameraId = world.IdOf(it->second);
 	}
 
 	world.camera.transform.position = Vec3FromJson(root["camera"].value("position", json()), world.camera.transform.position);

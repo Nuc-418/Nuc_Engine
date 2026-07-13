@@ -58,6 +58,17 @@ panel edits the component's parameters (component edits are not yet undoable).
 World-level authored lights (Lights panel, scene `lights` block) continue to
 work unchanged; migrating them fully onto components is a later step.
 
+## Cameras as components
+
+`CameraComponent` (`src/engine/render/CameraComponent.h`) holds the lens
+(fov/near/far); the pose comes from the owner's world transform. One object
+can be the world's **active camera** (`World::activeCameraId`, set via the
+Details panel's *Make Active Camera*, persisted in the scene file): while the
+simulation runs — Play in the editor, or a standalone game build — rendering
+goes through `World::ActiveCamera()`. With no active camera set, everything
+renders through `World::camera` exactly as before, and the editor viewport
+always uses the editor camera in Edit mode.
+
 ## Serialization
 
 Components (de)serialize through engine-owned interfaces —

@@ -7,6 +7,7 @@
 #include "engine/core/EngineMath.h"
 #include "engine/editor/EditorFileSystem.h"
 #include "engine/render/LightComponent.h"
+#include "engine/render/CameraComponent.h"
 #include "LoadShaders/LoadShaders.h"
 
 #include <algorithm>
@@ -443,6 +444,14 @@ void DemoScene::LoadObjects(Application& app)
 		return object;
 	});
 
+	// A meshless scene camera: aim it via its transform, then Make Active in
+	// the Details panel to render Play mode / game builds through it.
+	world.RegisterType("Camera", "Camera", [] {
+		std::unique_ptr<GameObject> object(new GameObject());
+		object->AddComponent<CameraComponent>();
+		return object;
+	});
+
 	// --- Dynamic model discovery -------------------------------------------
 	// Every .obj under assets/models becomes a spawnable, draggable type. Drop
 	// a model in and it shows up in the Content Browser automatically.
@@ -639,9 +648,14 @@ void DemoScene::Draw(Application& app)
 	/* Feed the primitive shader the scene's directional + ambient light. */
 	world.combinedLights.StorePrimitiveLight(primitiveProgramShader);
 
+	/* While simulating (Play / game build) render through the scene's active
+	   CameraComponent if one is set; otherwise — and always in Edit mode —
+	   use the world camera, as before. */
+	Camera* renderCamera = app.simulating ? world.ActiveCamera() : &world.camera;
+
 	/* Render every world object (dispatches to each object's components) */
 	for (WorldEntry& entry : world.entries)
-		entry.object->Draw(world.renderMode, &world.camera);
+		entry.object->Draw(world.renderMode, renderCamera);
 }
 
 void DemoScene::Unload(Application& app)

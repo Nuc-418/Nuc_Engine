@@ -1,6 +1,8 @@
 // World: registry of scene objects plus lights, camera and render settings.
 
 #include "engine/scene/World.h"
+#include "engine/core/EngineMath.h"
+#include "engine/render/CameraComponent.h"
 #include "engine/render/LightComponent.h"
 
 void World::RegisterType(const std::string& id, const std::string& label, SpawnFn factory)
@@ -85,6 +87,9 @@ bool World::Destroy(GameObject* object)
 				child->SetParent(object->Parent(), /*keepWorldTransform=*/true);
 			object->SetParent(nullptr, /*keepWorldTransform=*/false);
 
+			if (entries[i].id == activeCameraId)
+				activeCameraId = 0;
+
 			if (onDestroyed)
 				onDestroyed(object);
 			object->Unload();
@@ -138,6 +143,7 @@ void World::ResetToDefaultMap()
 	camera.transform.position = glm::vec3(0.0f, 7.0f, -16.0f);
 	camera.transform.rotation = glm::vec3(0.0f, 0.35f, 0.0f); // pitch down ~20 deg
 	renderMode = GL_TRIANGLES;
+	activeCameraId = 0;
 }
 
 // Appends each LightComponent to the authored lights. Point/spot position is
@@ -260,6 +266,25 @@ void World::SyncComponentLights()
 	if (LightVectorsEqual(merged, combinedLights.lightInfo))
 		return;
 	UploadLights();
+}
+
+Camera* World::ActiveCamera()
+{
+	if (activeCameraId == 0)
+		return &camera;
+	GameObject* object = FindById(activeCameraId);
+	CameraComponent* component = object ? object->GetComponent<CameraComponent>() : nullptr;
+	if (!component)
+		return &camera;
+
+	// Pose from the owner's world transform; Camera::UpdateCam rebuilds the
+	// view from position + Euler rotation each frame, so feed it those.
+	glm::mat4 world = object->WorldMatrix();
+	gameCamera.transform.position = glm::vec3(world[3]);
+	gameCamera.transform.rotation = EulerYXZFromMatrix(world);
+	gameCamera.SetPerspective(component->fovDegrees, camera.Aspect(),
+	                          component->nearPlane, component->farPlane);
+	return &gameCamera;
 }
 
 std::string World::UniqueName(const std::string& base)

@@ -5,6 +5,7 @@
 #include "engine/scene/Component.h"
 #include "engine/scene/ComponentRegistry.h"
 #include "engine/render/LightComponent.h"
+#include "engine/render/CameraComponent.h"
 
 #include <glm/glm.hpp>
 #include <cstring>
@@ -91,6 +92,24 @@ void DrawDetailsPanel(Editor& editor)
 				light->cutOff = glm::radians(cutOffDegrees);
 		}
 		ImGui::TextDisabled("Position and aim follow the object's transform.");
+	}
+
+	/* Camera component editor: lens parameters plus the active-camera toggle
+	   (Play mode and game builds render through the active camera). */
+	if (CameraComponent* cameraComponent = object->GetComponent<CameraComponent>()) {
+		ImGui::SeparatorText("Camera");
+		ImGui::DragFloat("FOV (deg)", &cameraComponent->fovDegrees, 0.5f, 10.0f, 140.0f);
+		ImGui::DragFloat("Near", &cameraComponent->nearPlane, 0.01f, 0.01f, 10.0f);
+		ImGui::DragFloat("Far", &cameraComponent->farPlane, 1.0f, 10.0f, 10000.0f);
+		bool isActive = editor.world->activeCameraId == objectId;
+		if (isActive) {
+			ImGui::TextColored(ImVec4(0.4f, 0.9f, 0.4f, 1.0f), "Active camera (Play renders through this)");
+			if (ImGui::Button("Clear Active Camera"))
+				editor.world->activeCameraId = 0;
+		} else if (ImGui::Button("Make Active Camera")) {
+			editor.world->activeCameraId = objectId;
+		}
+		ImGui::TextDisabled("Pose follows the object's transform.");
 	}
 
 	/* Components: list what's attached, and offer the registered types to add. */
