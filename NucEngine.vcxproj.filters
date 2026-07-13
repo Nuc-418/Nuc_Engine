@@ -237,6 +237,9 @@
     <ClCompile Include="src\engine\io\ModelDiscovery.cpp">
       <Filter>src\engine\io</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\io\PrefabLibrary.cpp">
+      <Filter>src\engine\io</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\scene\ComponentRegistry.cpp">
       <Filter>src\engine\scene</Filter>
     </ClCompile>
@@ -438,6 +441,12 @@
       <Filter>src\engine\asset</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\io\ModelDiscovery.h">
+      <Filter>src\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\io\PrefabLibrary.h">
+      <Filter>src\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\io\JsonSerialization.h">
       <Filter>src\engine\io</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\scene\Component.h">

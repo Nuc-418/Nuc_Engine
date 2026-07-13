@@ -140,6 +140,7 @@
     <ClCompile Include="src\engine\render\Primitives.cpp" />
     <ClCompile Include="src\engine\render\Shader.cpp" />
     <ClCompile Include="src\engine\io\ModelDiscovery.cpp" />
+    <ClCompile Include="src\engine\io\PrefabLibrary.cpp" />
     <ClCompile Include="src\engine\scene\Transform.cpp" />
     <ClCompile Include="src\game\DemoScene.cpp" />
     <ClCompile Include="src\game\Main.cpp" />
@@ -215,6 +216,8 @@
     <ClInclude Include="src\engine\render\Shader.h" />
     <ClInclude Include="src\engine\asset\AssetManager.h" />
     <ClInclude Include="src\engine\io\ModelDiscovery.h" />
+    <ClInclude Include="src\engine\io\PrefabLibrary.h" />
+    <ClInclude Include="src\engine\io\JsonSerialization.h" />
     <ClInclude Include="src\engine\scene\Transform.h" />
     <ClInclude Include="src\game\AssetPaths.h" />
     <ClInclude Include="src\game\DemoScene.h" />

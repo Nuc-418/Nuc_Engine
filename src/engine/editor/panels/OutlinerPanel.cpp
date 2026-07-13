@@ -2,6 +2,7 @@
 
 #include "engine/editor/panels/OutlinerPanel.h"
 #include "engine/editor/Editor.h"
+#include "engine/io/PrefabLibrary.h"
 
 static void DestroyObject(Editor& editor, GameObject* object)
 {
@@ -79,6 +80,12 @@ static void DrawObjectNode(Editor& editor, GameObject* object, GameObject*& toDe
 		ImGui::Separator();
 		if (object->Parent() && ImGui::MenuItem("Detach from parent"))
 			ReparentObject(editor, object, nullptr);
+		if (ImGui::MenuItem("Save as Prefab")) {
+			// Saved under the object's name; immediately spawnable from
+			// + Add and the Content Browser (thumbnails regenerate).
+			if (Prefabs::Save(world, *object, object->name))
+				editor.meshPreviewsReady = false;
+		}
 		if (ImGui::MenuItem("Delete", "Del"))
 			toDestroy = object;
 		ImGui::EndPopup();

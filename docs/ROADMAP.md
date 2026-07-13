@@ -256,7 +256,12 @@ scene-code involvement.
 - **Prefabs**: save a `GameObject` (its component array) as an asset;
   spawning a prefab instance goes through the same reconciliation path the
   scene loader already has. `World::RegisterType`'s hand-written factories
-  gradually become prefab references.
+  gradually become prefab references. *(Done: Outliner right-click > Save
+  as Prefab writes assets/prefabs/<name>.prefab.json — base type +
+  components + rotation/scale — and every prefab registers as a
+  "prefab:<name>" spawn type, so Add menu, Content Browser, drag-drop,
+  undo and scene files all work unchanged. Prefabs can be based on
+  prefabs.)*
 - **Editor state cleanup**: `Editor`'s public flag-soup (`playClicked`,
   `pendingSceneLoad`, `mapDeleteRequest`, ...) becomes a small
   command/event queue consumed by `EditorHost` — panels stop reaching into

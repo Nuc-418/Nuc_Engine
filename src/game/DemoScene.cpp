@@ -6,6 +6,7 @@
 #include "engine/core/Time.h"
 #include "engine/core/EngineMath.h"
 #include "engine/io/ModelDiscovery.h"
+#include "engine/io/PrefabLibrary.h"
 #include "engine/render/Primitives.h"
 #include "engine/render/LightComponent.h"
 #include "engine/render/CameraComponent.h"
@@ -286,6 +287,10 @@ void DemoScene::LoadObjects(Application& app)
 		if (!texture.empty())
 			app.assets.LoadTexture(modelProgram, texture);
 	}
+
+	/* Prefabs saved from the editor become spawnable types too (their base
+	   types are all registered above). */
+	Prefabs::RegisterAll(world);
 
 	/* Null the demo animation handles if the editor destroys their objects. */
 	world.onDestroyed = [this](GameObject* object) {
