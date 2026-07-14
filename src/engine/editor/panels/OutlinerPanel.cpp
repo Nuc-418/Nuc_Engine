@@ -4,18 +4,6 @@
 #include "engine/editor/Editor.h"
 #include "engine/io/PrefabLibrary.h"
 
-static void DestroyObject(Editor& editor, GameObject* object)
-{
-	if (editor.selected == object)
-		editor.selected = nullptr;
-
-	const WorldEntry* entry = editor.world->EntryOf(object);
-	if (entry)
-		editor.undoStack.RecordDelete(entry->typeId, object->name, entry->id, CaptureTransform(*object));
-
-	editor.world->Destroy(object);
-}
-
 // Reparents `child` under `newParent` (nullptr = root), keeping its world
 // pose, and records the change for undo.
 static void ReparentObject(Editor& editor, GameObject* child, GameObject* newParent)
@@ -147,11 +135,8 @@ void DrawOutlinerPanel(Editor& editor)
 		ImGui::EndDragDropTarget();
 	}
 
-	if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Delete) && editor.selected)
-		toDestroy = editor.selected;
-
 	if (toDestroy)
-		DestroyObject(editor, toDestroy);
+		DeleteObject(editor, toDestroy);
 
 	ImGui::End();
 }

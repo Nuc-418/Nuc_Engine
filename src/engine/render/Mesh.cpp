@@ -9,7 +9,7 @@ using namespace std;
 void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  colorArray)
 {
 	//N�mero de v�rtices
-	nVertex = positionArray->size();
+	nVertex = static_cast<int>(positionArray->size());
 	//Array de posi��es
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
@@ -23,7 +23,7 @@ void Mesh::AssignPosColor(vector<glm::vec3>* positionArray, vector<glm::vec3>*  
 /*Associa posi��es, normais e cores � mesh (para as primitivas iluminadas)*/
 void Mesh::AssignPosNormColor(vector<glm::vec3>* positionArray, vector<glm::vec3>* normalArray, vector<glm::vec3>* colorArray)
 {
-	nVertex = positionArray->size();
+	nVertex = static_cast<int>(positionArray->size());
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
 	vertexArrayPtr[Normals] = normalArray;
@@ -36,7 +36,7 @@ void Mesh::AssignPosNormColor(vector<glm::vec3>* positionArray, vector<glm::vec3
 void Mesh::AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* uvArray, vector<glm::vec3>* normalArray)
 {
 	//N�mero de v�rtices
-	nVertex = positionArray->size();
+	nVertex = static_cast<int>(positionArray->size());
 	//Array de posi��es
 	vertexArrayPtr[Positions] = positionArray;
 	CaptureBounds(positionArray);
@@ -52,7 +52,7 @@ void Mesh::AssignPosUvNorm(vector<glm::vec3>* positionArray, vector<glm::vec2>* 
 /*Fun��o que associa um array de �ndices � mesh*/
 void Mesh::AssignElementArray(vector<GLuint>* elementArray)
 {
-	nElements = elementArray->size();
+	nElements = static_cast<int>(elementArray->size());
 	elementArrayPtr = elementArray;
 
 	//Carrega a mesh
@@ -108,7 +108,6 @@ void Mesh::LoadVBOs()
 		//Se existir um v�rtice
 		if (vertexArrayPtr[index])
 		{
-			
 			//Cria-se um apontador que aponta para o primeiro elemento desse v�rtice
 			glm::vec3* auxVecStartPtr = &vertexArrayPtr[index]->at(0);
 			//Criam-se nomes para o VBO

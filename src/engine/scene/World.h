@@ -63,9 +63,9 @@ public:
 	// Destroys every object (scene load / shutdown).
 	void Clear();
 
-	// Empties the world into a fresh default map: no objects (bar a ground
-	// plane if registered), a soft ambient and one directional light, camera
-	// and render mode back to defaults.
+	// Empties the world into a fresh default map: a ground plane and a Sun
+	// directional Light actor (if those types are registered), a soft ambient
+	// environment term, camera and render mode back to defaults.
 	void ResetToDefaultMap();
 
 	std::vector<WorldEntry> entries;
@@ -73,17 +73,26 @@ public:
 	// Scenes hook this to null their raw handles when an object goes away.
 	std::function<void(GameObject*)> onDestroyed;
 
-	// World-level authored lights (scene file / Lights panel / demo setup).
+	// World-level environment light: only the ambient term lives here now
+	// (edited in the Lights panel, serialized with the scene). Directional,
+	// point and spot lights are LightComponents on actors — see
+	// BuildCombinedLights.
 	Lights lights;
-	GLuint lightsProgram = 0; // the program the lights are uploaded to
+	GLuint lightsProgram = 0; // primary lit program (Lights panel target)
 
-	// Authored lights merged with every LightComponent in the world (their
-	// position/direction follow the owning object's world transform). This is
-	// what is actually uploaded — read it (not `lights`) for "what's lit now",
-	// e.g. StorePrimitiveLight.
+	// Every shader program that reads the scene light uniforms. UploadLights
+	// pushes the combined light set to all of them, so lights illuminate both
+	// the textured models and the built-in primitives.
+	std::vector<GLuint> litPrograms;
+	void AddLitProgram(GLuint program);
+
+	// The ambient environment merged with every LightComponent in the world
+	// (their position/direction follow the owning object's world transform).
+	// This is what is actually uploaded — read it (not `lights`) for
+	// "what's lit now".
 	Lights combinedLights;
 
-	// Rebuilds combinedLights and re-uploads to lightsProgram; safe to call
+	// Rebuilds combinedLights and re-uploads to every lit program; safe to call
 	// with any vector empty. Used after wholesale light-state changes
 	// (scene load, undo/redo).
 	void UploadLights();

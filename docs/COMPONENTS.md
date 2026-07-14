@@ -54,13 +54,15 @@ represent — standard TRS-engine behavior.
 light source: kind (directional/point/spot), colors, attenuation and cone
 angle live on the component; **placement comes from the owner's transform**
 (world position for point/spot, world +Z forward for aim). Each frame
-`World::SyncComponentLights` merges every LightComponent after the world-level
-authored lights into `World::combinedLights` and re-uploads through the
-existing `Lights` uniform path only when something changed — shaders are
-untouched. The demo registers a meshless `"Light"` spawn type, and the Details
-panel edits the component's parameters (component edits are not yet undoable).
-World-level authored lights (Lights panel, scene `lights` block) continue to
-work unchanged; migrating them fully onto components is a later step.
+`World::SyncComponentLights` merges every LightComponent with the world
+ambient environment term into `World::combinedLights` and re-uploads to every
+lit program (`World::litPrograms`) only when something changed. Both the model
+and primitive shaders read the same light uniforms, so a Light actor lights
+everything — primitives included. Lights are **component-only**: the only
+world-level light is the ambient term (the **Environment** panel, scene
+`lights` block); directional/point/spot are always LightComponents. The demo
+registers a meshless `"Light"` spawn type (and such meshless actors are
+pickable in the viewport), and the Details panel edits the component.
 
 ## Cameras as components
 

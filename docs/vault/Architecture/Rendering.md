@@ -32,10 +32,14 @@ when `Shader::GlobalGeneration()` changes (hot reload can move locations).
 ## Lights (`engine/render/Lights`)
 
 Ambient/directional/point/spot structs uploaded as uniform arrays with
-counts. Two sources merge into `World::combinedLights` each frame:
-world-level authored lights and every [[LightComponent]] (position/aim from
-the owner's world transform). `StorePrimitiveLight` feeds the simple
-primitive shader the first directional + ambient light.
+counts. The scene light set is `World::combinedLights`, rebuilt each frame
+from the world **ambient environment term** (`World::lights`, the only
+authored light left) plus every [[LightComponent]] (position/aim from the
+owner's world transform). `Lights::StoreSceneLights` uploads that whole set
+to each program in `World::litPrograms`, so the **same lights illuminate the
+textured models and the built-in primitives** — the primitive shader reads
+the identical light uniform blocks (eye-space Phong, per-vertex colour as
+albedo). Add a program with `World::AddLitProgram`.
 
 ## Shaders (`engine/render/Shader`)
 

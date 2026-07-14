@@ -26,13 +26,14 @@ bindings.
 | Mouse wheel (flying) | Fly speed (multiplicative) |
 | W / E / R (hovering) | Gizmo: translate / rotate / scale |
 | F | Focus selected object |
-| LMB click | Pick object (empty space deselects) |
-| Ctrl+S | Save scene · Ctrl+Z/Ctrl+Y undo/redo · Del delete selection |
+| LMB click | Pick object — meshes and meshless actors (lights/cameras) alike; empty space deselects |
+| Ctrl+S | Save scene · Ctrl+Z/Ctrl+Y undo/redo |
+| Del | Delete the selected object (works anywhere — viewport, outliner — unless typing in a field) |
 
 ## Demo scene bindings
 
 | Key | Action |
 |---|---|
-| 1 / 2 / 3 / 4 | Toggle ambient / directional / point / spot light |
+| 1 | Toggle the ambient environment term (directional/point/spot are Light components) |
 | 5 | Toggle the deformation animation |
 | 6 / 7 / 8 / 9 | Render mode: triangles / line strip / points / triangle fan |

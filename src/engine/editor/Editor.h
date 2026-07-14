@@ -80,3 +80,9 @@ private:
 	void DrawMapModals();
 	char newMapBuffer[128] = "NewMap";
 };
+
+// Deletes an object from the editor's world: clears selection if it was
+// selected, records the delete for undo, then destroys it. Shared by the
+// Outliner (context menu) and the global Delete shortcut so both paths behave
+// identically. Safe to pass null.
+void DeleteObject(Editor& editor, GameObject* object);

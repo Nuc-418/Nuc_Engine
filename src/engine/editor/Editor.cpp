@@ -22,6 +22,21 @@
 #include <cstdio>
 #include <cstring>
 
+void DeleteObject(Editor& editor, GameObject* object)
+{
+	if (!object)
+		return;
+
+	if (editor.selected == object)
+		editor.selected = nullptr;
+
+	const WorldEntry* entry = editor.world->EntryOf(object);
+	if (entry)
+		editor.undoStack.RecordDelete(entry->typeId, object->name, entry->id, CaptureTransform(*object));
+
+	editor.world->Destroy(object);
+}
+
 bool Editor::Init(GLFWwindow* window, World* worldPtr)
 {
 	world = worldPtr;
@@ -114,6 +129,12 @@ void Editor::DrawFrame(Application& app)
 			unsigned long long affected = undoStack.Redo(*world);
 			if (affected) selected = world->FindById(affected);
 		}
+
+		/* Delete the selected object from anywhere (viewport, outliner, ...).
+		   Guarded against typing in a text field so Del in a name box edits
+		   text instead of destroying the object. */
+		if (selected && ImGui::IsKeyPressed(ImGuiKey_Delete) && !ImGui::GetIO().WantTextInput)
+			DeleteObject(*this, selected);
 	}
 
 	ImGui::Render();

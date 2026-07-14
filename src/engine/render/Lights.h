@@ -123,10 +123,11 @@ public:
 	void TogglePointLight(GLuint program, int lightIndex, bool switchL);
 	void ToggleSpotLight(GLuint program, int lightIndex, bool switchL);
 
-	// Uploads the first directional + ambient light as the plain uLight*
-	// uniforms used by the primitive shader (see primitive.frag). Safe to call
-	// with no lights present (falls back to a lit-from-above default).
-	void StorePrimitiveLight(GLuint program);
+	// Uploads the whole light set (ambient + directional + point + spot, plus
+	// their counts) to one lit program. Every lit shader reads the same light
+	// uniform blocks, so this is the single upload path used for the model and
+	// primitive shaders alike. Safe with any vector empty (counts go to 0).
+	void StoreSceneLights(GLuint program);
 
 	void StoreAmbientLights(GLuint program);
 	void StoreDirectionalLights(GLuint program,int vectorSize);

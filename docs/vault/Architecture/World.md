@@ -24,9 +24,12 @@ lights, cameras and render settings that belong to the running scene.
 
 ## Scene state
 
-- `lights` — world-level authored lights; `combinedLights` — those merged
-  with every [[LightComponent]] (this is what is actually uploaded).
-  `SyncComponentLights()` re-uploads only when something changed.
+- `lights` — the world ambient **environment** term (the only authored light
+  left); `combinedLights` — that merged with every [[LightComponent]] (this
+  is what is actually uploaded). `SyncComponentLights()` re-uploads to every
+  program in `litPrograms` only when something changed; `AddLitProgram`
+  registers a lit shader (both the model and primitive shaders are added, so
+  component lights hit everything).
 - `camera` — the editor/default viewport camera. `activeCameraId` selects a
   [[CameraComponent]] object to render the running game through
   (`ActiveCamera()`), falling back to `camera`.

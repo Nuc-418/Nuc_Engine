@@ -134,14 +134,17 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		GameObject* closest = nullptr;
 		float closestDistance = 0.0f;
 		for (WorldEntry& entry : editor.world->entries) {
+			// Meshless actors (Light, Camera, ...) have no bounds of their own;
+			// give them a small unit box at their origin so they can still be
+			// clicked and grabbed with the gizmo.
+			glm::vec3 boundsMin(-0.5f), boundsMax(0.5f);
 			MeshComponent* meshComponent = entry.object->GetMesh();
-			if (!meshComponent)
-				continue;
-			Mesh& mesh = meshComponent->renderer.mesh;
-			if (!mesh.hasAabb)
-				continue;
+			if (meshComponent && meshComponent->renderer.mesh.hasAabb) {
+				boundsMin = meshComponent->renderer.mesh.aabbMin;
+				boundsMax = meshComponent->renderer.mesh.aabbMax;
+			}
 			float distance = 0.0f;
-			if (RayIntersectsOBB(rayOrigin, rayDirection, mesh.aabbMin, mesh.aabbMax,
+			if (RayIntersectsOBB(rayOrigin, rayDirection, boundsMin, boundsMax,
 			                     entry.object->WorldMatrix(), distance)) {
 				if (!closest || distance < closestDistance) {
 					closest = entry.object.get();
@@ -157,6 +160,10 @@ void DrawViewportPanel(Editor& editor, Application& app)
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist();
 		ImGuizmo::SetRect(imagePos.x, imagePos.y, editor.viewportSize.x, editor.viewportSize.y);
+		// Keep the gizmo axes fixed to the object/world frame. ImGuizmo flips
+		// each axis to face the camera by default, which makes the gizmo look
+		// like it re-orients itself as you orbit the view.
+		ImGuizmo::AllowAxisFlip(false);
 
 		Transform& transform = editor.selected->transform;
 		TransformState preManipulate = CaptureTransform(*editor.selected);

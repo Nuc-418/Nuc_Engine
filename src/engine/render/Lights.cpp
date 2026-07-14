@@ -22,36 +22,22 @@ void Lights::CheckCacheGeneration()
 	cacheGeneration = Shader::GlobalGeneration();
 }
 
-void Lights::StorePrimitiveLight(GLuint program)
+void Lights::StoreSceneLights(GLuint program)
 {
-	vec3 direction(0.4f, -1.0f, 0.5f);
-	vec3 diffuse(1.0f);
-	vec3 ambient(0.0f);
-	int  on = 0;
+	if (!lightInfo.ambientLight.empty())
+		StoreAmbientLights(program);
+	else
+		glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "ambientLight.switchL"), 0);
 
-	const bool haveDirectional = !lightInfo.directionalLight.empty();
-	const bool haveAmbient = !lightInfo.ambientLight.empty();
+	if (!lightInfo.directionalLight.empty())
+		StoreDirectionalLights(program, static_cast<int>(lightInfo.directionalLight.size()));
+	else
+		glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "nDirectionalLights"), 0);
 
-	// Honour each light's on/off switch so toggling lights in the editor
-	// actually darkens the primitives (the directional term is also gated by
-	// uLightOn in the shader).
-	if (haveDirectional) {
-		direction = lightInfo.directionalLight[0].direction;
-		diffuse = lightInfo.directionalLight[0].diffuse;
-		on = lightInfo.directionalLight[0].switchL;
-	}
-	if (haveAmbient && lightInfo.ambientLight[0].switchL)
-		ambient = lightInfo.ambientLight[0].ambient;
-
-	// A map with no light sources at all keeps a soft fill so it is not pitch
-	// black; a map whose lights are simply switched off goes dark as expected.
-	if (!haveDirectional && !haveAmbient)
-		ambient = vec3(0.25f);
-
-	glProgramUniform3fv(program, glGetUniformLocation(program, "uLightDir"), 1, value_ptr(direction));
-	glProgramUniform3fv(program, glGetUniformLocation(program, "uLightColor"), 1, value_ptr(diffuse));
-	glProgramUniform3fv(program, glGetUniformLocation(program, "uAmbient"), 1, value_ptr(ambient));
-	glProgramUniform1i(program, glGetUniformLocation(program, "uLightOn"), on);
+	// Point/spot uploads always run: with an empty vector they simply write a
+	// count of 0, which stops the shader loops.
+	StorePointLights(program, static_cast<int>(lightInfo.pointLight.size()));
+	StoreSpotLights(program, static_cast<int>(lightInfo.spotLight.size()));
 }
 
 /*Fun��o que cria uma fonte de luz ambiente*/
@@ -80,7 +66,7 @@ void Lights::AddDirectionalLight(GLuint program, vec3 direction, vec3 ambient, v
 	directionalLight.specular = specular;
 
 	lightInfo.directionalLight.push_back(directionalLight);
-	StoreDirectionalLights(program, lightInfo.directionalLight.size());
+	StoreDirectionalLights(program, static_cast<int>(lightInfo.directionalLight.size()));
 
 }
 
@@ -97,7 +83,7 @@ void Lights::AddPointLight(GLuint program, vec3 position, vec3 ambient, vec3 dif
 	pointLight.quadratic = quadratic;
 
 	lightInfo.pointLight.push_back(pointLight);
-	StorePointLights(program, lightInfo.pointLight.size());
+	StorePointLights(program, static_cast<int>(lightInfo.pointLight.size()));
 }
 
 /*Fun��o que cria uma fonte de luz c�nica*/
@@ -115,7 +101,7 @@ void Lights::AddSpotLight(GLuint program, vec3 position, vec3 direction, vec3 am
 	spotLight.quadratic = quadratic;
 
 	lightInfo.spotLight.push_back(spotLight);
-	StoreSpotLights(program, lightInfo.spotLight.size());
+	StoreSpotLights(program, static_cast<int>(lightInfo.spotLight.size()));
 
 
 }

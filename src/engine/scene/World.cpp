@@ -118,18 +118,30 @@ void World::ResetToDefaultMap()
 	info.pointLight.clear();
 	info.spotLight.clear();
 
+	// Ambient is the world environment term (non-positional); all other lights
+	// are Light components on actors.
 	AmbientLight ambient;
 	ambient.switchL = true;
-	ambient.ambient = glm::vec3(0.35f);
+	ambient.ambient = glm::vec3(0.2f);
 	info.ambientLight.push_back(ambient);
 
-	DirectionalLight sun;
-	sun.switchL = true;
-	sun.direction = glm::vec3(1.0f, -1.0f, 0.5f);
-	sun.ambient = glm::vec3(0.2f);
-	sun.diffuse = glm::vec3(1.0f);
-	sun.specular = glm::vec3(1.0f);
-	info.directionalLight.push_back(sun);
+	// A default Sun as a directional Light actor, so even a fresh map is lit by
+	// a component the user can select, aim and delete.
+	if (CanSpawn("Light")) {
+		if (GameObject* sun = Spawn("Light", "Sun")) {
+			if (LightComponent* light = sun->GetComponent<LightComponent>()) {
+				light->kind = LightComponent::Kind::Directional;
+				light->ambient = glm::vec3(0.05f);
+				light->diffuse = glm::vec3(1.0f);
+				light->specular = glm::vec3(1.0f);
+				sun->transform.SetPos(glm::vec3(0.0f, 12.0f, -4.0f));
+				// Aim the +Z light axis DOWN onto the ground (rotation is
+				// yaw-X, pitch-Y): pitch it past vertical so the light travels
+				// downward, otherwise a flat up-facing floor gets no diffuse.
+				sun->transform.rotation = glm::vec3(0.5f, 0.9f, 0.0f);
+			}
+		}
+	}
 
 	UploadLights();
 
@@ -247,17 +259,27 @@ bool LightVectorsEqual(const VectorLight& a, const VectorLight& b)
 
 } // namespace
 
+void World::AddLitProgram(GLuint program)
+{
+	if (program == 0)
+		return;
+	for (GLuint existing : litPrograms)
+		if (existing == program)
+			return;
+	litPrograms.push_back(program);
+	// If lights are already set up, bring the new program up to date at once.
+	combinedLights.StoreSceneLights(program);
+}
+
 void World::UploadLights()
 {
 	combinedLights.lightInfo = BuildCombinedLights();
-	if (lightsProgram == 0)
-		return;
-	if (!combinedLights.lightInfo.ambientLight.empty())
-		combinedLights.StoreAmbientLights(lightsProgram);
-	if (!combinedLights.lightInfo.directionalLight.empty())
-		combinedLights.StoreDirectionalLights(lightsProgram, (int)combinedLights.lightInfo.directionalLight.size());
-	combinedLights.StorePointLights(lightsProgram, (int)combinedLights.lightInfo.pointLight.size());
-	combinedLights.StoreSpotLights(lightsProgram, (int)combinedLights.lightInfo.spotLight.size());
+	for (GLuint program : litPrograms)
+		combinedLights.StoreSceneLights(program);
+	// Back-compat: a world that only set the single lightsProgram (no explicit
+	// lit-program list) still gets its lights uploaded.
+	if (litPrograms.empty() && lightsProgram != 0)
+		combinedLights.StoreSceneLights(lightsProgram);
 }
 
 void World::SyncComponentLights()

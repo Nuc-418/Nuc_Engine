@@ -18,9 +18,15 @@ move/rotate the object to place the light (parenting works).
 | `constant/linear/quadratic` | point/spot attenuation |
 | `cutOff` | spot cone half-angle, radians |
 
-Each frame `World::SyncComponentLights` merges every LightComponent after
-the world-level authored lights into `combinedLights` and re-uploads
-through the existing uniform path **only when something changed** — the
-shaders are unchanged. The demo registers a meshless `"Light"` spawn type.
+Lights are **component-only**: directional/point/spot lights are always
+LightComponents on actors. The only world-level light is the ambient
+environment term (edited in the **Environment** panel). Each frame
+`World::SyncComponentLights` merges the ambient term with every
+LightComponent into `combinedLights` and re-uploads to every lit program
+**only when something changed**. Because the primitive and model shaders
+share the same light uniforms, a Light actor lights everything — primitives
+included. A meshless `"Light"` spawn type is registered, and meshless
+actors are pickable in the viewport (a small default box), so a light can be
+selected, moved, aimed and deleted like any object.
 
-See also [[Rendering]] and the Lights panel in [[Editor Overview]].
+See also [[Rendering]] and the Environment panel in [[Editor Overview]].

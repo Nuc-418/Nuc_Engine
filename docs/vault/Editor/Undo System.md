@@ -15,7 +15,7 @@ tags: [editor]
 | `Transform` | before/after TRS | one entry per gizmo drag or Details widget release |
 | `Spawn` / `Delete` | type, name, id, TRS | respawn re-attaches the same id |
 | `Rename` | name before/after | |
-| `Lights` | whole authored `VectorLight` before/after | Lights panel edits |
+| `Lights` | whole `VectorLight` before/after | Environment panel (ambient) edits |
 | `Reparent` | parent ids + local TRS before/after | Outliner drag-and-drop |
 | `ComponentEdit` | component TypeId + before/after `FieldStore` snapshots | **generic**: covers every current and future component via `Serialize`/`Deserialize` — see [[Serialization & Reflection]] |
 

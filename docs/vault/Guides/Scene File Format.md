@@ -39,8 +39,9 @@ Key semantics:
   registry, then reads its state ([[Serialization & Reflection]]).
 - `parent` and `activeCamera` reference saved `id`s and resolve after all
   objects spawn — order-independent.
-- The `lights` block is the world-level authored lights;
-  [[LightComponent]] lights ride in each object's `components`.
+- The `lights` block holds only the world ambient environment term now;
+  directional/point/spot [[LightComponent]] lights ride in each object's
+  `components` (empty `directional`/`point`/`spot` arrays are normal).
 - Unknown object types are skipped with a log line (e.g. a model that was
   removed from `assets/models`).
 

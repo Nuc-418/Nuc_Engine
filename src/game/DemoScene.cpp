@@ -196,7 +196,7 @@ bool DemoScene::Load(Application& app)
 bool DemoScene::LoadProgramShaders(Application& app)
 {
 	cubeShader = app.assets.LoadShader(AssetPaths::CubeVertexShader, AssetPaths::CubeFragmentShader);
-	ironManShader = app.assets.LoadShader(AssetPaths::IronManVertexShader, AssetPaths::IronManFragmentShader);
+	ironManShader = app.assets.LoadShader(AssetPaths::ModelVertexShader, AssetPaths::ModelFragmentShader);
 	primitiveShader = app.assets.LoadShader(AssetPaths::PrimitiveVertexShader, AssetPaths::PrimitiveFragmentShader);
 	if (!cubeShader || !ironManShader || !primitiveShader)
 		return false;
@@ -294,8 +294,6 @@ void DemoScene::LoadObjects(Application& app)
 
 	/* Null the demo animation handles if the editor destroys their objects. */
 	world.onDestroyed = [this](GameObject* object) {
-		if (object == ironMan1) ironMan1 = nullptr;
-		if (object == ironMan2) ironMan2 = nullptr;
 		if (object == indexedCube) indexedCube = nullptr;
 		gridCubes.erase(std::remove(gridCubes.begin(), gridCubes.end(), object), gridCubes.end());
 
@@ -319,27 +317,49 @@ void DemoScene::LoadObjects(Application& app)
 			gridCubes.push_back(gridCube);
 		}
 
-	/* Iron Man objects (spawned through the dynamic model id) */
-	std::string ironManId = std::string(AssetPaths::IronManFolder) + AssetPaths::IronManObjFile;
-	if (world.CanSpawn(ironManId)) {
-		ironMan1 = world.Spawn(ironManId, "IronMan");
-		ironMan2 = world.Spawn(ironManId, "IronMan_2");
-		if (ironMan2)
-			ironMan2->transform.SetPos(vec3(6, 0, 0));
+	/* Rotator behavior demo: the indexed cube spins while simulating (Play /
+	   game build). It is a component, so it serializes and is editable in
+	   Details like any other. Any model dropped in assets/models is discovered
+	   and spawnable from the Content Browser — nothing is hardcoded here. */
+	if (indexedCube)
+		indexedCube->AddComponent<RotatorComponent>()->radiansPerSecond = vec3(0, 1, 0);
 
-		/* The spin is a behavior component now: it only runs while the
-		   simulation does (Play / game build), same as before, but it also
-		   serializes and is editable in Details like any component. */
-		if (ironMan1) ironMan1->AddComponent<RotatorComponent>()->radiansPerSecond = vec3(1, 0, 0);
-		if (ironMan2) ironMan2->AddComponent<RotatorComponent>()->radiansPerSecond = vec3(-1, 0, 0);
+	/* Lighting is component-driven. A global ambient term is the world's
+	   environment light (non-positional, edited in the Environment panel);
+	   every directional/point/spot light is a Light component on an actor, so
+	   it can be selected, moved and deleted like anything else. Both lit
+	   programs (models + primitives) receive the combined set. */
+	world.AddLitProgram(ironManProgramShader);
+	world.AddLitProgram(primitiveProgramShader);
+	world.lightsProgram = ironManProgramShader; // Environment panel target
+
+	world.lights.lightInfo.ambientLight.clear();
+	AmbientLight ambient;
+	ambient.switchL = true;
+	ambient.ambient = vec3(0.12f);
+	world.lights.lightInfo.ambientLight.push_back(ambient);
+
+	if (GameObject* sun = world.Spawn("Light", "Sun")) {
+		LightComponent* light = sun->GetComponent<LightComponent>();
+		light->kind = LightComponent::Kind::Directional;
+		light->ambient = vec3(0.05f);
+		light->diffuse = vec3(1.0f);
+		light->specular = vec3(1.0f);
+		sun->transform.SetPos(vec3(0.0f, 12.0f, -4.0f));
+		sun->transform.rotation = vec3(0.5f, 0.9f, 0.0f); // aim the +Z light axis DOWN onto the ground
 	}
 
-	/* Light sources for the Iron Man shader program */
-	world.lightsProgram = ironManProgramShader;
-	world.lights.AddAmbientLight(ironManProgramShader, vec3(0.1f, 0.1f, 0.1f));
-	world.lights.AddDirectionalLight(ironManProgramShader, vec3(1, 0, 0), vec3(0.2, 0.2, 0.2), vec3(0, 0.5, 1)*2.0f, vec3(0, 0.5, 1)*100.0f);
-	world.lights.AddPointLight(ironManProgramShader, vec3(1.0, 2.0, 0.0), vec3(0.1, 0.1, 0.1), vec3(1.0, 0, 0.1)*2.0f, vec3(1.0, 0, 0.1)*10.0f, 1, 0.06f, 0.002f);
-	world.lights.AddSpotLight(ironManProgramShader, vec3(0, 3, 2), vec3(0, 0, -2), vec3(0.1, 0.1, 0.1), vec3(1, 1, 1)*2.0f, vec3(1.0, 1.0, 1.0), 1, 0.006f, 0.002f, (SMALL_PI / 12));
+	if (GameObject* fill = world.Spawn("Light", "FillLight")) {
+		LightComponent* light = fill->GetComponent<LightComponent>();
+		light->kind = LightComponent::Kind::Point;
+		light->diffuse = vec3(0.8f, 0.85f, 1.0f);
+		light->specular = vec3(0.5f);
+		light->linear = 0.06f;
+		light->quadratic = 0.002f;
+		fill->transform.SetPos(vec3(0.0f, 6.0f, 0.0f));
+	}
+
+	world.UploadLights();
 
 	/* Physics demo: a dynamic cube falling onto a static floor (JoltPhysics
 	   plugin). Runs in the standalone game and in the editor's Play mode. */
@@ -447,11 +467,10 @@ void DemoScene::Draw(Application& app)
 	Time::TimeToProgram(ironManProgramShader);
 	Time::TimeToProgram(cubeProgramShader);
 
-	/* Merge LightComponent lights into the upload (no-op unless changed). */
+	/* Merge LightComponent lights into the upload (no-op unless changed). This
+	   pushes the combined light set to every lit program — models and
+	   primitives alike. */
 	world.SyncComponentLights();
-
-	/* Feed the primitive shader the scene's directional + ambient light. */
-	world.combinedLights.StorePrimitiveLight(primitiveProgramShader);
 
 	/* While simulating (Play / game build) render through the scene's active
 	   CameraComponent if one is set; otherwise — and always in Edit mode —
