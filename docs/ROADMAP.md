@@ -279,11 +279,86 @@ scene-code involvement.
 - **Packaged-build hardening**: `GamePackager` consumes the asset manager's
   manifest instead of copying directory trees.
 
+## Phase 8 — Render Hardware Interface (RHI) + Vulkan backend
+
+Goal: a backend abstraction so the renderer stops calling `glXxx` directly, then
+a **Vulkan** backend behind it. This is the largest single initiative here. It
+extends Phase 1 (the render seam) and Phase 3 (the shader/UBO change) — which are
+its real prerequisites — and is sequenced so the OpenGL path keeps rendering the
+demo unchanged until Vulkan reaches parity. Context: the metallic/roughness PBR
+pipeline (Cook-Torrance + HDR tonemapping + IBL) currently lives directly on raw
+GL, which is exactly what this phase abstracts.
+
+**Why the uniform model is the crux.** The renderer leans on things Vulkan does
+not have: runtime-compiled GLSL, name-based reflection
+(`glGetProgramResourceLocation`), and thousands of loose `glProgramUniform*`
+calls (`Camera::CamToProgram`, `Lights::StoreSceneLights`, the MeshComponent
+material upload, `IblEnvironment`). Vulkan takes **SPIR-V** only and has **no
+loose uniforms** — everything is UBOs / push constants / descriptor sets.
+Restructuring that path is most of the work and is backend-agnostic, so it is
+done on the known-good GL backend first and pixel-compared before Vulkan begins.
+
+### 8.1 — RHI seam (GL backend only)
+
+- `engine/rhi/`: a `Device` (creates resources, submits work) + a
+  `CommandContext`.
+- Opaque resource handles: `Buffer`, `Texture`, `Sampler`, `ShaderModule`,
+  `Pipeline` (immutable state — blend/depth/raster/vertex layout), `RenderTarget`.
+- Backend-neutral enums/formats, so no `GLenum` leaks above the backend.
+- `rhi/gl/`: wrap the current GL calls, then port `Mesh`, `MeshRenderer`,
+  `Framebuffer`, `Texture`, `Shader`, `PostProcess`, `IblEnvironment` and every
+  `OnRender` onto the RHI. No visible change.
+
+### 8.2 — Uniforms → UBO / descriptor model + SPIR-V (still GL)
+
+- A per-frame **scene UBO** (view/projection, `CamPos`, the combined light set)
+  and a per-object **push-constant/UBO** (model matrix + `pbrMaterial.*`);
+  textures (albedo, IBL cubemaps, BRDF LUT) as **descriptor sets**. Replaces the
+  loose `glProgramUniform*` uploads.
+- Shader pipeline: author GLSL, compile to **SPIR-V** in the build
+  (glslang/shaderc), reflect descriptor layouts (spirv-reflect). GL 4.6 consumes
+  SPIR-V (`GL_ARB_gl_spirv`), so both backends share one shader artifact.
+- Keep the old uniform path compiled until the UBO path is pixel-compared, then
+  delete it (the Phase 3 mitigation).
+
+### 8.3 — Vulkan backend (`rhi/vk/`)
+
+Built incrementally, each step a runnable checkpoint:
+
+- Instance (+ validation layers), physical/logical device, queues; **volk** loader.
+- **Swapchain** + resize recreation; per-frame command buffers; frames-in-flight
+  (image-available / render-finished semaphores + in-flight fences).
+- **Dynamic rendering** (KHR) in preference to render passes + framebuffers.
+- Graphics **pipelines** created from the RHI `Pipeline` (state baked at creation).
+- **Descriptor** set layouts / pools / sets for the UBOs + samplers from 8.2.
+- Memory via **VMA** (Vulkan Memory Allocator).
+- Milestones: clear screen → triangle → textured mesh → full scene parity
+  (PBR + HDR + IBL) → render the viewport to an offscreen image.
+
+### 8.4 — Editor + backend selection
+
+- Swap `imgui_impl_opengl3` → `imgui_impl_vulkan`; the FBO-in-a-panel trick
+  becomes an offscreen image sampled as a descriptor.
+- Backend chosen at launch (e.g. `--backend=gl|vk`); the GL path stays as the
+  reference / fallback.
+
+**New dependencies:** Vulkan SDK (LunarG: headers, validation layers,
+glslang/shaderc, SPIRV-Tools), VMA, volk, spirv-reflect. Build wiring in the
+vcxproj and `CMakeLists.txt` (Phase 7's "CMake as source of truth" helps here).
+
+**Scope decision — settle this first:**
+
+- **Proof-of-concept** — Vulkan renders the 3D scene into the viewport; the
+  editor stays on GL; no live switching. Much smaller; recommended first target.
+- **Full parity** — editor and everything on Vulkan, backend-switchable at
+  launch. The largest effort in the engine (weeks).
+
 ## Sequencing and risk
 
 ```
 P0 ──> P1 ──> P2 ──> P3 ──> (P5, P6 in parallel)
-        │      └────> P4 ──────┘
+        │      │      └────> P4
+        │      └────> P8.1 ─> P8.2 ─> P8.3 ─> P8.4   (RHI + Vulkan)
         └── P7 anytime after P0, cheapest after P3
 ```
 
@@ -291,6 +366,11 @@ P0 ──> P1 ──> P2 ──> P3 ──> (P5, P6 in parallel)
   ones. Every phase ends with the demo visually identical and the gate
   green — the same behavior-preserving discipline RESTRUCTURE.md
   established.
+- **Phase 8 (RHI + Vulkan)** is the largest and sits on P1 + P3: do 8.1–8.2
+  first (they harden the GL engine on their own and are the real prerequisite);
+  8.2 is the riskiest (touches every shader + upload, de-risked by staying on GL
+  and pixel-comparing); 8.3 is the biggest volume (~a few thousand lines) but
+  additive, so low-risk to the existing GL path.
 - The riskiest step is Phase 3's shader/UBO change (it *can* alter
   visuals). Mitigation: keep the old per-uniform path compiled until the
   UBO path is pixel-compared on hardware, then delete it.
