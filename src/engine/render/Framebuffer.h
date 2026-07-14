@@ -1,4 +1,6 @@
-// Framebuffer: render-to-texture target (RGBA8 color + depth/stencil renderbuffer).
+// Framebuffer: render-to-texture target (color + depth/stencil renderbuffer).
+// Color is RGBA8 by default; set `hdr = true` before the first Create/Resize for
+// an RGBA16F float target (the scene pass renders linear HDR into one of these).
 
 #pragma once
 
@@ -17,6 +19,9 @@ public:
 
 	// Deletes the GL objects. Must run while the GL context is alive.
 	void Unload();
+
+	// RGBA16F float color when true (set before the first Create); RGBA8 otherwise.
+	bool hdr = false;
 
 	GLuint colorTexture = 0;
 	int width = 0;

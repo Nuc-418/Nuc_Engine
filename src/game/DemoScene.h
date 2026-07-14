@@ -9,6 +9,9 @@
 #include "engine/core/Application.h"
 #include "engine/scene/World.h"
 #include "engine/render/Shader.h"
+#include "engine/render/Framebuffer.h"
+#include "engine/render/PostProcess.h"
+#include "engine/render/IblEnvironment.h"
 #include "JoltPhysics/JoltPhysicsPlugin.h"
 
 class DemoScene : public Scene
@@ -38,6 +41,15 @@ private:
 	GLuint ironManProgramShader = 0;
 	GLuint cubeProgramShader = 0;
 	GLuint primitiveProgramShader = 0;
+
+	// The scene renders linear HDR into this target; PostProcess tonemaps it into
+	// whatever was bound on entry (editor panel FBO or the game backbuffer).
+	Framebuffer hdrFramebuffer;
+	PostProcess postProcess;
+
+	// Image-based lighting (procedural sky). Ambient diffuse + specular for the
+	// PBR shader; falls back to flat ambient if the build fails.
+	IblEnvironment ibl;
 
 	// Raw handles into the world for the demo animations. Nulled through
 	// World::onDestroyed if the editor deletes the objects.

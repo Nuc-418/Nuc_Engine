@@ -15,4 +15,10 @@ namespace AssetPaths
 	// discovered under assets/models.
 	constexpr const char* ModelVertexShader       = "assets/shaders/ironMan/ironMan.vert";
 	constexpr const char* ModelFragmentShader     = "assets/shaders/ironMan/ironMan.frag";
+
+	// PBR (metallic/roughness). One shared fragment shader; the primitive and
+	// model vertex stages differ only in their vertex attributes.
+	constexpr const char* PbrFragmentShader        = "assets/shaders/pbr/pbr.frag";
+	constexpr const char* PbrPrimitiveVertexShader = "assets/shaders/pbr/pbr_primitive.vert";
+	constexpr const char* PbrModelVertexShader     = "assets/shaders/pbr/pbr_model.vert";
 }

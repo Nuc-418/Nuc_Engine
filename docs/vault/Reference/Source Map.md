@@ -16,9 +16,10 @@ src/engine/
              Controller (movement)                    → [[Input]]
   scene/     GameObject, Transform, Component, ComponentRegistry, World,
              FieldStore, RotatorComponent, Serialization interfaces
-  render/    Camera, Mesh, MeshRenderer, MeshComponent, Material, Texture,
-             Lights, LightComponent, CameraComponent, Shader, Primitives,
-             Framebuffer                              → [[Rendering]]
+  render/    Camera, Mesh, MeshRenderer, MeshComponent, Material,
+             MaterialComponent (PBR params), Texture, Lights, LightComponent,
+             CameraComponent, Shader, Primitives, Framebuffer (RGBA8/HDR),
+             PostProcess (tonemap), IblEnvironment (IBL) → [[Rendering]]
   asset/     AssetManager                             → [[Asset System]]
   io/        ObjLoader, ModelDiscovery, SceneSerializer, PrefabLibrary,
              JsonSerialization (shared adapters)

@@ -779,7 +779,8 @@ namespace IMGUIZMO_NAMESPACE
       "Y : %5.3f Z : %5.3f", "X : %5.3f Z : %5.3f", "X : %5.3f Y : %5.3f",
       "X : %5.3f Y : %5.3f Z : %5.3f" };
    static const char* scaleInfoMask[] = { "X : %5.2f", "Y : %5.2f", "Z : %5.2f", "XYZ : %5.2f" };
-   static const char* rotationInfoMask[] = { "X : %5.2f deg %5.2f rad", "Y : %5.2f deg %5.2f rad", "Z : %5.2f deg %5.2f rad", "Screen : %5.2f deg %5.2f rad" };
+   // Nuc: rotate-about-X = pitch, about-Y = yaw, about-Z = roll (engine convention).
+   static const char* rotationInfoMask[] = { "Pitch : %5.2f deg %5.2f rad", "Yaw : %5.2f deg %5.2f rad", "Roll : %5.2f deg %5.2f rad", "Screen : %5.2f deg %5.2f rad" };
    static const int translationInfoIndex[] = { 0,0,0, 1,0,0, 2,0,0, 1,2,0, 0,2,0, 0,1,0, 0,1,2 };
    static const float quadMin = 0.5f;
    static const float quadMax = 0.8f;
@@ -1337,6 +1338,10 @@ namespace IMGUIZMO_NAMESPACE
          }
          const bool usingAxis = (gContext.mbUsing && type == MT_ROTATE_Z - axis);
          const int circleMul = (hasRSC && !usingAxis) ? 1 : 2;
+         // Nuc: while actively rotating, draw the ring in its axis colour
+         // (red/green/blue) instead of the orange selection highlight, so the
+         // rotate gizmo stays colour-coherent with translate/scale.
+         const ImU32 ringColor = usingAxis ? GetColorU32(DIRECTION_X + (2 - axis)) : colors[3 - axis];
 
          ImVec2* circlePos = (ImVec2*)alloca(sizeof(ImVec2) * (circleMul * halfCircleSegmentCount + 1));
          const bool rightHanded = gContext.mProjectionMat.m[2][3] < 0.f;
@@ -1352,9 +1357,9 @@ namespace IMGUIZMO_NAMESPACE
          if (!gContext.mbUsing || usingAxis)
          {
 #if IMGUI_VERSION_NUM < 19276
-            drawList->AddPolyline(circlePos, circleMul* halfCircleSegmentCount + 1, colors[3 - axis], 0, gContext.mStyle.RotationLineThickness );
+            drawList->AddPolyline(circlePos, circleMul* halfCircleSegmentCount + 1, ringColor, 0, gContext.mStyle.RotationLineThickness );
 #else
-            drawList->AddPolyline(circlePos, circleMul* halfCircleSegmentCount + 1, colors[3 - axis], gContext.mStyle.RotationLineThickness, 0 );
+            drawList->AddPolyline(circlePos, circleMul* halfCircleSegmentCount + 1, ringColor, gContext.mStyle.RotationLineThickness, 0 );
 #endif
          }
 
@@ -1384,11 +1389,18 @@ namespace IMGUIZMO_NAMESPACE
             pos *= gContext.mScreenFactor * rotationDisplayFactor;
             circlePos[i] = worldToPos(pos + gContext.mModel.v.position, gContext.mViewProjection);
          }
-         drawList->AddConvexPolyFilled(circlePos, halfCircleSegmentCount + 1, GetColorU32(ROTATION_USING_FILL));
+         // Nuc: tint the swept arc + border with the active axis colour (screen
+         // rotation keeps the default highlight), matching the axis-coloured ring.
+         const int rotAxisIdx = type - MT_ROTATE_X;
+         const ImU32 rotBorder = (rotAxisIdx >= 0 && rotAxisIdx < 3)
+            ? GetColorU32(DIRECTION_X + rotAxisIdx) : GetColorU32(ROTATION_USING_BORDER);
+         const ImU32 rotFill = (rotAxisIdx >= 0 && rotAxisIdx < 3)
+            ? ((rotBorder & 0x00FFFFFFu) | 0x80000000u) : GetColorU32(ROTATION_USING_FILL);
+         drawList->AddConvexPolyFilled(circlePos, halfCircleSegmentCount + 1, rotFill);
 #if IMGUI_VERSION_NUM < 19276
-         drawList->AddPolyline(circlePos, halfCircleSegmentCount + 1, GetColorU32(ROTATION_USING_BORDER), ImDrawFlags_Closed, gContext.mStyle.RotationLineThickness );
+         drawList->AddPolyline(circlePos, halfCircleSegmentCount + 1, rotBorder, ImDrawFlags_Closed, gContext.mStyle.RotationLineThickness );
 #else
-         drawList->AddPolyline(circlePos, halfCircleSegmentCount + 1, GetColorU32(ROTATION_USING_BORDER), gContext.mStyle.RotationLineThickness, ImDrawFlags_Closed );
+         drawList->AddPolyline(circlePos, halfCircleSegmentCount + 1, rotBorder, gContext.mStyle.RotationLineThickness, ImDrawFlags_Closed );
 #endif
 
          ImVec2 destinationPosOnScreen = circlePos[1];

@@ -21,6 +21,10 @@ public:
 	MeshRenderer renderer;
 	Material material;
 
+	// True once an albedo texture is bound (LoadObj); the PBR shader samples it
+	// instead of using the vertex colour (uHasAlbedoTex).
+	bool hasAlbedoTexture = false;
+
 	static const char* StaticTypeId() { return "Mesh"; } // GetComponent<T> matches on this
 	const char* TypeId() const override { return StaticTypeId(); }
 	const char* DisplayName() const override { return "Mesh"; }

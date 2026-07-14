@@ -30,7 +30,6 @@ namespace MeshPreview
 
 		const glm::vec3 lightDir = glm::normalize(glm::vec3(-0.4f, -1.0f, -0.35f));
 		const glm::vec3 white(1.0f);
-		const glm::vec3 ambient(0.32f);
 
 		for (const std::string& type : typeIds) {
 			std::unique_ptr<GameObject> object = world.Create(type);
@@ -66,19 +65,37 @@ namespace MeshPreview
 			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(modelView));
 
 			// Uniforms not present in a given program resolve to -1 and are
-			// silently ignored, so this covers both the primitive shader and the
-			// textured model shader (which uses View/ModelView/NormalMatrix and
-			// keeps its lights/texture from scene load).
+			// silently ignored, so this covers both the PBR programs and the
+			// unlit cube shader. Set the PBR uniforms explicitly (a single
+			// key light + white dielectric material) so a thumbnail does not
+			// depend on whatever the scene last uploaded to the shared program.
 			glProgramUniformMatrix4fv(program, glGetUniformLocation(program, "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 			glProgramUniformMatrix4fv(program, glGetUniformLocation(program, "Model"), 1, GL_FALSE, glm::value_ptr(model));
 			glProgramUniformMatrix4fv(program, glGetUniformLocation(program, "View"), 1, GL_FALSE, glm::value_ptr(view));
 			glProgramUniformMatrix4fv(program, glGetUniformLocation(program, "ModelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 			glProgramUniformMatrix3fv(program, glGetUniformLocation(program, "NormalMatrix"), 1, GL_FALSE, glm::value_ptr(normalMatrix));
-			glProgramUniform1i(program, glGetUniformLocation(program, "offsetToggle"), 0);
-			glProgramUniform3fv(program, glGetUniformLocation(program, "uLightDir"), 1, glm::value_ptr(lightDir));
-			glProgramUniform3fv(program, glGetUniformLocation(program, "uLightColor"), 1, glm::value_ptr(white));
-			glProgramUniform3fv(program, glGetUniformLocation(program, "uAmbient"), 1, glm::value_ptr(ambient));
-			glProgramUniform1i(program, glGetUniformLocation(program, "uLightOn"), 1);
+			glProgramUniform3fv(program, glGetUniformLocation(program, "CamPos"), 1, glm::value_ptr(camPos));
+
+			// PBR material: white, matte dielectric.
+			glProgramUniform3f(program, glGetUniformLocation(program, "pbrMaterial.baseColor"), 1.0f, 1.0f, 1.0f);
+			glProgramUniform1f(program, glGetUniformLocation(program, "pbrMaterial.metallic"), 0.0f);
+			glProgramUniform1f(program, glGetUniformLocation(program, "pbrMaterial.roughness"), 0.5f);
+			glProgramUniform3f(program, glGetUniformLocation(program, "pbrMaterial.emissive"), 0.0f, 0.0f, 0.0f);
+			glProgramUniform1f(program, glGetUniformLocation(program, "pbrMaterial.ao"), 1.0f);
+			glProgramUniform1i(program, glGetUniformLocation(program, "uHasAlbedoTex"), 0);
+			glProgramUniform1i(program, glGetUniformLocation(program, "uHasIBL"), 0);
+
+			// One key directional light (boosted a little to compensate for the
+			// diffuse 1/PI so the tonemapped thumbnail reads well) + soft ambient.
+			glProgramUniform1i(program, glGetUniformLocation(program, "nDirectionalLights"), 1);
+			glProgramUniform1i(program, glGetUniformLocation(program, "nPointLights"), 0);
+			glProgramUniform1i(program, glGetUniformLocation(program, "nSpotLights"), 0);
+			glProgramUniform1i(program, glGetUniformLocation(program, "directionalLight.switchL"), 1);
+			glProgramUniform3fv(program, glGetUniformLocation(program, "directionalLight.direction"), 1, glm::value_ptr(lightDir));
+			glProgramUniform3f(program, glGetUniformLocation(program, "directionalLight.diffuse"), 3.0f, 3.0f, 3.0f);
+			glProgramUniform3fv(program, glGetUniformLocation(program, "directionalLight.specular"), 1, glm::value_ptr(white));
+			glProgramUniform1i(program, glGetUniformLocation(program, "ambientLight.switchL"), 1);
+			glProgramUniform3f(program, glGetUniformLocation(program, "ambientLight.ambient"), 0.12f, 0.12f, 0.14f);
 
 			glUseProgram(program);
 			glBindVertexArray(mesh.VAO);

@@ -44,6 +44,7 @@ private:
 		GLint modelView;
 		GLint normalMatrix;
 		GLint mvp;
+		GLint camPos; // camera world position (PBR view vector / IBL)
 	};
 	std::unordered_map<GLuint, UniformLocations> locationCache;
 	unsigned cacheGeneration = 0; // Shader::GlobalGeneration() the cache was filled at

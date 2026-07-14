@@ -1,11 +1,37 @@
 // MeshComponent: attach/render/unload + registration with the ComponentRegistry.
 
 #include "engine/render/MeshComponent.h"
+#include "engine/render/MaterialComponent.h"
 #include "engine/scene/GameObject.h"
 #include "engine/scene/ComponentRegistry.h"
 #include "engine/io/ObjLoader.h"
 
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+
+namespace {
+// Uploads the object's PBR material (a sibling MaterialComponent, or dielectric
+// defaults) plus the albedo-texture flag to `program`. Locations are queried
+// each call; the set is tiny and only lit objects reach here.
+void UploadMaterial(GLuint program, GameObject* owner, bool hasAlbedoTexture)
+{
+	glm::vec3 baseColor(1.0f), emissive(0.0f);
+	float metallic = 0.0f, roughness = 0.6f, ao = 1.0f;
+	if (MaterialComponent* m = owner->GetComponent<MaterialComponent>()) {
+		baseColor = m->baseColor;
+		metallic = m->metallic;
+		roughness = m->roughness;
+		emissive = m->emissive;
+		ao = m->ao;
+	}
+	glProgramUniform3fv(program, glGetProgramResourceLocation(program, GL_UNIFORM, "pbrMaterial.baseColor"), 1, glm::value_ptr(baseColor));
+	glProgramUniform1f(program, glGetProgramResourceLocation(program, GL_UNIFORM, "pbrMaterial.metallic"), metallic);
+	glProgramUniform1f(program, glGetProgramResourceLocation(program, GL_UNIFORM, "pbrMaterial.roughness"), roughness);
+	glProgramUniform3fv(program, glGetProgramResourceLocation(program, GL_UNIFORM, "pbrMaterial.emissive"), 1, glm::value_ptr(emissive));
+	glProgramUniform1f(program, glGetProgramResourceLocation(program, GL_UNIFORM, "pbrMaterial.ao"), ao);
+	glProgramUniform1i(program, glGetProgramResourceLocation(program, GL_UNIFORM, "uHasAlbedoTex"), hasAlbedoTexture ? 1 : 0);
+}
+} // namespace
 
 void MeshComponent::OnAttach()
 {
@@ -16,8 +42,10 @@ void MeshComponent::OnRender(GLenum mode, Camera* camera)
 {
 	// A component created without geometry (e.g. via the registry) has no
 	// program bound; skip it rather than issuing an empty draw.
-	if (renderer.program != 0)
-		renderer.Draw(mode, camera, owner->WorldMatrix());
+	if (renderer.program == 0)
+		return;
+	UploadMaterial(renderer.program, owner, hasAlbedoTexture);
+	renderer.Draw(mode, camera, owner->WorldMatrix());
 }
 
 void MeshComponent::OnUnload()
@@ -41,6 +69,7 @@ bool MeshComponent::LoadObj(GLuint programShader, const std::string& folderPath,
 		if (material.loaded)
 		{
 			material.materialStorage(renderer.program);
+			hasAlbedoTexture = true; // model albedo comes from its bound texture
 			std::cout << "Loaded : " << mtlPath << std::endl;
 			return true;
 		}

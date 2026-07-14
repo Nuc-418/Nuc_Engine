@@ -53,5 +53,5 @@ reconstruction. Engine components register via static initializers in their
 
 ## Built-in component types
 
-[[MeshComponent]] · [[LightComponent]] · [[CameraComponent]] ·
-[[RotatorComponent]] · [[PhysicsBodyComponent]] (plugin)
+[[MeshComponent]] · [[MaterialComponent]] · [[LightComponent]] ·
+[[CameraComponent]] · [[RotatorComponent]] · [[PhysicsBodyComponent]] (plugin)

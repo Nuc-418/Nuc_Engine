@@ -166,6 +166,18 @@ bool DemoScene::Load(Application& app)
 	if (!LoadProgramShaders(app))
 		return false;
 
+	/* HDR scene target + tonemap pass (PBR renders linear HDR). */
+	hdrFramebuffer.hdr = true;
+	postProcess.Init();
+
+	/* Image-based lighting from a procedural sky: ambient diffuse + specular for
+	   the PBR shader. On failure the shader falls back to flat ambient. Units
+	   1/2/3 = irradiance/prefilter/BRDF (unit 0 stays the model albedo). */
+	if (ibl.Build()) {
+		ibl.ConfigureProgram(ironManProgramShader, 1, 2, 3);
+		ibl.ConfigureProgram(primitiveProgramShader, 1, 2, 3);
+	}
+
 	/* Demo bindings: light toggles, deformation, render-mode keys. */
 	app.actions.BindToggle("ToggleAmbientLight", GLFW_KEY_1);
 	app.actions.BindToggle("ToggleDirectionalLight", GLFW_KEY_2);
@@ -195,9 +207,12 @@ bool DemoScene::Load(Application& app)
 
 bool DemoScene::LoadProgramShaders(Application& app)
 {
+	// Primitives and models are lit by the shared PBR shader (metallic/roughness,
+	// Cook-Torrance). The two programs differ only in their vertex stage. The
+	// cube/grid shader stays unlit (legacy debug geometry).
 	cubeShader = app.assets.LoadShader(AssetPaths::CubeVertexShader, AssetPaths::CubeFragmentShader);
-	ironManShader = app.assets.LoadShader(AssetPaths::ModelVertexShader, AssetPaths::ModelFragmentShader);
-	primitiveShader = app.assets.LoadShader(AssetPaths::PrimitiveVertexShader, AssetPaths::PrimitiveFragmentShader);
+	ironManShader = app.assets.LoadShader(AssetPaths::PbrModelVertexShader, AssetPaths::PbrFragmentShader);
+	primitiveShader = app.assets.LoadShader(AssetPaths::PbrPrimitiveVertexShader, AssetPaths::PbrFragmentShader);
 	if (!cubeShader || !ironManShader || !primitiveShader)
 		return false;
 
@@ -457,11 +472,26 @@ void DemoScene::Update(Application& app)
 
 void DemoScene::Draw(Application& app)
 {
-	//Clear the buffers before drawing. Set the colour every frame so the
-	//pitch-black void is not affected by other passes (e.g. thumbnail rendering)
-	//that may have changed the global clear colour.
+	// The scene renders linear HDR into hdrFramebuffer, then tonemaps into the
+	// target that was bound on entry (the editor's LDR panel FBO, or the game's
+	// backbuffer) at the same size — so this works for both without either caller
+	// knowing about HDR.
+	GLint prevFbo = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prevFbo);
+	GLint viewport[4] = { 0, 0, 1, 1 };
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	int w = viewport[2] > 0 ? viewport[2] : 1;
+	int h = viewport[3] > 0 ? viewport[3] : 1;
+
+	hdrFramebuffer.Resize(w, h);
+	hdrFramebuffer.Bind();
+	glViewport(0, 0, w, h);
+
+	// Pitch-black void behind the scene. Opaque alpha (the editor composites the
+	// tonemapped result with alpha blending).
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
 	/* Push the time values to the shader programs */
 	Time::TimeToProgram(ironManProgramShader);
@@ -472,6 +502,14 @@ void DemoScene::Draw(Application& app)
 	   primitives alike. */
 	world.SyncComponentLights();
 
+	/* Bind IBL for this frame and re-assert uHasIBL on the PBR programs (the
+	   thumbnail pass disables IBL on the shared program). */
+	if (ibl.Ready()) {
+		ibl.ConfigureProgram(ironManProgramShader, 1, 2, 3);
+		ibl.ConfigureProgram(primitiveProgramShader, 1, 2, 3);
+		ibl.BindForFrame(1, 2, 3);
+	}
+
 	/* While simulating (Play / game build) render through the scene's active
 	   CameraComponent if one is set; otherwise — and always in Edit mode —
 	   use the world camera, as before. */
@@ -480,11 +518,20 @@ void DemoScene::Draw(Application& app)
 	/* Render every world object (dispatches to each object's components) */
 	for (WorldEntry& entry : world.entries)
 		entry.object->Draw(world.renderMode, renderCamera);
+
+	/* Tonemap the HDR scene back into the original target. */
+	glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prevFbo);
+	glViewport(0, 0, w, h);
+	postProcess.Tonemap(hdrFramebuffer.colorTexture, 1.0f);
 }
 
 void DemoScene::Unload(Application& app)
 {
 	world.Clear();
+
+	hdrFramebuffer.Unload();
+	postProcess.Unload();
+	ibl.Unload();
 
 	// Shaders and textures are owned by app.assets, which Application::Run
 	// frees after this unload returns.

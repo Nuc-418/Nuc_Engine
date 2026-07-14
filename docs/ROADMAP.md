@@ -297,3 +297,54 @@ P0 ──> P1 ──> P2 ──> P3 ──> (P5, P6 in parallel)
 - Biggest payoff-to-effort: Phase 0's gate repair (protects everything),
   Phase 2 (unlocks 3, 6, and 7's packaging), and Phase 6's reflection
   (deletes editor code instead of adding it).
+
+## Backlog / future exploration
+
+Ideas parked outside the phased plan — not scheduled, recorded so they are
+not lost.
+
+### 3D Gaussian Splatting (3DGS)
+
+A radiance-field scene representation (Kerbl et al., SIGGRAPH 2023): the scene
+is millions of oriented, translucent 3D Gaussians (position + scale + rotation
+quaternion + opacity + spherical-harmonic, view-dependent color) rather than
+triangles. It renders by projecting each Gaussian to a 2D "splat", depth-sorting
+them, and alpha-compositing — so it is *a rasterizer*, not ray tracing, and runs
+in real time. Data is reconstructed from photos (SfM init + gradient-descent
+optimization against posed images), not modeled by hand.
+
+Possible fit here: a self-contained `GaussianSplatComponent` that loads a `.ply`
+of trained splats and renders on its **own** path (instanced quads/point sprites,
+a fragment shader that evaluates the 2D Gaussian falloff + SH color, depth-read /
+no-write, blending on, a per-frame GPU depth sort). It would bypass the lighting
+system entirely — splats carry baked radiance. Depends on nothing in the phased
+plan, but a real renderer seam (Phase 1/3) makes adding a second primitive path
+much cleaner.
+
+**Recent variants (each targets one weakness):**
+
+- **2D Gaussian Splatting** and **SuGaR** — surface-aligned Gaussians that allow
+  extracting a real **mesh** (recovers collision/physics geometry).
+- **Mip-Splatting** — anti-aliasing across scales.
+- **Compression** methods — cut the (hundreds-of-MB) storage/memory cost.
+- **4D / dynamic Gaussian Splatting** — animated scenes / video.
+- **Relightable Gaussians** — early work to make splats respond to lights.
+- **Engine/web integrations** — Unreal/Unity plugins and three.js / WebGPU viewers.
+
+**Strengths:**
+
+- Photorealistic novel-view synthesis; real-time (100+ FPS) rasterization.
+- Fast to train (minutes) vs NeRF (hours); explicit primitives you can inspect
+  and move (unlike NeRF's implicit MLP).
+- GPU-friendly; the compositing is the same *over* operator as ordinary alpha
+  blending.
+
+**Weaknesses (engine-relevant):**
+
+- **No geometry** — no surface/normals/UVs/connectivity, so no collision or
+  physics without a mesh-extraction step (2DGS/SuGaR).
+- **Baked lighting** — color is a captured radiance field, so splats ignore the
+  scene lights; can't relight or drop into a dynamic lit scene naturally.
+- **Ordering/compositing** — must re-sort every frame; mixing splats with opaque
+  triangle geometry through one depth buffer is fiddly.
+- **Large storage/memory**, and aliasing artifacts up close.

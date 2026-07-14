@@ -136,6 +136,7 @@
     <ClCompile Include="src\engine\scene\RotatorComponent.cpp" />
     <ClCompile Include="src\engine\render\MeshComponent.cpp" />
     <ClCompile Include="src\engine\render\LightComponent.cpp" />
+    <ClCompile Include="src\engine\render\MaterialComponent.cpp" />
     <ClCompile Include="src\engine\render\CameraComponent.cpp" />
     <ClCompile Include="src\engine\render\Primitives.cpp" />
     <ClCompile Include="src\engine\render\Shader.cpp" />
@@ -152,6 +153,8 @@
     <ClCompile Include="third_party\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="third_party\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\engine\render\Framebuffer.cpp" />
+    <ClCompile Include="src\engine\render\PostProcess.cpp" />
+    <ClCompile Include="src\engine\render\IblEnvironment.cpp" />
     <ClCompile Include="src\engine\scene\World.cpp" />
     <ClCompile Include="third_party\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\engine\editor\Editor.cpp" />
@@ -211,6 +214,7 @@
     <ClInclude Include="src\engine\scene\RotatorComponent.h" />
     <ClInclude Include="src\engine\render\MeshComponent.h" />
     <ClInclude Include="src\engine\render\LightComponent.h" />
+    <ClInclude Include="src\engine\render\MaterialComponent.h" />
     <ClInclude Include="src\engine\render\CameraComponent.h" />
     <ClInclude Include="src\engine\render\Primitives.h" />
     <ClInclude Include="src\engine\render\Shader.h" />
@@ -232,6 +236,8 @@
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="third_party\imgui\backends\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="src\engine\render\Framebuffer.h" />
+    <ClInclude Include="src\engine\render\PostProcess.h" />
+    <ClInclude Include="src\engine\render\IblEnvironment.h" />
     <ClInclude Include="src\engine\scene\World.h" />
     <ClInclude Include="third_party\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="third_party\nlohmann\json.hpp" />

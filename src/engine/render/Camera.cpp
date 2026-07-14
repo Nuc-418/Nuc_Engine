@@ -64,6 +64,7 @@ void Camera::CamToProgram(GLuint program, glm::mat4 model)
 		locations.modelView = glGetProgramResourceLocation(program, GL_UNIFORM, "ModelView");
 		locations.normalMatrix = glGetProgramResourceLocation(program, GL_UNIFORM, "NormalMatrix");
 		locations.mvp = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
+		locations.camPos = glGetProgramResourceLocation(program, GL_UNIFORM, "CamPos");
 		cached = locationCache.emplace(program, locations).first;
 	}
 	const UniformLocations& loc = cached->second;
@@ -81,6 +82,10 @@ void Camera::CamToProgram(GLuint program, glm::mat4 model)
 	glProgramUniformMatrix3fv(program, loc.normalMatrix, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
 	glProgramUniformMatrix4fv(program, loc.mvp, 1, GL_FALSE, glm::value_ptr(GetMVP(model)));
+
+	// Camera world position for PBR shading (loc is -1 and ignored on programs
+	// that don't declare CamPos, e.g. the unlit cube/grid shader).
+	glProgramUniform3fv(program, loc.camPos, 1, glm::value_ptr(transform.position));
 
 }
 
