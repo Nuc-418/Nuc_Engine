@@ -278,6 +278,12 @@
     <ClInclude Include="src\engine\core\Application.h">
       <Filter>src\engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\core\PhysicsService.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\core\ServiceRegistry.h">
+      <Filter>src\engine\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\engine\core\Scene.h">
       <Filter>src\engine\core</Filter>
     </ClInclude>

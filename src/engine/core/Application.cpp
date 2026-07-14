@@ -33,6 +33,9 @@ bool Application::Init(const Config& appConfig)
 
 	glewInit();
 
+	// Publish the core engine services so plugins can fetch them by interface.
+	services.Provide<AssetManager>(&assets);
+
 	return true;
 }
 

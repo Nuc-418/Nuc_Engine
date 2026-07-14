@@ -193,7 +193,9 @@
   <ItemGroup>
     <ClInclude Include="src\engine\core\Application.h" />
     <ClInclude Include="src\engine\core\EngineMath.h" />
+    <ClInclude Include="src\engine\core\PhysicsService.h" />
     <ClInclude Include="src\engine\core\Scene.h" />
+    <ClInclude Include="src\engine\core\ServiceRegistry.h" />
     <ClInclude Include="src\engine\core\Time.h" />
     <ClInclude Include="src\engine\core\Window.h" />
     <ClInclude Include="src\engine\input\Controller.h" />

@@ -203,6 +203,12 @@ Goal: from "compiled-in modules" to a real module system.
 - **Engine services registry**: `Application` exposes named services
   (assets, renderer, physics query interface) so plugins talk to interfaces
   rather than `Get<ConcreteType>()`. Keep `GetOrAdd<T>` as typed sugar.
+  *(Done: `ServiceRegistry` — an interface-keyed, non-owning locator on
+  `Application::services`. Init publishes the `AssetManager`; the JoltPhysics
+  plugin implements the engine-owned `IPhysicsService` and Provides it in
+  OnLoad / Withdraws in OnUnload, so engine/editor code adjusts physics
+  through the interface without knowing Jolt. `GetOrAdd<T>` stays as typed
+  sugar for concrete-type access. Unit-tested, incl. polymorphic retrieval.)*
 - **`PhysicsBodyComponent`** in the JoltPhysics plugin (the docs already
   promise it): body kind + shape from the mesh AABB, `Serialize`d, editable
   in Details via the registry — replacing `DemoScene::SetupPhysicsDemo`'s

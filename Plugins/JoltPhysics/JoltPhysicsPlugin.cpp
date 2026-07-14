@@ -45,7 +45,16 @@ void JoltPhysicsPlugin::RegisterTypes()
 
 bool JoltPhysicsPlugin::OnLoad(Application& app)
 {
+	world.SetGravity(gravity);
+	// Publish the backend-agnostic physics interface for engine/editor code.
+	app.services.Provide<IPhysicsService>(this);
 	return world.IsInitialized();
+}
+
+void JoltPhysicsPlugin::SetGravity(const glm::vec3& g)
+{
+	gravity = g;
+	world.SetGravity(g);
 }
 
 void JoltPhysicsPlugin::OnUpdate(Application& app, float deltaTime)
@@ -131,6 +140,7 @@ void JoltPhysicsPlugin::SyncBodyComponents(bool simulating)
 
 void JoltPhysicsPlugin::OnUnload(Application& app)
 {
+	app.services.Withdraw<IPhysicsService>();
 	bindings.clear();
 	world.Shutdown();
 }

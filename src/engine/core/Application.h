@@ -10,6 +10,7 @@
 #include "engine/input/Controller.h"
 #include "engine/plugin/PluginManager.h"
 #include "engine/asset/AssetManager.h"
+#include "engine/core/ServiceRegistry.h"
 
 class Application
 {
@@ -43,6 +44,12 @@ public:
 
 	// Shared shader/texture assets, freed by Run() after the scene unloads.
 	AssetManager assets;
+
+	// Interface-keyed locator for engine services. Init publishes the core
+	// services (the AssetManager); plugins publish theirs (e.g. IPhysicsService)
+	// in OnLoad and withdraw them in OnUnload, so code fetches a service by
+	// interface without knowing the concrete provider.
+	ServiceRegistry services;
 
 	// Whether gameplay/simulation is advancing this frame. True in a standalone
 	// game; the editor sets it false in Edit mode so simulation plugins freeze.

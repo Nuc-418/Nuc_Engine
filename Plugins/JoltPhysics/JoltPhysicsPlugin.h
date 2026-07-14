@@ -14,20 +14,27 @@
 
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "engine/plugin/Plugin.h"
+#include "engine/core/PhysicsService.h"
 #include "JoltPhysics/PhysicsWorld.h"
 
 class Transform;
 
-class JoltPhysicsPlugin : public EnginePlugin
+// Implements IPhysicsService so engine/editor code can adjust physics through
+// the engine-owned interface (published into Application::services in OnLoad).
+class JoltPhysicsPlugin : public EnginePlugin, public IPhysicsService
 {
 public:
 	JoltPhysicsPlugin();
 	~JoltPhysicsPlugin() override;
 
 	// The registered plugin, or null before a scene registers one. Lets
-	// PhysicsBodyComponent manage its body without an Application in scope
-	// (a proper service registry is a later roadmap phase).
+	// PhysicsBodyComponent manage its body without an Application in scope.
+	// App-scoped code should instead fetch the interface from the service
+	// registry (app.services.Get<IPhysicsService>()); this static covers only
+	// the component path, which has no Application.
 	static JoltPhysicsPlugin* Instance();
 
 	const char* Name() const override { return "JoltPhysics"; }
@@ -41,6 +48,10 @@ public:
 	bool OnLoad(Application& app) override;
 	void OnUpdate(Application& app, float deltaTime) override;
 	void OnUnload(Application& app) override;
+
+	// IPhysicsService: engine-facing physics config, backend-agnostic.
+	void SetGravity(const glm::vec3& g) override;
+	glm::vec3 GetGravity() const override { return gravity; }
 
 	// The physics world, for creating and querying bodies directly.
 	PhysicsWorld& World() { return world; }
@@ -59,6 +70,7 @@ private:
 	void SyncBodyComponents(bool simulating);
 
 	PhysicsWorld world;
+	glm::vec3 gravity = glm::vec3(0.0f, -9.81f, 0.0f);  // cached IPhysicsService state
 
 	struct Binding { PhysicsWorld::BodyId id; Transform* transform; };
 	std::vector<Binding> bindings;
