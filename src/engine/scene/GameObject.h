@@ -84,7 +84,7 @@ public:
 
 	// --- Per-frame dispatch ------------------------------------------------
 	void Update(float deltaTime);
-	void Simulate(float deltaTime); // OnSimulate; only called while simulating
+	void Simulate(float deltaTime, const BehaviorContext& ctx); // OnSimulate; only while simulating
 	void PlayBegin();
 	void PlayEnd();
 	void Draw(GLenum mode, Camera* camera);

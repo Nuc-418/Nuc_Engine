@@ -419,7 +419,7 @@ void DemoScene::Update(Application& app)
 	/* Component dispatch: OnUpdate + behaviors (OnSimulate). Under the
 	   editor this Update only runs in Play mode; standalone it runs always
 	   with app.simulating true. */
-	world.Tick(deltaTime, app.simulating);
+	world.Tick(deltaTime, app.simulating, &app.actions);
 
 	/* Basic camera movement */
 	app.controller.BasicMovement(&world.camera.transform, 0.15f*deltaTime, 5 * deltaTime);

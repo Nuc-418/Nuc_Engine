@@ -72,10 +72,10 @@ void GameObject::Update(float deltaTime)
 		component->OnUpdate(deltaTime);
 }
 
-void GameObject::Simulate(float deltaTime)
+void GameObject::Simulate(float deltaTime, const BehaviorContext& ctx)
 {
 	for (const std::unique_ptr<Component>& component : components)
-		component->OnSimulate(deltaTime);
+		component->OnSimulate(deltaTime, ctx);
 }
 
 void GameObject::PlayBegin()

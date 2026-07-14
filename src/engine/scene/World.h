@@ -17,6 +17,8 @@
 #include "engine/render/Lights.h"
 #include "engine/render/Camera.h"
 
+class InputActions;
+
 struct WorldEntry
 {
 	// Stable key of the type this object was spawned from (serialized as-is and
@@ -104,8 +106,10 @@ public:
 
 	// Per-frame component dispatch: OnUpdate for every object, plus
 	// OnSimulate while `simulating`. Scenes call this once per frame (the
-	// editor ticks with simulating=false in Edit mode).
-	void Tick(float deltaTime, bool simulating);
+	// editor ticks with simulating=false in Edit mode). `input` (may be null)
+	// is handed to behaviors via the BehaviorContext so gameplay can read
+	// named input actions.
+	void Tick(float deltaTime, bool simulating, const InputActions* input = nullptr);
 
 	// Fired around simulation start/stop (editor Play/Stop; game boot);
 	// dispatches OnPlayBegin/OnPlayEnd to every component.

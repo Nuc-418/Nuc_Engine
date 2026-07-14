@@ -85,7 +85,7 @@ void EditorHost::Update(Application& app)
 	}
 
 	/* Edit mode still ticks component OnUpdate (no OnSimulate). */
-	world.Tick(Time::deltaTime, false);
+	world.Tick(Time::deltaTime, false, &app.actions);
 
 	/* UE5-style fly: only while RMB is held over the viewport. */
 	if (editor.viewportFlying) {

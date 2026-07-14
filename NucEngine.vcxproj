@@ -209,6 +209,7 @@
     <ClInclude Include="src\engine\render\MeshRenderer.h" />
     <ClInclude Include="src\engine\render\Texture.h" />
     <ClInclude Include="src\engine\scene\GameObject.h" />
+    <ClInclude Include="src\engine\scene\BehaviorContext.h" />
     <ClInclude Include="src\engine\scene\Component.h" />
     <ClInclude Include="src\engine\scene\ComponentRegistry.h" />
     <ClInclude Include="src\engine\scene\Serialization.h" />

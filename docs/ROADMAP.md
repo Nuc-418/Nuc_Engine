@@ -240,8 +240,10 @@ scene-code involvement.
   *(Done as base-Component hooks: OnPlayBegin/OnSimulate/OnPlayEnd
   dispatched by World::Tick and NotifyPlayBegin/End (editor Play/Stop and
   game boot). RotatorComponent is the first behavior — the Iron Man spins
-  are components now, serializable and editable. The wave animation stays
-  scene code for now: behaviors can't yet read input actions.)*
+  are components now, serializable and editable. Behaviors read input via a
+  `BehaviorContext` (input actions + world) threaded through
+  Tick -> Simulate -> OnSimulate; RotatorComponent's optional `activeWhile`
+  action gate is the first input-reading behavior, unit-tested.)*
 - **(Later, as a plugin)** a Lua scripting plugin exposing the component
   and input APIs — the real proof that Phase 4's seams are sufficient.
 

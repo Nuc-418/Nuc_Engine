@@ -13,6 +13,7 @@ class GameObject;
 class Camera;
 class ISerializer;
 class IDeserializer;
+struct BehaviorContext;
 
 class Component
 {
@@ -42,9 +43,10 @@ public:
 	// or a standalone game). OnPlayBegin/OnPlayEnd fire when the simulation
 	// starts/stops (World::NotifyPlayBegin/End); OnSimulate ticks each
 	// simulating frame (World::Tick). Gameplay lives here, so it never runs
-	// while editing.
+	// while editing. `ctx` carries named input actions and the world (pointers
+	// may be null — null-check before use).
 	virtual void OnPlayBegin() {}
-	virtual void OnSimulate(float deltaTime) {}
+	virtual void OnSimulate(float deltaTime, const BehaviorContext& ctx) {}
 	virtual void OnPlayEnd() {}
 
 	// Release GL / external resources while the context is still current

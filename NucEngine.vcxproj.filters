@@ -479,6 +479,9 @@
     <ClInclude Include="src\engine\scene\Component.h">
       <Filter>src\engine\scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\scene\BehaviorContext.h">
+      <Filter>src\engine\scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\engine\scene\ComponentRegistry.h">
       <Filter>src\engine\scene</Filter>
     </ClInclude>

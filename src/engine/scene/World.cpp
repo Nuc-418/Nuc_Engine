@@ -1,6 +1,7 @@
 // World: registry of scene objects plus lights, camera and render settings.
 
 #include "engine/scene/World.h"
+#include "engine/scene/BehaviorContext.h"
 #include "engine/core/EngineMath.h"
 #include "engine/render/CameraComponent.h"
 #include "engine/render/LightComponent.h"
@@ -290,12 +291,13 @@ void World::SyncComponentLights()
 	UploadLights();
 }
 
-void World::Tick(float deltaTime, bool simulating)
+void World::Tick(float deltaTime, bool simulating, const InputActions* input)
 {
+	BehaviorContext ctx{ input, this };
 	for (WorldEntry& entry : entries) {
 		entry.object->Update(deltaTime);
 		if (simulating)
-			entry.object->Simulate(deltaTime);
+			entry.object->Simulate(deltaTime, ctx);
 	}
 }
 
