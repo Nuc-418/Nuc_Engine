@@ -234,6 +234,15 @@
     <ClCompile Include="src\engine\render\Shader.cpp">
       <Filter>src\engine\render</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\render\MaterialComponent.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\IblEnvironment.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\render\PostProcess.cpp">
+      <Filter>src\engine\render</Filter>
+    </ClCompile>
     <ClCompile Include="src\engine\io\ModelDiscovery.cpp">
       <Filter>src\engine\io</Filter>
     </ClCompile>
@@ -435,6 +444,15 @@
       <Filter>src\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\render\Shader.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\MaterialComponent.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\IblEnvironment.h">
+      <Filter>src\engine\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\render\PostProcess.h">
       <Filter>src\engine\render</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\asset\AssetManager.h">
