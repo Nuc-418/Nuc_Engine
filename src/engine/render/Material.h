@@ -25,7 +25,9 @@ public:
 
 	void materialStorage(GLuint program);
 
-	void loadMaterial(char* path);
+	// Parses a Wavefront .mtl file into materialInfo. Path is by const string —
+	// callers no longer cast away constness to hand over a char*.
+	void loadMaterial(const std::string& path);
 
 	bool loaded = false;
 };

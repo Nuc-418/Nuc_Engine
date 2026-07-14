@@ -3,12 +3,12 @@
 #include <GL/glew.h>
 
 
-void Material::loadMaterial(char* path)
+void Material::loadMaterial(const std::string& path)
 {
 	FILE *file;
 
 
-	file = fopen(path, "r");
+	file = fopen(path.c_str(), "r");
 	if (file == NULL) {
 		printf("Impossible to open the file !\n");
 	}

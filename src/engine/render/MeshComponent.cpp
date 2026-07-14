@@ -65,7 +65,7 @@ bool MeshComponent::LoadObj(GLuint programShader, const std::string& folderPath,
 		std::cout << "Loaded : " << objPath << std::endl;
 
 		std::string mtlPath = folderPath + objLoader.mtlFile.data();
-		material.loadMaterial((char*)mtlPath.data());
+		material.loadMaterial(mtlPath);
 		if (material.loaded)
 		{
 			material.materialStorage(renderer.program);
