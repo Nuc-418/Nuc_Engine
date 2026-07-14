@@ -150,7 +150,10 @@ boundaries.
   are engine modules; discovery runs on std::filesystem.)*
 - **`Mesh` API rework**: `Assign*(vector<...>*)` becomes value/`span`-style
   upload with clear CPU-side ownership; `MaterialInfo materialInfo = {NULL}`
-  and `loadMaterial(char*)` get typed, path-based replacements.
+  and `loadMaterial(char*)` get typed, path-based replacements. *(Partial:
+  `loadMaterial` is now `const std::string&`. The `Assign*(vector*)`
+  ownership rework and mesh handles are deferred to the Phase 3 render-queue
+  work, which rewrites this raw-GL upload path anyway.)*
 - **`GameObject` sheds mesh authoring**: `LoadObjFile`/`CreateObj*` move to
   a `MeshComponent` builder or free functions in the asset layer; the actor
   stops knowing how meshes are made (`GetMesh` convenience stays). *(Done:
