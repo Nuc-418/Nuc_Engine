@@ -14,7 +14,7 @@ void DrawMapsPanel(Editor& editor)
 	ImGui::Begin("Maps");
 
 	if (ImGui::Button("+ New Map"))
-		editor.openNewMap = true;
+		editor.OpenNewMapDialog();
 	ImGui::SameLine();
 	ImGui::TextDisabled("double-click to switch");
 	ImGui::Separator();
@@ -32,13 +32,13 @@ void DrawMapsPanel(Editor& editor)
 		ImGui::PushID(path.c_str());
 		ImGui::Selectable(label.c_str(), isCurrent, ImGuiSelectableFlags_AllowDoubleClick);
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && !isCurrent)
-			editor.pendingSceneLoad = path; // unsaved changes are discarded (Ctrl+S first)
+			editor.commands.Push(EditorCommandType::LoadScene, path); // unsaved changes discarded (Ctrl+S first)
 
 		if (ImGui::BeginPopupContextItem("map_context")) {
 			if (ImGui::MenuItem("Load", NULL, false, !isCurrent))
-				editor.pendingSceneLoad = path;
+				editor.commands.Push(EditorCommandType::LoadScene, path);
 			if (ImGui::MenuItem("Delete..."))
-				editor.mapDeleteRequest = path;
+				editor.RequestDeleteMap(path);
 			ImGui::EndPopup();
 		}
 		ImGui::PopID();

@@ -14,5 +14,5 @@ The full plan lives in `docs/ROADMAP.md` (repo). Summary as of 2026-07:
 | **3 — Renderer rework** | ⏸ Not started — retained render queue, UBOs, GL choke point. **Needs on-hardware pixel comparison**; the plan keeps the old uniform path compiled until verified |
 | **4 — Plugin system v2** | ✅ Core: explicit `RegisterTypes`, Version/Dependencies, dependency-sorted lifecycle, [[PhysicsBodyComponent]]. *Stretch: service registry, DLL loading* |
 | **5 — Gameplay & input** | ✅ [[Input|Named input actions]], behavior hooks + [[RotatorComponent]]. *Stretch: gamepad, scripting plugin, action access from behaviors* |
-| **6 — Editor workflow** | ✅ [[Serialization & Reflection|Property reflection]] UI, generic component [[Undo System|undo]], [[Prefabs]]. *Remaining: editor flag-soup → command queue* |
+| **6 — Editor workflow** | ✅ Done: [[Serialization & Reflection|Property reflection]] UI, generic component [[Undo System|undo]], [[Prefabs]], editor flag-soup → `EditorCommandQueue` (menus/panels enqueue intents, `EditorHost` drains them) |
 | **7 — Platform/build** | ⏸ Not started — CMake as source of truth, platform seams for a Linux build. Needs a direction decision (the gate currently parses the vcxproj) |

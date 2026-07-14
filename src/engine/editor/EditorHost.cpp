@@ -40,39 +40,48 @@ void EditorHost::Update(Application& app)
 		return;
 	}
 
-	/* Edit mode: consume the UI actions recorded during last frame's Draw. */
-	if (editor.playClicked) {
-		editor.playClicked = false;
-		EnterPlay(app);
-		return;
-	}
-	if (editor.exitClicked) {
-		editor.exitClicked = false;
-		glfwSetWindowShouldClose(app.window.windowPtr, GLFW_TRUE);
-	}
-	if (editor.saveClicked) {
-		editor.saveClicked = false;
-		EnsureDirectory("assets/scenes");
-		SceneSerializer::Save(world, editor.savePath);
-	}
-	if (!editor.pendingNewMap.empty()) {
-		std::string path = editor.pendingNewMap;
-		editor.pendingNewMap.clear();
-		editor.selected = nullptr;
-		editor.undoStack.Clear();
-		world.ResetToDefaultMap();
-		EnsureDirectory("assets");
-		EnsureDirectory("assets/scenes");
-		if (SceneSerializer::Save(world, path))
-			editor.savePath = path;
-	}
-	if (!editor.pendingSceneLoad.empty()) {
-		std::string path = editor.pendingSceneLoad;
-		editor.pendingSceneLoad.clear();
-		editor.selected = nullptr; // objects are about to be destroyed
-		editor.undoStack.Clear();  // history ids die with the old world
-		if (SceneSerializer::Load(world, path))
-			editor.savePath = path;
+	/* Edit mode: execute the commands enqueued during last frame's Draw. */
+	for (const EditorCommand& command : editor.commands.Drain()) {
+		switch (command.type) {
+		case EditorCommandType::Play:
+			EnterPlay(app);
+			return;  // remaining edit-mode commands are stale once playing
+
+		case EditorCommandType::Exit:
+			glfwSetWindowShouldClose(app.window.windowPtr, GLFW_TRUE);
+			break;
+
+		case EditorCommandType::SaveScene: {
+			// An explicit path (Save As) also becomes the current document.
+			if (!command.path.empty())
+				editor.savePath = command.path;
+			EnsureDirectory("assets/scenes");
+			SceneSerializer::Save(world, editor.savePath);
+			break;
+		}
+
+		case EditorCommandType::NewMap: {
+			editor.selected = nullptr;
+			editor.undoStack.Clear();
+			world.ResetToDefaultMap();
+			EnsureDirectory("assets");
+			EnsureDirectory("assets/scenes");
+			if (SceneSerializer::Save(world, command.path))
+				editor.savePath = command.path;
+			break;
+		}
+
+		case EditorCommandType::LoadScene:
+			editor.selected = nullptr; // objects are about to be destroyed
+			editor.undoStack.Clear();  // history ids die with the old world
+			if (SceneSerializer::Load(world, command.path))
+				editor.savePath = command.path;
+			break;
+
+		case EditorCommandType::DeleteMap:
+			RemoveFile(command.path);
+			break;
+		}
 	}
 
 	/* Edit mode still ticks component OnUpdate (no OnSimulate). */

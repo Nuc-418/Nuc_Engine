@@ -377,6 +377,9 @@
     <ClInclude Include="src\engine\editor\Editor.h">
       <Filter>src\engine\editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\editor\EditorCommand.h">
+      <Filter>src\engine\editor</Filter>
+    </ClInclude>
     <ClInclude Include="src\engine\editor\EditorHost.h">
       <Filter>src\engine\editor</Filter>
     </ClInclude>

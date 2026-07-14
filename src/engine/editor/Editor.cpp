@@ -105,9 +105,6 @@ void Editor::DrawFrame(Application& app)
 	}
 
 	DrawMenuBar();
-	DrawSaveAsModal();
-	DrawPackageModal();
-	DrawMapModals();
 
 	DrawViewportPanel(*this, app);
 	DrawMapsPanel(*this);
@@ -117,9 +114,22 @@ void Editor::DrawFrame(Application& app)
 	DrawStatsPanel(*this);
 	DrawContentBrowserPanel(*this);
 
+	// Modals draw after the menu and panels so a popup requested by either this
+	// frame takes effect immediately. OpenPopup must run at the same ID-stack
+	// scope as the matching BeginPopupModal, so requests from menus/panels are
+	// deferred here (a menu/window pushes its own ID scope) rather than opened
+	// in place.
+	if (!pendingPopup.empty()) {
+		ImGui::OpenPopup(pendingPopup.c_str());
+		pendingPopup.clear();
+	}
+	DrawSaveAsModal();
+	DrawPackageModal();
+	DrawMapModals();
+
 	if (!playing) {
 		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S))
-			saveClicked = true;
+			commands.Push(EditorCommandType::SaveScene);
 		if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Z)) {
 			unsigned long long affected = undoStack.Undo(*world);
 			if (affected) selected = world->FindById(affected);
@@ -148,11 +158,11 @@ void Editor::DrawMenuBar()
 
 	if (ImGui::BeginMenu("File")) {
 		if (ImGui::MenuItem("New Map..."))
-			openNewMap = true;
+			OpenNewMapDialog();
 		if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-			saveClicked = true;
+			commands.Push(EditorCommandType::SaveScene);
 		if (ImGui::MenuItem("Save Scene As..."))
-			openSaveAs = true;
+			pendingPopup = "Save Scene As";
 		if (ImGui::BeginMenu("Open Scene")) {
 			bool any = false;
 			for (const DirectoryEntry& entry : ListDirectory("assets/scenes")) {
@@ -160,7 +170,7 @@ void Editor::DrawMenuBar()
 					continue;
 				any = true;
 				if (ImGui::MenuItem(entry.name.c_str()))
-					pendingSceneLoad = "assets/scenes/" + entry.name;
+					commands.Push(EditorCommandType::LoadScene, "assets/scenes/" + entry.name);
 			}
 			if (!any)
 				ImGui::MenuItem("(no saved scenes)", NULL, false, false);
@@ -168,12 +178,12 @@ void Editor::DrawMenuBar()
 		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Package Game...")) {
-			openPackage = true;
 			packageStatus.clear();
+			pendingPopup = "Package Game";
 		}
 		ImGui::Separator();
 		if (ImGui::MenuItem("Exit"))
-			exitClicked = true;
+			commands.Push(EditorCommandType::Exit);
 		ImGui::EndMenu();
 	}
 
@@ -207,7 +217,7 @@ void Editor::DrawMenuBar()
 	if (playing)
 		ImGui::MenuItem("[ Playing - Esc stops ]", NULL, false, false);
 	else if (ImGui::MenuItem("[ Play ]", "toolbar"))
-		playClicked = true;
+		commands.Push(EditorCommandType::Play);
 
 	DrawTitleBarControls();
 
@@ -282,18 +292,13 @@ void Editor::DrawTitleBarControls()
 	}
 	ImGui::SameLine(0.0f, 0.0f);
 	if (controlButton("##close", 2))
-		exitClicked = true;
+		commands.Push(EditorCommandType::Exit);
 
 	WindowChrome::SetTitleBar(barHeight, menuRight, buttonsLeft);
 }
 
 void Editor::DrawSaveAsModal()
 {
-	if (openSaveAs) {
-		ImGui::OpenPopup("Save Scene As");
-		openSaveAs = false;
-	}
-
 	if (ImGui::BeginPopupModal("Save Scene As", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::TextUnformatted("assets/scenes/");
 		ImGui::SameLine();
@@ -302,8 +307,7 @@ void Editor::DrawSaveAsModal()
 			std::string name = saveAsBuffer;
 			if (name.size() < 5 || name.substr(name.size() - 5) != ".json")
 				name += ".json";
-			savePath = "assets/scenes/" + name;
-			saveClicked = true;
+			commands.Push(EditorCommandType::SaveScene, "assets/scenes/" + name);
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
@@ -315,11 +319,6 @@ void Editor::DrawSaveAsModal()
 
 void Editor::DrawPackageModal()
 {
-	if (openPackage) {
-		ImGui::OpenPopup("Package Game");
-		openPackage = false;
-	}
-
 	if (ImGui::BeginPopupModal("Package Game", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::TextUnformatted("Creates Builds/<name>/ with the game executable,");
 		ImGui::TextUnformatted("the assets folder and the current scene as startup scene.");
@@ -348,13 +347,20 @@ void Editor::DrawPackageModal()
 	}
 }
 
+void Editor::OpenNewMapDialog()
+{
+	pendingPopup = "New Map";
+}
+
+void Editor::RequestDeleteMap(std::string path)
+{
+	mapDeleteRequest = std::move(path);
+	pendingPopup = "Delete Map";
+}
+
 void Editor::DrawMapModals()
 {
 	/* New map */
-	if (openNewMap) {
-		ImGui::OpenPopup("New Map");
-		openNewMap = false;
-	}
 	if (ImGui::BeginPopupModal("New Map", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::TextUnformatted("Creates an empty map (default lights) and switches to it.");
 		ImGui::TextUnformatted("Unsaved changes in the current map are discarded.");
@@ -370,7 +376,7 @@ void Editor::DrawMapModals()
 			if (name.size() < 5 || name.substr(name.size() - 5) != ".json")
 				name += ".json";
 			if (name != ".json")
-				pendingNewMap = "assets/scenes/" + name;
+				commands.Push(EditorCommandType::NewMap, "assets/scenes/" + name);
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
@@ -379,16 +385,14 @@ void Editor::DrawMapModals()
 		ImGui::EndPopup();
 	}
 
-	/* Delete map confirmation */
-	if (!mapDeleteRequest.empty() && !ImGui::IsPopupOpen("Delete Map"))
-		ImGui::OpenPopup("Delete Map");
+	/* Delete map confirmation (opened via RequestDeleteMap) */
 	if (ImGui::BeginPopupModal("Delete Map", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("Delete %s?", mapDeleteRequest.c_str());
 		ImGui::TextUnformatted("The file is removed permanently. The world you are");
 		ImGui::TextUnformatted("editing stays open (save it to recreate the file).");
 		ImGui::Separator();
 		if (ImGui::Button("Delete")) {
-			RemoveFile(mapDeleteRequest);
+			commands.Push(EditorCommandType::DeleteMap, mapDeleteRequest);
 			mapDeleteRequest.clear();
 			ImGui::CloseCurrentPopup();
 		}

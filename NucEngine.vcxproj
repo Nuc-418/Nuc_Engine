@@ -242,6 +242,7 @@
     <ClInclude Include="third_party\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="third_party\nlohmann\json.hpp" />
     <ClInclude Include="src\engine\editor\Editor.h" />
+    <ClInclude Include="src\engine\editor\EditorCommand.h" />
     <ClInclude Include="src\engine\editor\EditorHost.h" />
     <ClInclude Include="src\engine\editor\EditorTheme.h" />
     <ClInclude Include="src\engine\editor\EditorMath.h" />

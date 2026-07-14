@@ -239,7 +239,7 @@ scene-code involvement.
 - **(Later, as a plugin)** a Lua scripting plugin exposing the component
   and input APIs — the real proof that Phase 4's seams are sufficient.
 
-## Phase 6 — Editor and content workflow — IN PROGRESS
+## Phase 6 — Editor and content workflow — DONE
 
 - **Property reflection for components**: extend the `ISerializer` visitor
   so a component's `Serialize` doubles as a property enumeration
@@ -265,7 +265,12 @@ scene-code involvement.
 - **Editor state cleanup**: `Editor`'s public flag-soup (`playClicked`,
   `pendingSceneLoad`, `mapDeleteRequest`, ...) becomes a small
   command/event queue consumed by `EditorHost` — panels stop reaching into
-  a god object.
+  a god object. *(Done: `EditorCommand`/`EditorCommandQueue` — menus and
+  panels `Push` deferred intents (Play/Exit/SaveScene/NewMap/LoadScene/
+  DeleteMap) during Draw; `EditorHost::Update` drains and executes them, so
+  UI code never mutates the world mid-frame. Modal-open requests defer
+  through one `pendingPopup` buffer opened at the correct ImGui ID scope.
+  Unit-tested queue semantics.)*
 
 ## Phase 7 — Platform and build convergence
 

@@ -88,7 +88,7 @@ void DrawContentBrowserPanel(Editor& editor)
 			if (entry.isDirectory)
 				editor.contentPath += "/" + entry.name;
 			else if (HasExtension(entry.name, ".json"))
-				editor.pendingSceneLoad = editor.contentPath + "/" + entry.name;
+				editor.commands.Push(EditorCommandType::LoadScene, editor.contentPath + "/" + entry.name);
 		}
 	}
 
