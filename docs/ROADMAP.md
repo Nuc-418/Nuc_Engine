@@ -230,9 +230,13 @@ scene-code involvement.
   with named actions and axis bindings (`"MoveForward" -> W/S`), polled or
   event-subscribed; per-window instance instead of the file-static callback
   pointer; gamepad via GLFW joystick API. `Controller` becomes a consumer
-  of actions. *(Done except gamepad: InputActions with actions/axes/toggle
-  latches, per-window callback via the GLFW user pointer, engine-default +
-  scene bindings, unit-tested.)*
+  of actions. *(Done: InputActions with actions/axes/toggle latches,
+  per-window callback via the GLFW user pointer, engine-default + scene
+  bindings, unit-tested. Gamepad done via the GLFW 3.2 joystick API:
+  gamepad buttons/toggles and analog axes bind to the same action names as
+  the keyboard (Application polls joystick 1 each frame; press edges +
+  deadzone in SetGamepadState; keyboard/stick combine by larger magnitude),
+  with engine-default stick/button binds. Unit-tested.)*
 - **Behavior components**: a `ScriptableComponent` base with
   `OnPlayBegin`/`OnUpdate`/`OnPlayEnd` (only active while
   `app.simulating`), so gameplay is written as components — the demo's

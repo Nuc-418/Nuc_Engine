@@ -55,4 +55,8 @@ public:
 	// game; the editor sets it false in Edit mode so simulation plugins freeze.
 	// Simulation plugins should skip their step when this is false.
 	bool simulating = true;
+
+private:
+	// Polls gamepad 1 each frame and feeds it into `actions`.
+	void PollGamepad();
 };

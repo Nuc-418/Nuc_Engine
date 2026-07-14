@@ -3,6 +3,17 @@
 #include "engine/core/Application.h"
 #include "engine/core/Time.h"
 
+// Common XInput-style layout for GLFW 3.2's raw joystick arrays (the vendored
+// GLFW predates the 3.3 gamepad-mapping API). Real layouts vary by device and
+// driver; these defaults target the typical controller and are rebindable.
+namespace {
+	constexpr int kPadAxisLeftX = 0;
+	constexpr int kPadAxisLeftY = 1;
+	constexpr int kPadButtonLeftThumb = 8;  // left stick click
+	constexpr int kPadButtonStart = 7;
+	constexpr int kMaxPadButtons = 32;
+}
+
 bool Application::Init(const Config& appConfig)
 {
 	config = appConfig;
@@ -31,6 +42,14 @@ bool Application::Init(const Config& appConfig)
 	actions.BindAction("Sprint", GLFW_KEY_LEFT_SHIFT);
 	actions.BindAction("Exit", GLFW_KEY_ESCAPE);
 
+	// Gamepad defaults on the same action names, additive to the keyboard binds:
+	// left stick moves (stick Y is negative-up, so invert it for MoveForward),
+	// stick-click sprints, Start exits.
+	actions.BindGamepadAxis("MoveForward", kPadAxisLeftY, -1.0f);
+	actions.BindGamepadAxis("MoveRight", kPadAxisLeftX, 1.0f);
+	actions.BindGamepadButton("Sprint", kPadButtonLeftThumb);
+	actions.BindGamepadButton("Exit", kPadButtonStart);
+
 	glewInit();
 
 	// Publish the core engine services so plugins can fetch them by interface.
@@ -55,6 +74,7 @@ void Application::Run(Scene& scene)
 		// glfwPollEvents accumulates fresh ones.
 		actions.BeginFrame(inputs.keyDown, inputs.keyPressed, UserInputs::KeyCount);
 		inputs.ClearPressed();
+		PollGamepad();
 
 		// Advance plugins before scene logic so this frame's scene update and
 		// draw see the results (e.g. physics-driven transforms).
@@ -75,6 +95,33 @@ void Application::Run(Scene& scene)
 	scene.Unload(*this);
 	plugins.UnloadAll(*this);
 	assets.UnloadAll(); // last: components/scenes may reference assets while unloading
+}
+
+void Application::PollGamepad()
+{
+	// Raw joystick API (GLFW 3.2): level-state button bytes + analog axes, with
+	// device-reported counts. SetGamepadState derives press edges and applies
+	// the deadzone; an absent stick contributes nothing.
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) != GLFW_TRUE) {
+		actions.SetGamepadState(nullptr, 0, nullptr, 0, false);
+		return;
+	}
+
+	int buttonCount = 0, axisCount = 0;
+	const unsigned char* rawButtons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+	const float* axisValues = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axisCount);
+	if (!rawButtons || !axisValues) {
+		actions.SetGamepadState(nullptr, 0, nullptr, 0, false);
+		return;
+	}
+
+	if (buttonCount > kMaxPadButtons)
+		buttonCount = kMaxPadButtons;
+	bool buttons[kMaxPadButtons];
+	for (int i = 0; i < buttonCount; ++i)
+		buttons[i] = rawButtons[i] == GLFW_PRESS;
+
+	actions.SetGamepadState(buttons, buttonCount, axisValues, axisCount, true);
 }
 
 void Application::Shutdown()
