@@ -8,15 +8,16 @@ tags: [architecture, core]
 
 ## Members
 
-| Member | Purpose |
-|---|---|
-| `window` | GLFW window wrapper (`engine/core/Window`) |
-| `inputs` | Raw key/mouse state — see [[Input]] |
-| `actions` | Named action bindings — see [[Input]] |
-| `controller` | WASD/mouse-look helper consuming actions |
-| `plugins` | [[Plugin System|PluginManager]] |
-| `assets` | [[Asset System|AssetManager]] |
-| `simulating` | True while gameplay advances (game always; editor only in Play) |
+| Member       | Purpose                                                         |                   |
+| ------------ | --------------------------------------------------------------- | ----------------- |
+| `window`     | GLFW window wrapper (`engine/core/Window`)                      |                   |
+| `inputs`     | Raw key/mouse state — see [[Input]]                             |                   |
+| `actions`    | Named action bindings — see [[Input]]                           |                   |
+| `controller` | WASD/mouse-look helper consuming actions                        |                   |
+| `plugins`    | [[Plugin System]]                                               | [[PluginManager]] |
+| `assets`     | [[Asset System]]                                                | [[AssetManager]]  |
+| `simulating` | True while gameplay advances (game always; editor only in Play) |                   |
+|              |                                                                 |                   |
 
 ## Init
 

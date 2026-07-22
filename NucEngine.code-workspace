@@ -1,0 +1,29 @@
+{
+  "folders": [
+    {
+      "name": "Nuc Engine",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.h": "cpp",
+      "*.hpp": "cpp",
+      "*.inl": "cpp",
+      "*.vert": "glsl",
+      "*.frag": "glsl"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cpptools",
+    "search.exclude": {
+      "**/x64": true,
+      "**/.vs": true,
+      "**/Builds": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.cpptools",
+      "ms-vscode.cpptools-extension-pack"
+    ]
+  }
+}

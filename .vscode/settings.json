@@ -1,0 +1,19 @@
+{
+  "files.associations": {
+    "*.h": "cpp",
+    "*.hpp": "cpp",
+    "*.inl": "cpp",
+    "*.vert": "glsl",
+    "*.frag": "glsl"
+  },
+  "C_Cpp.default.configurationProvider": "ms-vscode.cpptools",
+  "C_Cpp.intelliSenseEngine": "default",
+  "search.exclude": {
+    "**/x64": true,
+    "**/.vs": true,
+    "**/Builds": true
+  },
+  "files.exclude": {
+    "**/.vs": true
+  }
+}

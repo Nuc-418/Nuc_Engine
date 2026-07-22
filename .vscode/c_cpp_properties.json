@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/third_party",
+        "${workspaceFolder}/third_party/imgui"
+      ],
+      "defines": [
+        "GLEW_STATIC",
+        "_CRT_SECURE_NO_WARNINGS",
+        "_WIN32",
+        "WIN32"
+      ],
+      "windowsSdkVersion": "10.0.17134.0",
+      "compilerPath": "cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ],
+  "version": 4
+}
